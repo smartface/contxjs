@@ -5,7 +5,7 @@ const merge = require("@smartface/styler/lib/utils/merge");
 const stylerBuilder = require("library/styler-builder");
 const isTablet = require("../lib/isTablet");
 const Screen = require('sf-core/device/screen');
-const INIT_CONTEXT_ACTION_TYPE = require("../lib/Context").INIT_CONTEXT_ACTION_TYPE;
+const INIT_CONTEXT_ACTION_TYPE = require("../core/Context").INIT_CONTEXT_ACTION_TYPE;
 const buildStyles = require("@smartface/styler/lib/buildStyles");
 const theme = buildStyles(require("../themes/blue"));
 
@@ -105,8 +105,7 @@ function createContext(component, name, classMap = null, reducers = null) {
 							if (key === 'align') {
 								delete acc[key];
 								return acc;
-							}
-							else if (key == "flexProps") {
+							} else if (key == "flexProps") {
 								//if(!oldStyles[key] === undefined){
 								// Object.assign(acc, newStyles[key]);
 								// } else {
@@ -148,11 +147,11 @@ function createContext(component, name, classMap = null, reducers = null) {
 		}
 	);
 
-	const _contextReducer = reducers ?
-		function(state, actors, action, target) {
-			reducers(contextReducer(state, actors, action, target), actors, action, target);
-		} :
-		contextReducer;
+	const _contextReducer = reducers 
+		? function(state, actors, action, target) {
+				reducers(contextReducer(state, actors, action, target), actors, action, target);
+			} 
+		: contextReducer;
 
 	// creates an initial styling for the context
 	styleContext(styling, _contextReducer);
@@ -162,8 +161,7 @@ function createContext(component, name, classMap = null, reducers = null) {
 			const styling = styler(newStyles);
 			// injects a new styling to the context
 			styleContext(styling, _contextReducer);
-		}
-		catch (e) {
+		} catch (e) {
 			alert(e.message);
 		}
 	};
@@ -171,6 +169,7 @@ function createContext(component, name, classMap = null, reducers = null) {
 
 function contextReducer(state, actors, action, target) {
 	const newState = Object.assign({}, state);
+	
 	switch (action.type) {
 		case "invalidate":
 			Object.keys(actors).forEach(function(name) {
@@ -200,6 +199,36 @@ function contextReducer(state, actors, action, target) {
 
 	return state;
 }
+
+var component = createElement("", "FlexLayout", function(_super){
+		_super(this);
+	});
+	
+class Page {
+	constructor(page){
+	}
+	
+	addChild(element){
+		
+	}
+}
+
+class PageElement {
+	constructor(elementClass){
+	}
+	
+	setDispacher(dispatcher){
+		this.dispatcher = dispatcher;
+	}
+}
+
+function connecttoContext(){
+	
+}
+
+function createElement(name, parent, constructor){
+	var element = extend(parent)(constructor.bind(null));
+};
 
 module.exports = {
 	createContext

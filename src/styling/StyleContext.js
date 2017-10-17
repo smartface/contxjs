@@ -1,4 +1,4 @@
-import createContext, { INIT_CONTEXT_ACTION_TYPE } from "./Context";
+import createContext, { INIT_CONTEXT_ACTION_TYPE } from "../core/Context";
 import merge from "@smartface/styler/lib/utils/merge";
 
 function hooks(hooksList){
@@ -9,6 +9,18 @@ function hooks(hooksList){
     // ? hooksList[hook] : elseValue;
   };
 }
+
+function flush(str="", obj){
+  Object.keys(obj).forEach(function (key) {
+    if(obj[key] != null && obj[key] instanceof Object)
+      str += key+": "+flush("", obj[key])+", ";
+    else
+      str += key+": "+obj[key]+", ";
+  });
+  
+  return "{ "+str.trim(", ")+" }";
+}
+
 
 /**
  * Create styleContext tree from a SF Component and flat component tree to create actors
@@ -27,10 +39,14 @@ export function fromSFComponent(component, name, initialClassNameMap, hooksList=
     const newComp = makeStylable(component, initialClassNameMap(name), name, hooks(hooksList));
     flat(name, newComp);
 
-    component.children && 
-      Object.keys(component.children).forEach((child) => {
-        collect(component.children[child], name+"_"+child, initialClassNameMap);
-      });
+      component.children && 
+        Object.keys(component.children).forEach((child) => {
+          try {
+            collect(component.children[child], name+"_"+child, initialClassNameMap);
+          } catch(e) {
+            throw new Error("Error when component would be collected: "+child+". "+e.message);
+          }
+        });
   }
   
   function flat(name, comp) {
@@ -117,8 +133,22 @@ export function makeStylable(component, className, name, hooks){
       const beforeHook = hooks("beforeStyleDiffAssign");
       beforeHook && (diff = beforeHook(diff));
       
-      Object.keys(diff).length && 
-        Object.assign(this.component, diff);
+      // Object.keys(diff).length && 
+      //   Object.assign(this.component, diff);
+      
+      try {
+        this.component.subscribeContext
+          ? Object.keys(diff).length && this.component.subscribeContext({type:"new-styles", data: diff})
+          : Object.keys(diff).length && Object.keys(diff).forEach(function(key) {
+            if(key == "scrollEnabled"){
+              this.component.ios && (this.component.ios.scrollEnabled = diff[key]);
+            } else if(this.component[key] !== diff[key]){
+              this.component[key] = diff[key];
+            }
+          }.bind(this));
+      } catch(e){
+        throw new Error(JSON.stringify(diff)+" is invalid. "+e.message);
+      }
       
       const afterHook = hooks("afterStyleDiffAssign");
       afterHook && (style = afterHook(style));
@@ -136,6 +166,10 @@ export function makeStylable(component, className, name, hooks){
     
     getStyles(){
       return Object.assign({}, this.styles);
+    }
+    
+    setUgly(value){
+      this.isUgly = value;
     }
     
     getInitialClassName(){
@@ -169,7 +203,7 @@ export function makeStylable(component, className, name, hooks){
     hasClassName(className){
       return this.classNames.some((cname) => {
         return cname === className;
-      })
+      });
     }
     
     pushClassName(className){
@@ -244,8 +278,14 @@ export function createStyleContext(actors, hooks){
               const beforeHook = hooks("beforeAssignComponentStyles");
               beforeHook && (className = beforeHook(name, className));
 
-              const styles = styling(className+" #"+name)();
-              context.actors[name].setStyles(styles);
+              try {
+                // const styles = styling(className+" #"+name)();
+                const styles = styling(className)();
+                context.actors[name].setStyles(styles);
+              } catch (e) {
+                console.log(e.message);
+              }
+
               comp.isUgly = false;
             }
           });
