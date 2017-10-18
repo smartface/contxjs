@@ -32,30 +32,27 @@ function flush(str="", obj){
  * 
  * @return {function} - context helper
  */
-export function fromSFComponent(component, name, initialClassNameMap, hooksList=null){
-  const flatted = {};
+export function fromSFComponent(component, name, initialClassNameMap, hooksList=null, acc = {}){
   
-  function collect(component, name, initialClassNameMap){
-    const newComp = makeStylable(component, initialClassNameMap(name), name, hooks(hooksList));
-    flat(name, newComp);
+  function buildContextTree(component, name, initialClassNameMap){
+    if(acc[name] === undefined )
+      acc[name] = makeStylable(component, initialClassNameMap(name), name, hooks(hooksList));
 
       component.children && 
         Object.keys(component.children).forEach((child) => {
           try {
-            collect(component.children[child], name+"_"+child, initialClassNameMap);
+            buildContextTree(component.children[child], name+"_"+child, initialClassNameMap);
           } catch(e) {
             throw new Error("Error when component would be collected: "+child+". "+e.message);
           }
         });
   }
   
-  function flat(name, comp) {
-    flatted[name] = comp;
-  }
+  buildContextTree(component, name, initialClassNameMap);
   
-  collect(component, name, initialClassNameMap);
-  
-  return createStyleContext(flatted, hooks(hooksList));
+  return createStyleContext(acc, hooks(hooksList), function updateContextTree(contextElements){
+    fromSFComponent(component, name, initialClassNameMap, hooksList, contextElements);
+  });
 }
 
 /**
@@ -94,14 +91,28 @@ export function makeStylable(component, className, name, hooks){
    * Styable actor
    * @class
    */
+   
+  function addChild(componentAddChild, child, actor){
+    componentAddChild(child);
+    
+    actor.dispatch({type: "invalidateContext"});
+  }
+  
   return new class Stylable {
     constructor(){
       this.name = name;
-      this.initialClassName = className;
+      var componentVars = Object.getPrototypeOf(component).constructor.$$styleContext || {};
+      this.initialClassName = componentVars.classNames || className;
       this.classNames = [className];
       this.component = component;
       this.styles = {};
-      this.isUgly = true;
+      this.setStyles(componentVars.initialProps || {});
+      this.isDirty = true;
+      
+      if(typeof component.addChild === "function")
+        component.addChild = addChild.bind(component, component.addChild.bind(component), this);
+      else if(typeof component.layout.addChild === "function")
+        component.layout.addChild = addChild.bind(component, component.layout.addChild.bind(component.layout), this);
     }
     
     /**
@@ -111,6 +122,7 @@ export function makeStylable(component, className, name, hooks){
      */
     setStyles(style) {
       const reduceDiffStyleHook = hooks("reduceDiffStyleHook");
+      
       let diffReducer = reduceDiffStyleHook
         ? reduceDiffStyleHook(this.styles, style)
         : (acc, key) => {
@@ -158,18 +170,21 @@ export function makeStylable(component, className, name, hooks){
     
     setContext(context){
       this.context = context;
-      component.setContextDispatcher && 
-        component.setContextDispatcher((action) => {
+      component.setContextDispatcher 
+      ? component.setContextDispatcher((action) => {
           this.context.dispatch(action, this.name);
-        });
+        })
+      : component.dispatch = (action) => {
+          this.context.dispatch(action, this.name);
+        }
     }
     
     getStyles(){
       return Object.assign({}, this.styles);
     }
     
-    setUgly(value){
-      this.isUgly = value;
+    setDirty(value){
+      this.isDirty = value;
     }
     
     getInitialClassName(){
@@ -186,7 +201,7 @@ export function makeStylable(component, className, name, hooks){
     
     removeClassName(className){
       if(this.hasClassName(className)){
-        this.isUgly = true;
+        this.isDirty = true;
         this.classNames = this.classNames.filter((cname) => {
           return cname !== className;
         });
@@ -197,7 +212,7 @@ export function makeStylable(component, className, name, hooks){
     
     resetClassNames(classNames=[]){
       this.classNames = classNames.slice() || [this.getInitialClassName()];
-      this.isUgly = true;
+      this.isDirty = true;
     }
     
     hasClassName(className){
@@ -209,7 +224,7 @@ export function makeStylable(component, className, name, hooks){
     pushClassName(className){
       if(!this.hasClassName(className)){
         this.classNames.push(className);
-        this.isUgly = true;
+        this.isDirty = true;
       }
       
       return this.getClassName();
@@ -218,7 +233,7 @@ export function makeStylable(component, className, name, hooks){
     addClassName(className, index){
       if(!this.hasClassName(className)){
         this.classNames.splice(index, 1, className);
-        this.isUgly = true;
+        this.isDirty = true;
       }
       
       return this.getClassName();
@@ -241,7 +256,7 @@ export function makeStylable(component, className, name, hooks){
  * @param {function} hooks - Hooks callback
  * @returns {function} - Context Composer Function
  */
-export function createStyleContext(actors, hooks){
+export function createStyleContext(actors, hooks, updateContextTree){
   var context;
   
   /**
@@ -258,7 +273,10 @@ export function createStyleContext(actors, hooks){
       actors, 
       function contextUpdater(context, action, target){
         var state = context.getState(), newState = state;
-
+        if(action.type === "invalidateContext"){
+          updateContextTree(context.actors);
+        }
+        
         if(target || action.type == INIT_CONTEXT_ACTION_TYPE){
           newState = reducer(state, context.actors, action, target);
           // state is not changed
@@ -272,21 +290,20 @@ export function createStyleContext(actors, hooks){
           function setInitialStyles(name){
             const comp = context.actors[name];
             
-            if(comp.isUgly === true || action.type === INIT_CONTEXT_ACTION_TYPE){
+            if(comp.isDirty === true || action.type === INIT_CONTEXT_ACTION_TYPE){
 
               let className = context.actors[name].getClassName();
               const beforeHook = hooks("beforeAssignComponentStyles");
               beforeHook && (className = beforeHook(name, className));
 
               try {
-                // const styles = styling(className+" #"+name)();
                 const styles = styling(className)();
                 context.actors[name].setStyles(styles);
               } catch (e) {
                 console.log(e.message);
               }
 
-              comp.isUgly = false;
+              comp.isDirty = false;
             }
           });
         
@@ -299,7 +316,7 @@ export function createStyleContext(actors, hooks){
     
     Object.keys(context.actors)
       .forEach(function assignContext(name){
-        context.actors[name].isUgly = true;
+        context.actors[name].isDirty = true;
         context.actors[name].setContext(context);
       });
     

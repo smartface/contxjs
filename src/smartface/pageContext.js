@@ -8,7 +8,7 @@ const Screen = require('sf-core/device/screen');
 const INIT_CONTEXT_ACTION_TYPE = require("../core/Context").INIT_CONTEXT_ACTION_TYPE;
 const buildStyles = require("@smartface/styler/lib/buildStyles");
 const theme = buildStyles(require("../themes/blue"));
-
+const extend = require("js-base/")
 var orientationState = "ended";
 
 commands.addRuntimeCommandFactory(function(type) {
@@ -29,21 +29,18 @@ commands.addRuntimeCommandFactory(function(type) {
 			};
 		case "+isTablet_landscape":
 			return function pageCommand(opts) {
-				//console.log("+isTablet_landscape :: " + JSON.stringify(opts));
 				opts = merge(opts);
 				var isOK = isTablet && Screen.width > Screen.height;
 				return isOK ? opts.value : {};
 			};
 		case "+isTablet_portrait":
 			return function pageCommand(opts) {
-				//console.log("+isTablet_portrait :: " + JSON.stringify(opts));
 				opts = merge(opts);
 				var isOK = isTablet && Screen.width < Screen.height;
 				return isOK ? opts.value : {};
 			};
 		case "+isTablet":
 			return function pageCommand(opts) {
-				//console.log("+isTablet :: " + JSON.stringify(opts));
 				opts = merge(opts);
 				return isTablet ? opts.value : {};
 			};
@@ -171,6 +168,9 @@ function contextReducer(state, actors, action, target) {
 	const newState = Object.assign({}, state);
 	
 	switch (action.type) {
+		case "addChild": 
+			
+			return newState;
 		case "invalidate":
 			Object.keys(actors).forEach(function(name) {
 				var actor = actors[name];
@@ -200,35 +200,11 @@ function contextReducer(state, actors, action, target) {
 	return state;
 }
 
-var component = createElement("", "FlexLayout", function(_super){
-		_super(this);
-	});
-	
-class Page {
-	constructor(page){
-	}
-	
-	addChild(element){
-		
-	}
-}
-
-class PageElement {
-	constructor(elementClass){
-	}
-	
-	setDispacher(dispatcher){
-		this.dispatcher = dispatcher;
-	}
-}
-
-function connecttoContext(){
-	
-}
-
-function createElement(name, parent, constructor){
-	var element = extend(parent)(constructor.bind(null));
-};
+	 /*page.dispatch({
+	 	type: "addChild",
+	 	classNames: {},
+	 	initialProps: {}
+	 });*/
 
 module.exports = {
 	createContext
