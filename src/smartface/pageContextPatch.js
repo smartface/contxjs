@@ -1,7 +1,7 @@
-const extend = require('js-base/core/extend');
-const pageContext = require("./pageContext");
+import extend from 'js-base/core/extend';
+import pageContext from "./pageContext";
 
-module.exports = function pageContextPatch(page, name){
+export default function pageContextPatch(page, name){
   page.onLoad = onLoad.bind(page, page.onLoad.bind(page));
   page.onShow = onShow.bind(page, page.onShow.bind(page));
   page.onHide = onHide.bind(page, page.onHide ? page.onHide.bind(page) : null);

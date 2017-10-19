@@ -1,4 +1,5 @@
-import createContext, { INIT_CONTEXT_ACTION_TYPE } from "../core/Context";
+import {INIT_CONTEXT_ACTION_TYPE} from "../core/constants";
+import createContext from "../core/Context";
 import merge from "@smartface/styler/lib/utils/merge";
 
 function hooks(hooksList){

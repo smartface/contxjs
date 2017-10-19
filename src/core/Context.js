@@ -1,11 +1,11 @@
+import Contants from "./constants";
+
 function addMiddleware(mware){
 }
 
-export const INIT_CONTEXT_ACTION_TYPE = '__INIT_CONTEXT__';
-
 export function createInitAction(){
   return {
-    type: INIT_CONTEXT_ACTION_TYPE
+    type: Contants.INIT_CONTEXT_ACTION_TYPE
   }
 }
 
@@ -21,7 +21,7 @@ export default function createContext(actors, updater, middlewares, initialState
       // this.setState = this.setState.bind(this);
       // this.getState = tbbbbbbbbbhis.getState.bind(this);
 
-      this.dispatch({type: INIT_CONTEXT_ACTION_TYPE});
+      this.dispatch({type: Contants.INIT_CONTEXT_ACTION_TYPE});
     }
     
     setState = (state) => {

@@ -1,18 +1,18 @@
-const StyleContext = require("../lib/StyleContext");
-const styler = require("@smartface/styler/lib/styler");
-const commands = require("@smartface/styler/lib/commandsManager");
-const merge = require("@smartface/styler/lib/utils/merge");
-const stylerBuilder = require("library/styler-builder");
-const isTablet = require("../lib/isTablet");
-const Screen = require('sf-core/device/screen');
-const INIT_CONTEXT_ACTION_TYPE = require("../core/Context").INIT_CONTEXT_ACTION_TYPE;
+import StyleContext from "../lib/StyleContext";
+import styler from "@smartface/styler/lib/styler";
+import commands from "@smartface/styler/lib/commandsManager";
+import merge from "@smartface/styler/lib/utils/merge";
+import {createSFCoreProp} from "./sfCorePropFactory";
+// stylerBuilder = require("library/styler-builder");
+
+import Contants from "../core/constants";
+
 const buildStyles = require("@smartface/styler/lib/buildStyles");
-const theme = buildStyles(require("../themes/blue"));
-const extend = require("js-base/")
+// const theme = buildStyles(require("../themes/blue"));
 var orientationState = "ended";
 
 commands.addRuntimeCommandFactory(function(type) {
-	switch (type) {
+	/*switch (type) {
 		case '+page':
 			return function pageCommand(opts) {
 				opts = merge(opts);
@@ -44,12 +44,10 @@ commands.addRuntimeCommandFactory(function(type) {
 				opts = merge(opts);
 				return isTablet ? opts.value : {};
 			};
-	}
+	}*/
 });
 
 function createContext(component, name, classMap = null, reducers = null) {
-	const styling = styler(theme);
-
 	var styleContext = StyleContext.fromSFComponent(
 		component,
 		name,
@@ -70,7 +68,7 @@ function createContext(component, name, classMap = null, reducers = null) {
 					return function beforeStyleAssignment(styles) {
 						Object.keys(styles)
 							.forEach(function(key) {
-								styles[key] = stylerBuilder.getOneProp(key, styles[key]);
+								styles[key] = createSFCoreProp(key, styles[key]);
 							});
 
 						return styles;
@@ -151,7 +149,7 @@ function createContext(component, name, classMap = null, reducers = null) {
 		: contextReducer;
 
 	// creates an initial styling for the context
-	styleContext(styling, _contextReducer);
+	// styleContext(styling, _contextReducer);
 
 	return function setStyle(newStyles) {
 		try {
@@ -159,7 +157,8 @@ function createContext(component, name, classMap = null, reducers = null) {
 			// injects a new styling to the context
 			styleContext(styling, _contextReducer);
 		} catch (e) {
-			alert(e.message);
+			
+			throw e;
 		}
 	};
 }
@@ -200,12 +199,4 @@ function contextReducer(state, actors, action, target) {
 	return state;
 }
 
-	 /*page.dispatch({
-	 	type: "addChild",
-	 	classNames: {},
-	 	initialProps: {}
-	 });*/
-
-module.exports = {
-	createContext
-};
+export default createContext;
