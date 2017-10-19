@@ -261,7 +261,7 @@ export function createStyleContext(actors, hooks, updateContextTree){
   var context;
   
   /**
-   * Composes a context.
+   * Context builder.
    * 
    * @param {function) styling - Styling function from styler.
    * @param {function} reducer - Reducer function to run actions

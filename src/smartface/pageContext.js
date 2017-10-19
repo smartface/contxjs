@@ -1,4 +1,4 @@
-import StyleContext from "../lib/StyleContext";
+import StyleContext from "../styling/StyleContext";
 import styler from "@smartface/styler/lib/styler";
 import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
@@ -7,8 +7,6 @@ import {createSFCoreProp} from "./sfCorePropFactory";
 
 import Contants from "../core/constants";
 
-const buildStyles = require("@smartface/styler/lib/buildStyles");
-// const theme = buildStyles(require("../themes/blue"));
 var orientationState = "ended";
 
 commands.addRuntimeCommandFactory(function(type) {

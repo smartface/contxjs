@@ -1,19 +1,25 @@
 import extend from 'js-base/core/extend';
 import pageContext from "./pageContext";
 
+const buildStyles = require("@smartface/styler/lib/buildStyles");
+const theme = buildStyles(require("../themes/Defaults"));
+
+function wrapMethod(instance, method, bindingfFunc){
+  return bindingfFunc.bind(instance, typeof instance[method] === "function" ? instance[method].bind(instance) : null) 
+}
+
 export default function pageContextPatch(page, name){
-  page.onLoad = onLoad.bind(page, page.onLoad.bind(page));
-  page.onShow = onShow.bind(page, page.onShow.bind(page));
-  page.onHide = onHide.bind(page, page.onHide ? page.onHide.bind(page) : null);
-  const pageOnOrientationChange = onOrientationChange.bind(page, page.onOrientationChange ? page.onOrientationChange.bind(page) : null);
-  
+  page.onLoad = wrapMethod(page, "onLoad", onLoad);
+  page.onShow = wrapMethod(page, "onShow", onShow);
+  page.onHide = wrapMethod(page, "onHide", onHide);
+  page.onOrientationChange = wrapMethod(page, "onOrientationChange", onOrientationChange);
+
   function onLoad(superOnLoad) {
     superOnLoad();
   }
   
   function onHide(superOnHide) {
     superOnHide && superOnHide();
-    this.onOrientationChange = function(){};
   }
   
   function onShow(superOnShow) {
@@ -40,9 +46,6 @@ export default function pageContextPatch(page, name){
       });
       this.layout.applyLayout();
     }
-    
-
-    this.onOrientationChange = pageOnOrientationChange;
   }
   
   function onOrientationChange(superOnOrientationChange) {
@@ -64,5 +67,14 @@ export default function pageContextPatch(page, name){
   
   page.setContextDispatcher = function(dispatcher) {
     this.dispatch = dispatcher;
+  };
+  
+  return function pageContextPatchDispose(){
+    page.dispatch(null);
+    page.dispatch = null;
+    page.onLoad = null;
+    page.onShow = null;
+    page.onHide = null;
+    page.onOrientationChange = null;
   };
 };
