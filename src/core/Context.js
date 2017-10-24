@@ -1,31 +1,53 @@
-import Contants from "./constants";
+import {INIT_CONTEXT_ACTION_TYPE} from "./constants";
 
 function addMiddleware(mware){
 }
 
 export function createInitAction(){
   return {
-    type: Contants.INIT_CONTEXT_ACTION_TYPE
+    type: INIT_CONTEXT_ACTION_TYPE
   }
 }
 
-export default function createContext(actors, updater, middlewares, initialState={}){
+export default function createContext(actors, reducer, initialState={}){
   class Context {
     constructor(){
-      // this.__id            = __id++;
-      // this._subscribers    = new WeakMap();
-      // this._subscriberKeys = new Map();
-      this.actors = Object.assign({}, actors);
+      this.actors = {collection: {}, $$map: []};
       this.state = Object.assign({}, initialState);
-      // this.dispatch = this.dispatch.bind(this);
-      // this.setState = this.setState.bind(this);
-      // this.getState = tbbbbbbbbbhis.getState.bind(this);
-
-      this.dispatch({type: Contants.INIT_CONTEXT_ACTION_TYPE});
+      this.setActors(Object.assign({}, actors));
+      this.dispatch({type: INIT_CONTEXT_ACTION_TYPE});
+    }
+    
+    setActors = (actors) => {
+      Object.keys(actors)
+        .forEach((name) => {
+          this.actors.$$map.push(name);
+          this.actors.collection[name] = actors[name];
+          actors[name].setContextDispatcher((action, target) => this.dispatch(action, target));
+        });
+  
+      this.propagateAll();
+    }
+    
+    map = (fn) => {
+      this.actors.$$map.forEach(name => {
+        fn(this.actors.collection[name], name);
+      });
     }
     
     setState = (state) => {
-      this.state = Object.assign({}, state);
+      if(state !== this.state){
+        const oldState = this.state;
+        this.state = Object.assign({}, state);
+        this.propagateAll(state, oldState);
+      }
+    }
+    
+    propagateAll = () => {
+      this.actors.$$map.map((name) => {
+        const actor = this.actors.collection[name];
+        actor.onContextChange && actor.onContextChange(this);
+      });
     }
     
     getState = () => {
@@ -33,16 +55,12 @@ export default function createContext(actors, updater, middlewares, initialState
     }
     
     dispatch = (action, target) => {
-      this.setState(updater(this, action, target));
+      this.setState(reducer(this, action, target));
     }
     
-    dispose =  () => {
+    dispose = () => {
       this.state = null;
       this.actors = null;
-    }
-    
-    map(fn){
-      return Object.keys(this.actors).map((name,index) => fn(actors[name], name, index));
     }
     
     subcribe(fn){

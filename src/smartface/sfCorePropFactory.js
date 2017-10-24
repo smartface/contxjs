@@ -103,7 +103,8 @@ export function createSFCoreProp(key, value) {
     res = Image.createFromFile("images://" + value);
   }
   else if (key === "font") {
-    res = Font.create(value.family || "Font.DEFAULT", value.size || 16, getFontStyle(value));
+    res = Font.create(value && value.family || "Font.DEFAULT", value && value.size || 16, getFontStyle(value));
+    
   }
   else {
     res = value;
@@ -114,31 +115,32 @@ export function createSFCoreProp(key, value) {
 
 function createColorForDevice(color) {
   var res;
-  if (color.startColor) { // gradient color
+  if (color instanceof Object && color.startColor) { // gradient color
     res = Color.createGradient({
       startColor: createColorForDevice(color.startColor),
       endColor: createColorForDevice(color.endColor),
       direction: Color.GradientDirection[color.direction]
     });
-  }
-  else if (/rgb/i.test(color)) {
+  } else if (color && /rgb/i.test(color)) {
     var rgba = color.match(/\d\.\d+|\d+/ig);
     res = Color.create((Number(rgba[3]) * 255), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
   }
-  else {
+  else if(color) {
     res = Color.create(color);
   }
-  return res;
+  return res || color;
 }
 
 function getFontStyle(font) {
   var res = "";
-  if (font.bold) {
+  if (font && font.bold) {
     res += FONT_STYLE.BOLD;
-  }
-  if (font.italic) {
+  } else if (font && font.italic) {
     res && (res += "_");
     res += FONT_STYLE.ITALIC;
-  }!res && (res = FONT_STYLE.DEFAULT);
+  } else {
+    res = FONT_STYLE.DEFAULT;
+  }
+  
   return Font[res];
 }

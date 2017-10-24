@@ -7,8 +7,9 @@
     "test": "mocha --compilers js:babel-core/register --debug ./test/**/*.test.js",
     "test:watch": "mocha --watch --compilers js:babel-core/register --debug ./test/**/*.test.js",
     "build": "babel ./src/ --out-dir -d ./lib/.",
-    "build:dev": "babel ./src/ --out-dir -d ../scripts/node_module/@smartface/contx",
-    "dev:link": "mkdir -p ../scripts/node_modules/@smartface/contx && cp -r -t ../scripts/node_modules/@smartface/contx lib package.json ",
+    "build:dev": "babel ./src/ --out-dir -d ../scripts/node_modules/@smartface/contx",
+    "dev:sync": "mkdir -p ../scripts/node_modules/@smartface/contx && cp -r -t ../scripts/node_modules/@smartface/contx lib package.json ",
+    "dev:link": "npm run build && npm run dev:sync",
     "docs:create": "jsdox ./src -o docs",
     "jase": "jase"
   },

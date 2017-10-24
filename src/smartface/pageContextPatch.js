@@ -1,21 +1,34 @@
 import extend from 'js-base/core/extend';
-import pageContext from "./pageContext";
+import createPageContext from "./pageContext";
 
 const buildStyles = require("@smartface/styler/lib/buildStyles");
-const theme = buildStyles(require("../themes/Defaults"));
+const Application = require("sf-core/application");
 
 function wrapMethod(instance, method, bindingfFunc){
   return bindingfFunc.bind(instance, typeof instance[method] === "function" ? instance[method].bind(instance) : null) 
 }
 
+// monkey patching wrapper for any page.
 export default function pageContextPatch(page, name){
   page.onLoad = wrapMethod(page, "onLoad", onLoad);
   page.onShow = wrapMethod(page, "onShow", onShow);
   page.onHide = wrapMethod(page, "onHide", onHide);
   page.onOrientationChange = wrapMethod(page, "onOrientationChange", onOrientationChange);
 
+  Application.theme({
+    type: "addPage",
+    name: name,
+    pageContext: createPageContext(
+        page,
+        name,
+        null,
+        function reducers(state, actors, action, target) {
+          return state;
+        })
+  });
+
   function onLoad(superOnLoad) {
-    superOnLoad();
+    superOnLoad && superOnLoad();
   }
   
   function onHide(superOnHide) {
@@ -23,29 +36,13 @@ export default function pageContextPatch(page, name){
   }
   
   function onShow(superOnShow) {
-    superOnShow();
+    superOnShow && superOnShow();
     
-    if(!this.styleContext) {
-      this.styleContext = pageContext.createContext(
-        this,
-        name,
-        null,
-        function reducers(state, actors, action, target) {
-          return state;
-        });
-        setTimeout(function(){
-          this.dispatch({
-            type: "invalidate"
-          });
-          
-          this.layout.applyLayout();
-        }.bind(this), 50);
-    } else {
-      this.dispatch({
-        type: "invalidate"
-      });
-      this.layout.applyLayout();
-    }
+    this.dispatch({
+      type: "invalidate"
+    });
+    
+    this.layout.applyLayout();
   }
   
   function onOrientationChange(superOnOrientationChange) {
@@ -63,9 +60,10 @@ export default function pageContextPatch(page, name){
 
       this.layout.applyLayout();
     }.bind(this), 1);
-  };
+  }
   
   page.setContextDispatcher = function(dispatcher) {
+    alert("set");
     this.dispatch = dispatcher;
   };
   

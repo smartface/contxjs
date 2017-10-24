@@ -1,4 +1,4 @@
-import StyleContext from "../styling/StyleContext";
+import * as StyleContext from "../styling/StyleContext";
 import styler from "@smartface/styler/lib/styler";
 import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
@@ -45,7 +45,7 @@ commands.addRuntimeCommandFactory(function(type) {
 	}*/
 });
 
-function createContext(component, name, classMap = null, reducers = null) {
+function createPageContext(component, name, classMap = null, reducers = null) {
 	var styleContext = StyleContext.fromSFComponent(
 		component,
 		name,
@@ -59,11 +59,11 @@ function createContext(component, name, classMap = null, reducers = null) {
 		function(hook) {
 			switch (hook) {
 				case 'beforeAssignComponentStyles':
-					return function beforeStyleAssignment(name, className) {
+					return function beforeAssignComponentStyles(name, className) {
 						return className;
 					};
 				case 'beforeStyleDiffAssign':
-					return function beforeStyleAssignment(styles) {
+					return function beforeStyleDiffAssign(styles) {
 						Object.keys(styles)
 							.forEach(function(key) {
 								styles[key] = createSFCoreProp(key, styles[key]);
@@ -93,15 +93,11 @@ function createContext(component, name, classMap = null, reducers = null) {
 						}
 
 						return function diffStylingReducer(acc, key) {
-							// console.log(key+":::"+acc[key]+":::"+JSON.stringify(newStyles[key]))
 							//align is readolnly issue
 							if (key === 'align') {
 								delete acc[key];
 								return acc;
 							} else if (key == "flexProps") {
-								//if(!oldStyles[key] === undefined){
-								// Object.assign(acc, newStyles[key]);
-								// } else {
 								Object.keys(newStyles[key])
 									.forEach(function(name) {
 										if (!oldStyles[key] || newStyles[key][name] !== oldStyles[key][name]) {
@@ -109,49 +105,49 @@ function createContext(component, name, classMap = null, reducers = null) {
 
 											if (newStyles[key][name] === null) {
 												acc[name] = NaN;
+												// fixes flexgrow NaN value bug
 												if (name === "flexGrow") {
 													acc[name] = 0;
 												}
-											}
-											else {
+											} else {
 												acc[name] = newStyles[key][name];
 											}
 										}
 									});
-								// }
-							}
-							else if (newStyles[key] !== null && typeof newStyles[key] === "object") {
+							} else if (newStyles[key] !== null && typeof newStyles[key] === "object") {
 								if (Object.keys(newStyles[key]).length > 0 && !isEqual(oldStyles[key], newStyles[key])) {
 									acc[key] = newStyles[key];
 								}
-							}
-							else if (oldStyles[key] !== newStyles[key]) {
+							} else if (oldStyles[key] !== newStyles[key]) {
 								acc[key] = newStyles[key];
 							}
 
 							if (acc[key] === null) {
 								acc[key] = NaN;
 							}
-
+							
 							return acc;
 						};
 					};
 			}
+			
+			return undefined;
 		}
 	);
 
 	const _contextReducer = reducers 
-		? function(state, actors, action, target) {
-				reducers(contextReducer(state, actors, action, target), actors, action, target);
+		? function(context, action, target) {
+				contextReducer(context, action, target);
+				reducers(context, action, target);
 			} 
 		: contextReducer;
 
 	// creates an initial styling for the context
 	// styleContext(styling, _contextReducer);
 
-	return function setStyle(newStyles) {
+	return function setStyle(styling) {
 		try {
-			const styling = styler(newStyles);
+			// const styling = styler(newStyles);
 			// injects a new styling to the context
 			styleContext(styling, _contextReducer);
 		} catch (e) {
@@ -161,7 +157,8 @@ function createContext(component, name, classMap = null, reducers = null) {
 	};
 }
 
-function contextReducer(state, actors, action, target) {
+function contextReducer(context, action, target) {
+	const state = context.getState();
 	const newState = Object.assign({}, state);
 	
 	switch (action.type) {
@@ -169,32 +166,28 @@ function contextReducer(state, actors, action, target) {
 			
 			return newState;
 		case "invalidate":
-			Object.keys(actors).forEach(function(name) {
-				var actor = actors[name];
-				actor.setUgly(true);
+			context.map(function(actor) {
+				actor.setDirty(true);
 			});
 
 			return newState;
 		case "orientationStarted":
-			Object.keys(actors).forEach(function(name) {
-				var actor = actors[name];
-				actor.setUgly(true);
+			context.map(function(actor) {
+				actor.setDirty(true);
 			});
 
 			orientationState = "started";
 			return newState;
 		case "orientationEnded":
-			Object.keys(actors).forEach(function(name) {
-				var actor = actors[name];
-				actor.setUgly(true);
+			context.map(function(actor) {
+				actor.setDirty(true);
 			});
 
 			orientationState = "ended";
-
 			return newState;
 	}
 
 	return state;
 }
 
-export default createContext;
+export default createPageContext;
