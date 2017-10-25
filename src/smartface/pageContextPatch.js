@@ -13,16 +13,17 @@ export default function pageContextPatch(page, name){
   page.onLoad = wrapMethod(page, "onLoad", onLoad);
   page.onShow = wrapMethod(page, "onShow", onShow);
   page.onHide = wrapMethod(page, "onHide", onHide);
+  page.setContextDispatcher = wrapMethod(page, "setContextDispatcher", setContextDispatcher);
   page.onOrientationChange = wrapMethod(page, "onOrientationChange", onOrientationChange);
   page.themeDispatch = Application.theme();
-  page.themeDispatch({
-    type: "addPage",
-    name: name,
-    pageContext: createPageContext(page, name, null, null)
-  });
 
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
+    page.themeDispatch({
+      type: "addPage",
+      name: name,
+      pageContext: createPageContext(page, name, null, null)
+    });
   }
   
   function onHide(superOnHide) {
@@ -32,7 +33,7 @@ export default function pageContextPatch(page, name){
   function onShow(superOnShow) {
     superOnShow && superOnShow();
     
-    this.dispatch({
+    this.dispatch && this.dispatch({
       type: "invalidate"
     });
     
@@ -56,10 +57,9 @@ export default function pageContextPatch(page, name){
     }.bind(this), 1);
   }
   
-  page.setContextDispatcher = function(dispatcher) {
-    alert("set");
+  function setContextDispatcher(dispatcher) {
     this.dispatch = dispatcher;
-  };
+  }
   
   return function pageContextPatchDispose(){
     page.dispatch(null);
@@ -68,5 +68,6 @@ export default function pageContextPatch(page, name){
     page.onShow = null;
     page.onHide = null;
     page.onOrientationChange = null;
+    page = null;
   };
 };

@@ -33,11 +33,14 @@ export function makeStylable(component, className, name, hooks) {
       super(component);
 
       this.name = name;
+      
+      if(name === "page1")
+        alert("page1 init");
+      
       var componentVars = Object.getPrototypeOf(component).constructor.$$styleContext || {};
       this.initialProps = componentVars.initialProps || {};
       this.initialClassName = componentVars.classNames || className;
       this.classNames = [className];
-      this.component = component;
       this.styles = {};
       this.setStyles(merge(componentVars.initialProps) || {});
       this.isDirty = true;
@@ -53,7 +56,12 @@ export function makeStylable(component, className, name, hooks) {
      *
      * @param {object} styles - a style object
      */
-    setStyles(style) {
+    setStyles = (style) => {
+      
+      if(this.name == "page1"){
+        console.log(JSON.stringify(style));
+      }
+      
 
       const reduceDiffStyleHook = hooks("reduceDiffStyleHook");
 
@@ -77,29 +85,22 @@ export function makeStylable(component, className, name, hooks) {
       const beforeHook = hooks("beforeStyleDiffAssign");
       beforeHook && (diff = beforeHook(diff));
 
-      this.component.subscribeContext ?
-        Object.keys(diff).length && this.component.subscribeContext({ type: "new-styles", data: diff }) :
-        Object.keys(diff).length && Object.keys(diff).forEach((key) => {
-          try {
-            if (key == "scrollEnabled") {
-              this.component.ios && (this.component.ios.scrollEnabled = diff[key]);
+      const component = this._actorInternal_.component.layout || this._actorInternal_.component;
+      const hasDiff = Object.keys(diff).length > 0;
+        
+      typeof this._actorInternal_.component.subscribeContext === "function" 
+        ? hasDiff && this._actorInternal_.component.subscribeContext({ type: "new-styles", data: diff }) 
+        : hasDiff && Object.keys(diff).forEach((key) => {
+            try {
+              if (key == "scrollEnabled") {
+                component.ios && (component.ios.scrollEnabled = diff[key]);
+              }
+              
+              component[key] = diff[key];
+              
+            } catch (e) {
+              throw new Error(key + " has invalid value " + String(style[key]) + " " + e.message);
             }
-            else if (this.component[key] !== diff[key]) {
-              if (this.component.layout) {
-                this.component.layout[key] = diff[key];
-              }
-              else {
-                this.component[key] = diff[key];
-              }
-
-              if (this.name === "page1") {
-                // console.log(this.component.constructor.toString()+" >>> "+this.component[key]+" - "+key+" - "+diff[key]+" :: "+style[key]);
-              }
-            }
-          }
-          catch (e) {
-            throw new Error(key + " has invalid value " + String(style[key]) + " " + e.message);
-          }
         });
 
       const afterHook = hooks("afterStyleDiffAssign");
@@ -165,7 +166,8 @@ export function makeStylable(component, className, name, hooks) {
     }
 
     dispose() {
-      this.component = null;
+      this._actorInternal_.component = null;
+      this._actorInternal_ = null;
       this.context = null;
       this.styles = null;
       this.component.setContextDispatcher &&

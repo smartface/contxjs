@@ -2,7 +2,7 @@ import * as StyleContext from "../styling/StyleContext";
 import styler from "@smartface/styler/lib/styler";
 import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
-import {createSFCoreProp} from "./sfCorePropFactory";
+import propsBuilder from "../core/propsBuilder";
 import Screen from 'sf-core/device/screen';
 
 // stylerBuilder = require("library/styler-builder");
@@ -65,12 +65,12 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 					};
 				case 'beforeStyleDiffAssign':
 					return function beforeStyleDiffAssign(styles) {
-						Object.keys(styles)
-							.forEach(function(key) {
-								styles[key] = createSFCoreProp(key, styles[key]);
-							});
+						// Object.keys(styles)
+						// 	.forEach(function(key) {
+						// 		styles[key] = createSFCoreProp(key, styles[key]);
+						// 	});
 
-						return styles;
+						return propsBuilder(styles);
 					};
 				case 'reduceDiffStyleHook':
 					return function reduceDiffStyleHook(oldStyles, newStyles) {
