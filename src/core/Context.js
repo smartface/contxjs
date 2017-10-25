@@ -1,12 +1,9 @@
 import {INIT_CONTEXT_ACTION_TYPE} from "./constants";
 
-function addMiddleware(mware){
-}
-
 export function createInitAction(){
   return {
     type: INIT_CONTEXT_ACTION_TYPE
-  }
+  };
 }
 
 export default function createContext(actors, reducer, initialState={}){

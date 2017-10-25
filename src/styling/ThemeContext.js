@@ -46,10 +46,6 @@ class Themeable extends Actor {
   }
 }
 
-export function fromPageContext() {}
-
-export function fromPage() {}
-
 /**
  * Style Context. Returns context composer
  * 
@@ -58,51 +54,49 @@ export function fromPage() {}
  * 
  * @returns {function} - Context dispatcher
  */
-export function createThemeContext(themes) {
+export function createThemeContextBound(themes) {
   const themesCollection = themes.map(theme => new Theme(theme));
-  const context = createContext(
-    // creates themes actors
-    {},
-    // updates context
-    function themesReducer(context, action, target) {
-      var state = context.getState(),
-        newState = state;
+  
+  function themesReducer(context, action, target) {
+    var state = context.getState(),
+      newState = state;
 
-      switch (action.type) {
-        case 'addPage':
-          context.setActors({[action.name]: new Themeable(action.pageContext) });
-          context.map((actor) => {
-            state.theme instanceof Theme && actor.changeTheme(state.theme);
-          });
+    switch (action.type) {
+      case 'addPage':
+        // make declarative
 
-          break;
-        case 'changeTheme':
-          return {
-            ...state,
-            theme: themesCollection.find(theme => theme.name === action.name)
-          };
-        default:
-          return newState;
-      }
+        context.setActors({[action.name]: new Themeable(action.pageContext) });
+        context.map((actor) => {
 
-      // if (target || action.type == INIT_CONTEXT_ACTION_TYPE) {
-      // newState = reducer(state, context.actors, action, target);
-      // state is not changed
-      /*  if (newState === state) {
-          // return current state instance
-          return state;
-        }*/
-      // }
-    },
-    // initial state
-    { theme: themesCollection.find(theme => theme.isDefault === true) }
-  )
+          state.theme instanceof Theme && actor.changeTheme(state.theme);
+        });
 
-  return function dispatcher(action) {
-    if (action === null) {
-      context.dispose();
-    } else if (context) {
-      context.dispatch(action);
+        break;
+      case 'changeTheme':
+        return {
+          ...state,
+          theme: themesCollection.find(theme => theme.name === action.name)
+        };
+      default:
+        return newState;
     }
   }
+  
+  return function(){
+    const context = createContext(
+      // creates themes actors
+      {},
+      themesReducer,
+      // initial state
+      { theme: themesCollection.find(theme => theme.isDefault === true) }
+    );
+    
+    return function themeContextDispatch(action) {
+      if (action === null) {
+        context.dispose();
+      } else if (context) {
+        context.dispatch(action);
+      }
+    };
+  };
 }

@@ -95,18 +95,13 @@ export function createSFCoreProp(key, value) {
   var res;
   if (ENUMS[key]) {
     res = ENUMS[key][value];
-  }
-  else if (COLOR_PROPS.indexOf(key) !== -1) {
+  } else if (COLOR_PROPS.indexOf(key) !== -1) {
     res = createColorForDevice(value);
-  }
-  else if (IMAGE_PROPS.indexOf(key) !== -1) {
+  } else if (IMAGE_PROPS.indexOf(key) !== -1) {
     res = Image.createFromFile("images://" + value);
-  }
-  else if (key === "font") {
+  } else if (key === "font") {
     res = Font.create(value && value.family || "Font.DEFAULT", value && value.size || 16, getFontStyle(value));
-    
-  }
-  else {
+  } else {
     res = value;
   }
 
@@ -124,10 +119,10 @@ function createColorForDevice(color) {
   } else if (color && /rgb/i.test(color)) {
     var rgba = color.match(/\d\.\d+|\d+/ig);
     res = Color.create((Number(rgba[3]) * 255), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
-  }
-  else if(color) {
+  } else if(color) {
     res = Color.create(color);
   }
+  
   return res || color;
 }
 

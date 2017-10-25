@@ -3,6 +3,8 @@ import styler from "@smartface/styler/lib/styler";
 import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
 import {createSFCoreProp} from "./sfCorePropFactory";
+import Screen from 'sf-core/device/screen';
+
 // stylerBuilder = require("library/styler-builder");
 
 import Contants from "../core/constants";
@@ -10,7 +12,7 @@ import Contants from "../core/constants";
 var orientationState = "ended";
 
 commands.addRuntimeCommandFactory(function(type) {
-	/*switch (type) {
+	switch (type) {
 		case '+page':
 			return function pageCommand(opts) {
 				opts = merge(opts);
@@ -25,7 +27,7 @@ commands.addRuntimeCommandFactory(function(type) {
 				}({ width: Screen.width, height: Screen.height }, orientationState));
 				return isOK ? opts.value : {};
 			};
-		case "+isTablet_landscape":
+		/*case "+isTablet_landscape":
 			return function pageCommand(opts) {
 				opts = merge(opts);
 				var isOK = isTablet && Screen.width > Screen.height;
@@ -41,8 +43,8 @@ commands.addRuntimeCommandFactory(function(type) {
 			return function pageCommand(opts) {
 				opts = merge(opts);
 				return isTablet ? opts.value : {};
-			};
-	}*/
+			};*/
+	}
 });
 
 function createPageContext(component, name, classMap = null, reducers = null) {
@@ -52,7 +54,6 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 		//initial classNames
 		function(name) {
 			const id = "#" + name;
-
 			return classMap ? id + " " + classMap(name) : id;
 		},
 		//context hooks
@@ -139,7 +140,7 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 		? function(context, action, target) {
 				contextReducer(context, action, target);
 				reducers(context, action, target);
-			} 
+			}
 		: contextReducer;
 
 	// creates an initial styling for the context
@@ -151,7 +152,6 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 			// injects a new styling to the context
 			styleContext(styling, _contextReducer);
 		} catch (e) {
-			
 			throw e;
 		}
 	};

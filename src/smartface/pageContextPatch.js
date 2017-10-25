@@ -14,17 +14,11 @@ export default function pageContextPatch(page, name){
   page.onShow = wrapMethod(page, "onShow", onShow);
   page.onHide = wrapMethod(page, "onHide", onHide);
   page.onOrientationChange = wrapMethod(page, "onOrientationChange", onOrientationChange);
-
-  Application.theme({
+  page.themeDispatch = Application.theme();
+  page.themeDispatch({
     type: "addPage",
     name: name,
-    pageContext: createPageContext(
-        page,
-        name,
-        null,
-        function reducers(state, actors, action, target) {
-          return state;
-        })
+    pageContext: createPageContext(page, name, null, null)
   });
 
   function onLoad(superOnLoad) {

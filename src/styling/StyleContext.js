@@ -72,7 +72,6 @@ export function fromSFComponent(component, name, initialClassNameMap, hooksList 
 export function createStyleContext(actors, hookMaybe, updateContextTree) {
   var context;
   
-  // console.log("style context "+JSON.stringify(Object.keys(actors)));
   /**
    * Context builder.
    * 
