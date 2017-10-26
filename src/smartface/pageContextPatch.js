@@ -4,8 +4,8 @@ import createPageContext from "./pageContext";
 const buildStyles = require("@smartface/styler/lib/buildStyles");
 const Application = require("sf-core/application");
 
-function wrapMethod(instance, method, bindingfFunc){
-  return bindingfFunc.bind(instance, typeof instance[method] === "function" ? instance[method].bind(instance) : null) 
+function wrapMethod(scope, method, bindingfFunc){
+  return bindingfFunc.bind(scope, typeof scope[method] === "function" ? scope[method].bind(scope) : null) 
 }
 
 // monkey patching wrapper for any page.
@@ -30,8 +30,8 @@ export default function pageContextPatch(page, name){
     superOnHide && superOnHide();
   }
   
-  function onShow(superOnShow) {
-    superOnShow && superOnShow();
+  function onShow(superOnShow, data) {
+    superOnShow && superOnShow(data);
     
     this.dispatch && this.dispatch({
       type: "invalidate"
@@ -41,23 +41,25 @@ export default function pageContextPatch(page, name){
   }
   
   function onOrientationChange(superOnOrientationChange) {
+    superOnOrientationChange && superOnOrientationChange()
     this.dispatch({
       type: "orientationStarted"
     });
     
     this.layout.applyLayout();
 
-    superOnOrientationChange && setTimeout(superOnOrientationChange.bind(this),1);
-    setTimeout(function() {
+    // superOnOrientationChange && setTimeout(superOnOrientationChange.bind(this),1);
+    setTimeout(() => {
       this.dispatch({
         type: "orientationEnded"
       });
 
       this.layout.applyLayout();
-    }.bind(this), 1);
+    }, 1);
   }
   
-  function setContextDispatcher(dispatcher) {
+  function setContextDispatcher(setContextDispatcher, dispatcher) {
+    setContextDispatcher && setContextDispatcher(dispatcher);
     this.dispatch = dispatcher;
   }
   

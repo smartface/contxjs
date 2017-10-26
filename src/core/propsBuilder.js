@@ -87,7 +87,6 @@ const LAYOUT_PROPS_MAP = {
 var _styling = {};
 var currentTheme = "Defaults";
 
-
 /*
  * get properties of component
  * @param styling 
@@ -108,7 +107,6 @@ function getPropsFromStyle(styling, className) {
   });
 
   return resultProps;
-
 }
 
 /**

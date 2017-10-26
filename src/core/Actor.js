@@ -14,6 +14,8 @@ export default class Actor {
   }
   
   setContextDispatcher = (dispatcher) => {
+    console.log("dispatcher : "+this.name+" : "+this._actorInternal_.component.setContextDispatcher+": "+dispatcher);
+    
     this._dispatcher = dispatcher;
     this._actorInternal_.component.setContextDispatcher
     ? this._actorInternal_.component.setContextDispatcher((action) => {

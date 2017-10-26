@@ -111,8 +111,10 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
               beforeHook && (className = beforeHook(name, className));
 
               try {
-                const styles = styling(className)();
-                actor.setStyles(styles);
+                if(className){
+                  const styles = styling(className)();
+                  actor.setStyles(styles);
+                }
               } catch (e) {
                 e.message = `While actor's style [${name}] is set. ${e.message}`;
                 throw e;

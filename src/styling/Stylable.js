@@ -24,8 +24,6 @@ export function makeStylable(component, className, name, hooks) {
    */
   function addChild(componentAddChild, child, actor) {
     componentAddChild(child);
-
-    actor.dispatch({ type: "invalidateContext" });
   }
 
   return new class Stylable extends Actor {
@@ -43,8 +41,8 @@ export function makeStylable(component, className, name, hooks) {
       this.styles = {};
       this.isDirty = true;
 
-      if (typeof component.addChild === "function")
-        component.addChild = addChild.bind(component, component.addChild.bind(component), this);
+      // if (typeof component.addChild === "function")
+      //   component.addChild = addChild.bind(component, component.addChild.bind(component), this);
       // else if(name.indexOf("statusBar") == -1 && typeof component.layout.addChild === "function")
       //   component.layout.addChild = addChild.bind(component, component.layout.addChild.bind(component.layout), this);
     }
@@ -59,7 +57,6 @@ export function makeStylable(component, className, name, hooks) {
       if(this.name == "page1"){
         console.log(JSON.stringify(style));
       }
-      
 
       const reduceDiffStyleHook = hooks("reduceDiffStyleHook");
 
