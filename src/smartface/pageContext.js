@@ -4,7 +4,7 @@ import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
 import propsBuilder from "../core/propsBuilder";
 import Screen from 'sf-core/device/screen';
-
+import isTablet from '../core/isTablet';
 // stylerBuilder = require("library/styler-builder");
 
 import Contants from "../core/constants";
@@ -27,7 +27,7 @@ commands.addRuntimeCommandFactory(function(type) {
 				}({ width: Screen.width, height: Screen.height }, orientationState));
 				return isOK ? opts.value : {};
 			};
-		/*case "+isTablet_landscape":
+		case "+isTablet_landscape":
 			return function pageCommand(opts) {
 				opts = merge(opts);
 				var isOK = isTablet && Screen.width > Screen.height;
@@ -43,7 +43,7 @@ commands.addRuntimeCommandFactory(function(type) {
 			return function pageCommand(opts) {
 				opts = merge(opts);
 				return isTablet ? opts.value : {};
-			};*/
+			};
 	}
 });
 
