@@ -34,15 +34,17 @@ export function makeStylable(component, className, name, hooks) {
 
       this.name = name;
       
-      if(name === "page1")
-        alert("page1 init");
-      
       var componentVars = Object.getPrototypeOf(component).constructor.$$styleContext || {};
-      this.initialProps = componentVars.initialProps || {};
-      this.initialClassName = componentVars.classNames || className;
-      this.classNames = [className];
-      this.styles = {};
-      this.setStyles(merge(componentVars.initialProps) || {});
+      
+      this.initialClassName = componentVars.classNames ? componentVars.classNames.split(" ") : [];
+      className && this.initialClassName.push(className);
+      
+      this.classNames = [...this.initialClassName];
+      this.style = {};
+      
+      componentVars.initialProps && this.setStyles(merge(componentVars.initialProps));
+      
+      this.initialProps = componentVars.initialProps;
       this.isDirty = true;
 
       if (typeof component.addChild === "function")
@@ -57,22 +59,16 @@ export function makeStylable(component, className, name, hooks) {
      * @param {object} styles - a style object
      */
     setStyles = (style) => {
-      
-      if(this.name == "page1"){
-        console.log(JSON.stringify(style));
-      }
-      
-
       const reduceDiffStyleHook = hooks("reduceDiffStyleHook");
-
+      style = style || {};
+      
       let diffReducer = reduceDiffStyleHook ?
-        reduceDiffStyleHook(this.styles, style) :
+        reduceDiffStyleHook(this.style, style) :
         (acc, key) => {
-          if (this.styles[key] !== undefined) {
-            if (this.styles[key] !== style[key]) {
+          if (this.style[key] !== undefined) {
+            if (this.style[key] !== style[key]) {
               acc[key] = style[key];
-            }
-            else {
+            } else {
               acc[key] = style[key];
             }
           }
@@ -106,11 +102,11 @@ export function makeStylable(component, className, name, hooks) {
       const afterHook = hooks("afterStyleDiffAssign");
       afterHook && (style = afterHook(style));
 
-      this.styles = style;
+      this.style = style;
     }
 
     getStyles() {
-      return Object.assign({}, this.styles);
+      return Object.assign({}, this.style);
     }
 
     getInitialClassName() {
@@ -169,7 +165,7 @@ export function makeStylable(component, className, name, hooks) {
       this._actorInternal_.component = null;
       this._actorInternal_ = null;
       this.context = null;
-      this.styles = null;
+      this.style = null;
       this.component.setContextDispatcher &&
         this.component.setContextDispatcher(null);
     }

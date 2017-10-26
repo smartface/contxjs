@@ -116,7 +116,7 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 										}
 									});
 							} else if (newStyles[key] !== null && typeof newStyles[key] === "object") {
-								if (Object.keys(newStyles[key]).length > 0 && !isEqual(oldStyles[key], newStyles[key])) {
+								if (Object.keys(newStyles[key]).length > 0 && !isEqual(oldStyles[key] || {}, newStyles[key])) {
 									acc[key] = newStyles[key];
 								}
 							} else if (oldStyles[key] !== newStyles[key]) {
