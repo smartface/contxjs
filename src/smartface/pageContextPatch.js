@@ -41,7 +41,8 @@ export default function pageContextPatch(page, name){
   }
   
   function onOrientationChange(superOnOrientationChange) {
-    superOnOrientationChange && superOnOrientationChange()
+    superOnOrientationChange && superOnOrientationChange();
+    console.log("onOrientationChange"+this.dispatch);
     this.dispatch({
       type: "orientationStarted"
     });

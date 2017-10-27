@@ -25,7 +25,7 @@ function flush(str = "", obj) {
 
 
 /**
- * Create styleContext tree from a SF Component and flat component tree to create actors
+ * Create styleContext tree from a SF Component and flat view tree to create actors
  * 
  * @param {Object} component - A sf-core component
  * @param {string} name - component name
@@ -34,16 +34,35 @@ function flush(str = "", obj) {
  * 
  * @return {function} - context helper
  */
-export function fromSFComponent(component, name, initialClassNameMap, hooksList = null, acc = {}) {
-
-  function buildContextTree(component, name, initialClassNameMap) {
-    if (acc[name] === undefined)
-      acc[name] = makeStylable(component, initialClassNameMap(name), name, hooks(hooksList));
+export function fromSFComponent(root, rootName, initialClassNameMap, hooksList = null, acc = {}) {
+  function buildContextTree(component, name) {
+    let componentVars;
+    
+    if(name == rootName+"_statusBar"){
+      componentVars = root.constructor.$$styleContext.statusBar || {};
+    } else if(name == rootName+"_headerBar"){
+      componentVars = root.constructor.$$styleContext.headerBar || {};
+    } else {
+      componentVars = component.constructor.$$styleContext || {};
+    }
+    const classNames = componentVars.classNames ? componentVars.classNames.trim()+" #"+name : "#"+name;
+    
+    if (acc[name] === undefined){
+      acc[name] = makeStylable(
+        component,
+        {
+          classNames,
+          initialProps: componentVars.initialProps
+        },
+        name, 
+        hooks(hooksList)
+      );
+    }
 
     component.children &&
       Object.keys(component.children).forEach((child) => {
         try {
-          buildContextTree(component.children[child], name + "_" + child, initialClassNameMap);
+          buildContextTree(component.children[child], name + "_" + child);
         } catch (e) {
           e.message = "Error when component would be collected: " + child + ". " + e.message;
           throw e;
@@ -51,13 +70,13 @@ export function fromSFComponent(component, name, initialClassNameMap, hooksList 
       });
   }
 
-  buildContextTree(component, name, initialClassNameMap);
+  buildContextTree(root, rootName);
 
   return createStyleContext(
     acc, 
     hooks(hooksList),
     function updateContextTree(contextElements) {
-      fromSFComponent(component, name, initialClassNameMap, hooksList, contextElements);
+      fromSFComponent(root, rootName, initialClassNameMap, hooksList, contextElements);
    }
  );
 }
@@ -88,6 +107,9 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
       function contextUpdater(context, action, target) {
         var state = context.getState(),
           newState = state;
+        
+        console.log(JSON.stringify(action)+" : "+target);
+        
         if (action.type === "invalidateContext") {
           // forces to re-build page's viewtree
           updateContextTree(context.actors);

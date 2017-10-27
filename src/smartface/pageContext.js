@@ -20,7 +20,7 @@ commands.addRuntimeCommandFactory(function(type) {
 				return isOK ? opts.value : {};
 			};
 		case '+orientationChange':
-			return function pageCommand(opts) {
+			return function orientationChangeCommand(opts) {
 				opts = merge(opts);
 				var isOK = (function(Screen, orientation) {
 					return eval(opts.args);
@@ -160,6 +160,7 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 function contextReducer(context, action, target) {
 	const state = context.getState();
 	const newState = Object.assign({}, state);
+	console.log("page context : "+JSON.stringify(action));
 	
 	switch (action.type) {
 		case "addChild": 

@@ -3,10 +3,17 @@ import merge from "@smartface/styler/lib/utils/merge";
 
 // {"backgroundColor":{"nativeObject":{}},"paddingLeft":10,"paddingRight":10,"paddingTop":null,"paddingBottom":10,"flexDirection":0,"alignItems":2,"direction":0,"flexWrap":0,"justifyContent":4}
 
-function addChild(componentAddChild, child, actor) {
-  componentAddChild(child);
-  actor.dispatch({ type: "invalidateContext" });
-}
+// function addChild(componentAddChild, child, actor) {
+//   componentAddChild(child);
+//   actor.dispatch({ type: "invalidateContext" });
+// }
+
+// function addChild(componentAddChild, child, actor) {
+//   componentAddChild(child);
+// }
+
+
+
 
 /**
  * Styleable Actor HOC. Decorates specifeid component and return an actor component
@@ -17,34 +24,36 @@ function addChild(componentAddChild, child, actor) {
  * 
  * @returns {Object} - A Stylable Actor
  */
-export function makeStylable(component, className, name, hooks) {
+export function makeStylable(component, componentVars, name, hooks) {
+  const initialClassNames = componentVars.classNames && componentVars.classNames.split(" ") || [];
+  const initialProps = merge(componentVars.initialProps);
+  
   /**
    * Styable actor
    * @class
    */
-  function addChild(componentAddChild, child, actor) {
-    componentAddChild(child);
-  }
-
   return new class Stylable extends Actor {
     constructor() {
       super(component);
 
-      this.name = name;
+      // this.name = name;
+      this.classNames = [...initialClassNames];
       
-      var componentVars = Object.getPrototypeOf(component).constructor.$$styleContext || {};
-      this.initialProps = componentVars.initialProps || {};
-      this.classNames = [];
-      componentVars.classNames ? this.classNames = this.classNames.concat(componentVars.classNames.split(" ")) : null;
-      className && this.classNames.push(className);
-      this.initialClassName = [...this.classNames];
-      this.styles = {};
+      // componentVars.classNames && 
+      //   (this.classNames = this.classNames.concat(componentVars.classNames.split(" ")));
+      // className && this.classNames.push(className);
+      // initialClassNames = [...this.classNames];
+      this.styles = initialProps;
       this.isDirty = true;
 
       // if (typeof component.addChild === "function")
       //   component.addChild = addChild.bind(component, component.addChild.bind(component), this);
       // else if(name.indexOf("statusBar") == -1 && typeof component.layout.addChild === "function")
       //   component.layout.addChild = addChild.bind(component, component.layout.addChild.bind(component.layout), this);
+    }
+    
+    getName = () => {
+      return name;
     }
 
     /**
@@ -53,15 +62,10 @@ export function makeStylable(component, className, name, hooks) {
      * @param {object} styles - a style object
      */
     setStyles = (style) => {
-      
-      if(this.name == "page1"){
-        console.log(JSON.stringify(style));
-      }
-
       const reduceDiffStyleHook = hooks("reduceDiffStyleHook");
 
       let diffReducer = reduceDiffStyleHook ?
-        reduceDiffStyleHook(this.styles, style) :
+        reduceDiffStyleHook(this.styles || {}, style) :
         (acc, key) => {
           if (this.styles[key] !== undefined) {
             if (this.styles[key] !== style[key]) {
@@ -76,25 +80,25 @@ export function makeStylable(component, className, name, hooks) {
 
       let diff = Object.keys(style).reduce(diffReducer, {});
       
-      this.initialProps && (diff = merge(diff, this.initialProps));
+      this.styles === initialProps && (diff = merge(diff, initialProps));
       
-      this.initialProps = null;
-
+      console.log(name +" : "+ JSON.stringify(diff));
+      
       const beforeHook = hooks("beforeStyleDiffAssign");
       beforeHook && (diff = beforeHook(diff));
 
-      const component = this._actorInternal_.component.layout || this._actorInternal_.component;
+      const comp = component.layout || this._actorInternal_.component;
       const hasDiff = Object.keys(diff).length > 0;
         
-      typeof this._actorInternal_.component.subscribeContext === "function" 
-        ? hasDiff && this._actorInternal_.component.subscribeContext({ type: "new-styles", data: diff }) 
+      typeof component.subscribeContext === "function" 
+        ? hasDiff && component.subscribeContext({ type: "new-styles", data: Object.assign({}, diff) })
         : hasDiff && Object.keys(diff).forEach((key) => {
             try {
               if (key == "scrollEnabled") {
-                component.ios && (component.ios.scrollEnabled = diff[key]);
+                comp.ios && (comp.ios.scrollEnabled = diff[key]);
               }
               
-              component[key] = diff[key];
+              comp[key] = diff[key];
               
             } catch (e) {
               throw new Error(key + " has invalid value " + String(style[key]) + " " + e.message);
@@ -108,11 +112,11 @@ export function makeStylable(component, className, name, hooks) {
     }
 
     getStyles() {
-      return Object.assign({}, this.styles);
+      return this.styles ? Object.assign({}, this.styles) : {};
     }
 
     getInitialClassName() {
-      return this.initialClassName;
+      return initialClassNames;
     }
 
     getClassName() {
@@ -135,7 +139,7 @@ export function makeStylable(component, className, name, hooks) {
     }
 
     resetClassNames(classNames = []) {
-      this.classNames = classNames.slice() || [this.getInitialClassName()];
+      this.classNames = [...initialClassNames, ...classNames];
       this.isDirty = true;
     }
 
@@ -164,7 +168,7 @@ export function makeStylable(component, className, name, hooks) {
     }
 
     dispose() {
-      this._actorInternal_.component = null;
+      component = null;
       this._actorInternal_ = null;
       this.context = null;
       this.styles = null;
