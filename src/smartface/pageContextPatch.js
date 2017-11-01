@@ -1,26 +1,23 @@
 import extend from 'js-base/core/extend';
 import createPageContext from "./pageContext";
+import patchMethod from '../util/patchMethod';
 
 const buildStyles = require("@smartface/styler/lib/buildStyles");
 const Application = require("sf-core/application");
 
-function wrapMethod(scope, method, bindingfFunc){
-  return bindingfFunc.bind(scope, typeof scope[method] === "function" ? scope[method].bind(scope) : null) 
-}
-
 // monkey patching wrapper for any page.
 export default function pageContextPatch(page, name){
-  page.onLoad = wrapMethod(page, "onLoad", onLoad);
-  page.onShow = wrapMethod(page, "onShow", onShow);
-  page.onHide = wrapMethod(page, "onHide", onHide);
-  page.setContextDispatcher = wrapMethod(page, "setContextDispatcher", setContextDispatcher);
-  page.onOrientationChange = wrapMethod(page, "onOrientationChange", onOrientationChange);
-  page.themeDispatch = Application.theme();
+  page.onLoad = patchMethod(page, "onLoad", onLoad);
+  page.onShow = patchMethod(page, "onShow", onShow);
+  page.onHide = patchMethod(page, "onHide", onHide);
+  page.setContextDispatcher = patchMethod(page, "setContextDispatcher", setContextDispatcher);
+  page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
+  page.themeContext = Application.theme();
 
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
-    page.themeDispatch({
-      type: "addPage",
+    page.themeContext({
+      type: "addThemeableContext",
       name: name,
       pageContext: createPageContext(page, name, null, null)
     });
@@ -42,7 +39,7 @@ export default function pageContextPatch(page, name){
   
   function onOrientationChange(superOnOrientationChange) {
     superOnOrientationChange && superOnOrientationChange();
-    console.log("onOrientationChange"+this.dispatch);
+
     this.dispatch({
       type: "orientationStarted"
     });

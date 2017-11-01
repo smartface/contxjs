@@ -5,13 +5,15 @@ import merge from "@smartface/styler/lib/utils/merge";
 import propsBuilder from "../core/propsBuilder";
 import Screen from 'sf-core/device/screen';
 import isTablet from '../core/isTablet';
-// stylerBuilder = require("library/styler-builder");
-
+import makeStylable from '../styling/Stylable';
+import hooks from '../core/hooks';
 import Contants from "../core/constants";
+import fromSFComponent, {createActorTreeFromSFComponent} from "./fromSFComponent";
 
 var orientationState = "ended";
 
-commands.addRuntimeCommandFactory(function(type) {
+
+commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type) {
 	switch (type) {
 		case '+page':
 			return function pageCommand(opts) {
@@ -48,14 +50,9 @@ commands.addRuntimeCommandFactory(function(type) {
 });
 
 function createPageContext(component, name, classMap = null, reducers = null) {
-	var styleContext = StyleContext.fromSFComponent(
+	var styleContext = fromSFComponent(
 		component,
 		name,
-		//initial classNames
-		function(name) {
-			const id = "#" + name;
-			return classMap ? id + " " + classMap(name) : id;
-		},
 		//context hooks
 		function(hook) {
 			switch (hook) {
@@ -65,11 +62,6 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 					};
 				case 'beforeStyleDiffAssign':
 					return function beforeStyleDiffAssign(styles) {
-						// Object.keys(styles)
-						// 	.forEach(function(key) {
-						// 		styles[key] = createSFCoreProp(key, styles[key]);
-						// 	});
-
 						return propsBuilder(styles);
 					};
 				case 'reduceDiffStyleHook':
@@ -160,7 +152,7 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 function contextReducer(context, action, target) {
 	const state = context.getState();
 	const newState = Object.assign({}, state);
-	console.log("page context : "+JSON.stringify(action));
+	// console.log("page context : "+JSON.stringify(action));
 	
 	switch (action.type) {
 		case "addChild": 
@@ -172,6 +164,26 @@ function contextReducer(context, action, target) {
 			});
 
 			return newState;
+    case 'addContextChild':
+    	const ctree = createActorTreeFromSFComponent(action.component, target+"_"+action.name);
+    	context.addTree(ctree);
+
+      return newState;
+      break;
+    case 'pushClassNames':
+    	context.map((actor, name) => {
+    		if(name === target){
+    			actor.pushClassNames(action.classNames);
+    		}
+    	});
+
+      return newState;
+      break;
+    case 'removeClassName':
+    	context.addTree(ctree);
+
+      return newState;
+      break;
 		case "orientationStarted":
 			context.map(function(actor) {
 				actor.setDirty(true);

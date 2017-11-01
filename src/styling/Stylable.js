@@ -14,7 +14,7 @@ import merge from "@smartface/styler/lib/utils/merge";
 
 
 
-
+// TODO create new jsdoc type for the parameter
 /**
  * Styleable Actor HOC. Decorates specifeid component and return an actor component
  * 
@@ -24,9 +24,11 @@ import merge from "@smartface/styler/lib/utils/merge";
  * 
  * @returns {Object} - A Stylable Actor
  */
-export function makeStylable(component, componentVars, name, hooks) {
-  const initialClassNames = componentVars.classNames && componentVars.classNames.split(" ") || [];
-  const initialProps = merge(componentVars.initialProps);
+export default function makeStylable({component, classNames="", initialProps={}, name}) {
+  const initialClassNames = classNames && classNames.split(" ") || [];
+  initialProps = merge(initialProps);
+  
+  // console.log(name+" : "+JSON.stringify(initialClassNames));
   
   /**
    * Styable actor
@@ -38,7 +40,6 @@ export function makeStylable(component, componentVars, name, hooks) {
 
       // this.name = name;
       this.classNames = [...initialClassNames];
-      
       // componentVars.classNames && 
       //   (this.classNames = this.classNames.concat(componentVars.classNames.split(" ")));
       // className && this.classNames.push(className);
@@ -47,9 +48,9 @@ export function makeStylable(component, componentVars, name, hooks) {
       this.isDirty = true;
 
       // if (typeof component.addChild === "function")
-      //   component.addChild = addChild.bind(component, component.addChild.bind(component), this);
+        // component.addContextChild = addChild.bind(component, this);
       // else if(name.indexOf("statusBar") == -1 && typeof component.layout.addChild === "function")
-      //   component.layout.addChild = addChild.bind(component, component.layout.addChild.bind(component.layout), this);
+      //   component.layout.addContextChild = addChild.bind(component, component.layout.addChild.bind(component.layout), this);
     }
     
     getName = () => {
@@ -62,29 +63,27 @@ export function makeStylable(component, componentVars, name, hooks) {
      * @param {object} styles - a style object
      */
     setStyles = (style) => {
-      const reduceDiffStyleHook = hooks("reduceDiffStyleHook");
+      const reduceDiffStyleHook = this.hook("reduceDiffStyleHook");
 
-      let diffReducer = reduceDiffStyleHook ?
-        reduceDiffStyleHook(this.styles || {}, style) :
-        (acc, key) => {
-          if (this.styles[key] !== undefined) {
-            if (this.styles[key] !== style[key]) {
-              acc[key] = style[key];
-            } else {
-              acc[key] = style[key];
+      let diffReducer = reduceDiffStyleHook 
+        ? reduceDiffStyleHook(this.styles || {}, style) 
+        : (acc, key) => {
+            if (this.styles[key] !== undefined) {
+              if (this.styles[key] !== style[key]) {
+                acc[key] = style[key];
+              } else {
+                acc[key] = style[key];
+              }
             }
-          }
-
-          return acc;
-        };
+  
+            return acc;
+          };
 
       let diff = Object.keys(style).reduce(diffReducer, {});
       
       this.styles === initialProps && (diff = merge(diff, initialProps));
       
-      console.log(name +" : "+ JSON.stringify(diff));
-      
-      const beforeHook = hooks("beforeStyleDiffAssign");
+      const beforeHook = this.hook("beforeStyleDiffAssign");
       beforeHook && (diff = beforeHook(diff));
 
       const comp = component.layout || this._actorInternal_.component;
@@ -105,7 +104,7 @@ export function makeStylable(component, componentVars, name, hooks) {
             }
         });
 
-      const afterHook = hooks("afterStyleDiffAssign");
+      const afterHook = this.hook("afterStyleDiffAssign");
       afterHook && (style = afterHook(style));
 
       this.styles = style;
@@ -122,7 +121,20 @@ export function makeStylable(component, componentVars, name, hooks) {
     getClassName() {
       return this.classNames.join(" ");
     }
+    
+/*    addChild = (child) => {
+      this.component.layout
+      ? this.component.layout.addChild(child)
+      : this.component.addChild(child);
+    }
 
+    removeChild = (child) => {
+      this.component.layout
+      ? this.component.layout.removeChild(child)
+      : this.component.removeChild(child);
+    }
+
+*/
     classNamesCount() {
       return this.classNames.length;
     }
@@ -149,9 +161,12 @@ export function makeStylable(component, componentVars, name, hooks) {
       });
     }
 
-    pushClassName(className) {
+    pushClassNames(className) {
       if (!this.hasClassName(className)) {
-        this.classNames.push(className);
+        Array.isArray(className) 
+          ? this.classNames = [...this.className, ...className]
+          : this.classNames.push(className);
+          
         this.isDirty = true;
       }
 

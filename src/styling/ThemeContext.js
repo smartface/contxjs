@@ -62,12 +62,10 @@ export function createThemeContextBound(themes) {
       newState = state;
 
     switch (action.type) {
-      case 'addPage':
+      case 'addThemeableContext':
         // make declarative
-
         context.setActors({[action.name]: new Themeable(action.pageContext) });
         context.map((actor) => {
-
           state.theme instanceof Theme && actor.changeTheme(state.theme);
         });
 

@@ -3,6 +3,7 @@ export default class Actor {
     this._actorInternal_ = {};
     this._actorInternal_.component = component;
     this.isDirty = true;
+    this.hooks = null;
   }
   
   setDirty = (value) => {
