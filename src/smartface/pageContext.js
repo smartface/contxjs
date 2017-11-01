@@ -2,7 +2,7 @@ import * as StyleContext from "../styling/StyleContext";
 import styler from "@smartface/styler/lib/styler";
 import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
-import propsBuilder from "../core/propsBuilder";
+import buildProps from "./sfCorePropFactory";
 import Screen from 'sf-core/device/screen';
 import isTablet from '../core/isTablet';
 import makeStylable from '../styling/Stylable';
@@ -11,7 +11,6 @@ import Contants from "../core/constants";
 import fromSFComponent, {createActorTreeFromSFComponent} from "./fromSFComponent";
 
 var orientationState = "ended";
-
 
 commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type) {
 	switch (type) {
@@ -62,7 +61,7 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 					};
 				case 'beforeStyleDiffAssign':
 					return function beforeStyleDiffAssign(styles) {
-						return propsBuilder(styles);
+						return buildProps(styles);
 					};
 				case 'reduceDiffStyleHook':
 					return function reduceDiffStyleHook(oldStyles, newStyles) {

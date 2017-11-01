@@ -63,6 +63,7 @@ export default function makeStylable({component, classNames="", initialProps={},
      * @param {object} styles - a style object
      */
     setStyles = (style) => {
+      
       const reduceDiffStyleHook = this.hook("reduceDiffStyleHook");
 
       let diffReducer = reduceDiffStyleHook 
@@ -86,18 +87,29 @@ export default function makeStylable({component, classNames="", initialProps={},
       const beforeHook = this.hook("beforeStyleDiffAssign");
       beforeHook && (diff = beforeHook(diff));
 
-      const comp = component.layout || this._actorInternal_.component;
+      const comp = name.indexOf("_") === -1 && this._actorInternal_.component.layout
+        ? this._actorInternal_.component.layout
+        : this._actorInternal_.component;
       const hasDiff = Object.keys(diff).length > 0;
         
       typeof component.subscribeContext === "function" 
         ? hasDiff && component.subscribeContext({ type: "new-styles", data: Object.assign({}, diff) })
         : hasDiff && Object.keys(diff).forEach((key) => {
             try {
+              // TODO: move this logic to pageContext's actor
               if (key == "scrollEnabled") {
                 comp.ios && (comp.ios.scrollEnabled = diff[key]);
+              } else if(key === "layoutHeight") {
+                comp.layout['height'] = diff[key];
+              } else if(key === "layoutWidth") {
+                comp.layout['width'] = diff[key];
+              } else if(key !== "font" && style[key] instanceof Object) {
+                Object.keys(diff[key]).forEach((k) => {
+                  comp[key][k] = diff[key][k];
+                });
+              } else {
+                comp[key] = diff[key];
               }
-              
-              comp[key] = diff[key];
               
             } catch (e) {
               throw new Error(key + " has invalid value " + String(style[key]) + " " + e.message);
@@ -163,7 +175,7 @@ export default function makeStylable({component, classNames="", initialProps={},
 
     pushClassNames(className) {
       if (!this.hasClassName(className)) {
-        Array.isArray(className) 
+        Array.isArray(className)
           ? this.classNames = [...this.className, ...className]
           : this.classNames.push(className);
           

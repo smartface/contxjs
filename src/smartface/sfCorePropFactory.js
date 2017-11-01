@@ -27,8 +27,13 @@ const ENUMS = {
   "justifyContent": FlexLayout.JustifyContent,
   "positionType": FlexLayout.PositionType,
   "overflow": FlexLayout.OverFlow,
-  "style": style,
-  "align": ScrollViewAlign
+  "ios": {
+    "style": style
+  },
+  "align": ScrollViewAlign,
+  "layout": {
+    "align": ScrollViewAlign
+  }
 };
 
 const COLOR_PROPS = [
@@ -94,7 +99,12 @@ const LAYOUT_PROPS_MAP = {
 export function createSFCoreProp(key, value) {
   var res;
   if (ENUMS[key]) {
-    res = ENUMS[key][value];
+    if(value instanceof Object){
+      res = {};
+      Object.keys(value).forEach(name => res[name] = ENUMS[key][name][value[name]])
+    } else {
+      res = ENUMS[key][value];
+    }
   } else if (COLOR_PROPS.indexOf(key) !== -1) {
     res = createColorForDevice(value);
   } else if (IMAGE_PROPS.indexOf(key) !== -1) {
@@ -107,6 +117,19 @@ export function createSFCoreProp(key, value) {
 
   return res;
 }
+
+export default function buildProps(objectVal) {
+  var props = {};
+  Object
+    .keys(objectVal)
+    .forEach(function(key) {
+      if (objectVal[key] !== null)
+        props[key] = createSFCoreProp(key, objectVal[key]);
+    });
+  return props;
+}
+
+
 
 function createColorForDevice(color) {
   var res;
