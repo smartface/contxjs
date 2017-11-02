@@ -163,8 +163,17 @@ function contextReducer(context, action, target) {
 			});
 
 			return newState;
-    case 'addContextChild':
+    case 'addPageContextChild':
     	const ctree = createActorTreeFromSFComponent(action.component, target+"_"+action.name);
+    	if(action.classNames && typeof action.classNames !== 'string' && !Array.isArray(action.classNames)){
+    		throw new Error(action.classNames+" classNames must be String or Array");
+    	}
+  		
+    	ctree[target+"_"+action.name]
+    		&& action.classNames
+    		&& Array.isArray(action.classNames)
+    			? ctree[target+"_"+action.name].pushClassNames(action.classNames)
+    			: ctree[target+"_"+action.name].pushClassNames(action.classNames.split(" "));
     	context.addTree(ctree);
 
       return newState;
@@ -179,7 +188,11 @@ function contextReducer(context, action, target) {
       return newState;
       break;
     case 'removeClassName':
-    	context.addTree(ctree);
+    	context.map((actor) => {
+    		if(actor.getName() === target){
+    			actor.removeClassName(action.className)
+    		}
+    	});
 
       return newState;
       break;

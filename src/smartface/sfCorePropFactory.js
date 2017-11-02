@@ -90,8 +90,10 @@ const LAYOUT_PROPS_MAP = {
 };
 
 /**
- * @function getOneProp
- * get property value 
+ * Create a sf-core value
+ * 
+ * @function
+ * 
  * @param {string} key 
  * @param {string/number} [value] value of property
  * @return {object/string/number} properties.
@@ -120,16 +122,16 @@ export function createSFCoreProp(key, value) {
 
 export default function buildProps(objectVal) {
   var props = {};
+  
   Object
     .keys(objectVal)
     .forEach(function(key) {
       if (objectVal[key] !== null)
         props[key] = createSFCoreProp(key, objectVal[key]);
     });
+  
   return props;
 }
-
-
 
 function createColorForDevice(color) {
   var res;

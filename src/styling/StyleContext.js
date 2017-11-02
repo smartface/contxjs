@@ -62,11 +62,11 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
         context.map(
           function setInitialStyles(actor, name) {
             if (actor.isDirty === true || action.type === INIT_CONTEXT_ACTION_TYPE) {
-
+              
               let className = actor.getClassName();
               const beforeHook = hookMaybe("beforeAssignComponentStyles", null);
               beforeHook && (className = beforeHook(name, className));
-
+              
               try {
                 if(className){
                   const styles = styling(className)();
@@ -76,13 +76,13 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
                 e.message = `While actor's style [${name}] is set. ${e.message}`;
                 throw e;
               }
-
+              
               actor.isDirty = false;
             }
           });
-
+        
         latestState = newState;
-
+        
         return newState;
       },
       latestState,
