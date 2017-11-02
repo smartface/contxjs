@@ -101,7 +101,7 @@ export function createSFCoreProp(key, value) {
   if (ENUMS[key]) {
     if(value instanceof Object){
       res = {};
-      Object.keys(value).forEach(name => res[name] = ENUMS[key][name][value[name]])
+      Object.keys(value).forEach(name => ENUMS[key][name] && (res[name] = ENUMS[key][name][value[name]]))
     } else {
       res = ENUMS[key][value];
     }

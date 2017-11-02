@@ -12,8 +12,6 @@ import merge from "@smartface/styler/lib/utils/merge";
 //   componentAddChild(child);
 // }
 
-
-
 // TODO create new jsdoc type for the parameter
 /**
  * Styleable Actor HOC. Decorates specifeid component and return an actor component
@@ -27,8 +25,6 @@ import merge from "@smartface/styler/lib/utils/merge";
 export default function makeStylable({component, classNames="", initialProps={}, name}) {
   const initialClassNames = classNames && classNames.split(" ") || [];
   initialProps = merge(initialProps);
-  
-  // console.log(name+" : "+JSON.stringify(initialClassNames));
   
   /**
    * Styable actor
