@@ -4,10 +4,10 @@ import Image from 'sf-core/ui/image';
 import Font from 'sf-core/ui/font';
 import imageFillType from 'sf-core/ui/imagefilltype';
 import textAlignment from 'sf-core/ui/textalignment';
-import {Orientation} from 'sf-core/ui/page';
-import {Type as MapViewType} from 'sf-core/ui/mapview';
-import {iOS} from 'sf-core/ui/searchview';
-import {Align as ScrollViewAlign} from 'sf-core/ui/scrollview';
+import { Orientation } from 'sf-core/ui/page';
+import { Type as MapViewType } from 'sf-core/ui/mapview';
+import { iOS } from 'sf-core/ui/searchview';
+import { Align as ScrollViewAlign } from 'sf-core/ui/scrollview';
 import style from 'sf-core/ui/statusbarstyle';
 
 // require('sf-core/ui/imagefilltype')
@@ -35,6 +35,33 @@ const ENUMS = {
     "align": ScrollViewAlign
   }
 };
+
+const componentObjectProps = {
+  "android": {},
+  "ios": {},
+  "layout": {}
+};
+
+//   ".toggleOffColor",
+//   "searchViewStyle": "ios.searchViewStyle",
+//   "textAlignment": "android.textAlignment",
+//   "scrollEnabled": "ios.scrollEnabled",
+//   "showScrollBar": "ios.showScrollBar",
+//   "hintTextColor": "android.hintTextColor",
+//   "keyboardAppearance": "ios.keyboardAppearance",
+//   "hintTextColor": "android.hintTextColor",
+//   "elevation": "android.elevation",
+//   "keyboardAppearance": "ios.keyboardAppearance",
+//   "clearButtonEnabled": "ios.clearButtonEnabled",
+//   "minimumFontSize": "ios.minimumFontSize",
+//   "adjustFontSizeToFit": "ios.adjustFontSizeToFit",
+//   "align": "layout.align",
+//   "layoutHeight": "layout.height",
+//   "layoutWidth": "layout.width",
+//   "scrollBarEnabled": "ios.scrollBarEnabled",
+//   "style": "ios.style",
+//   "color": "android.color"
+// };
 
 const COLOR_PROPS = [
   "color",
@@ -101,12 +128,23 @@ const LAYOUT_PROPS_MAP = {
 export function createSFCoreProp(key, value) {
   var res;
   if (ENUMS[key]) {
-    if(value instanceof Object){
+    if (value instanceof Object) {
       res = {};
-      Object.keys(value).forEach(name => ENUMS[key][name] && (res[name] = ENUMS[key][name][value[name]]))
+      Object.keys(value).forEach(name => {
+        if(ENUMS[key][name]){
+          res[name] = ENUMS[key][name][value[name]];
+        }
+      });
     } else {
       res = ENUMS[key][value];
     }
+  } else if (componentObjectProps[key]) {
+    console.log(JSON.stringify(value));
+    res = {};
+    Object.keys(value).forEach(name => {
+      res[name] = createSFCoreProp(name, value[name])
+    });
+    console.log(JSON.stringify(res));
   } else if (COLOR_PROPS.indexOf(key) !== -1) {
     res = createColorForDevice(value);
   } else if (IMAGE_PROPS.indexOf(key) !== -1) {
@@ -122,14 +160,14 @@ export function createSFCoreProp(key, value) {
 
 export default function buildProps(objectVal) {
   var props = {};
-  
+
   Object
     .keys(objectVal)
     .forEach(function(key) {
       if (objectVal[key] !== null)
         props[key] = createSFCoreProp(key, objectVal[key]);
     });
-  
+
   return props;
 }
 
@@ -141,13 +179,15 @@ function createColorForDevice(color) {
       endColor: createColorForDevice(color.endColor),
       direction: Color.GradientDirection[color.direction]
     });
-  } else if (color && /rgb/i.test(color)) {
+  }
+  else if (color && /rgb/i.test(color)) {
     var rgba = color.match(/\d\.\d+|\d+/ig);
     res = Color.create((Number(rgba[3]) * 255), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
-  } else if(color) {
+  }
+  else if (color) {
     res = Color.create(color);
   }
-  
+
   return res || color;
 }
 
@@ -155,12 +195,14 @@ function getFontStyle(font) {
   var res = "";
   if (font && font.bold) {
     res += FONT_STYLE.BOLD;
-  } else if (font && font.italic) {
+  }
+  else if (font && font.italic) {
     res && (res += "_");
     res += FONT_STYLE.ITALIC;
-  } else {
+  }
+  else {
     res = FONT_STYLE.DEFAULT;
   }
-  
+
   return Font[res];
 }

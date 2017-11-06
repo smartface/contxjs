@@ -106,9 +106,8 @@ export default function makeStylable({component, classNames="", initialProps={},
               } else {
                 comp[key] = diff[key];
               }
-              
             } catch (e) {
-              throw new Error(key + " has invalid value " + String(style[key]) + " " + e.message);
+              throw new Error(key + " has invalid value " + JSON.stringify(style[key]) + " " + e.message);
             }
         });
 

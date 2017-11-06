@@ -16,6 +16,11 @@ export default function pageContextPatch(page, name){
 
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
+    page.themeContext({
+      type: "addThemeableContext",
+      name: name,
+      pageContext: createPageContext(page, name, null, null)
+    });
   }
   
   function onHide(superOnHide) {
@@ -24,12 +29,6 @@ export default function pageContextPatch(page, name){
   
   function onShow(superOnShow, data) {
     superOnShow && superOnShow(data);
-    page.themeContext({
-      type: "addThemeableContext",
-      name: name,
-      pageContext: createPageContext(page, name, null, null)
-    });
-
     this.dispatch && this.dispatch({
       type: "onShowUpdate"
     });
