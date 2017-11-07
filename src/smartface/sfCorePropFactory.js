@@ -27,6 +27,7 @@ const ENUMS = {
   "justifyContent": FlexLayout.JustifyContent,
   "positionType": FlexLayout.PositionType,
   "overflow": FlexLayout.OverFlow,
+  "style": style,
   "ios": {
     "style": style
   },
