@@ -92,14 +92,14 @@ export default function makeStylable({component, classNames="", initialProps={},
         ? hasDiff && component.subscribeContext({ type: "new-styles", data: Object.assign({}, diff) })
         : hasDiff && Object.keys(diff).forEach((key) => {
             try {
-              // TODO: move this logic to pageContext's actor
-              if (key == "scrollEnabled") {
+              /*if (key == "scrollEnabled") {
                 comp.ios && (comp.ios.scrollEnabled = diff[key]);
-              } else if(key === "layoutHeight") {
+              } else if(key === "layoutHeight") { // component.layout.height
                 comp.layout['height'] = diff[key];
-              } else if(key === "layoutWidth") {
+              } else if(key === "layoutWidth") { // component.layout.width
                 comp.layout['width'] = diff[key];
-              } else if(key !== "font" && style[key] instanceof Object) {
+              } else */
+              if(key !== "font" && style[key] instanceof Object) {
                 Object.keys(diff[key]).forEach((k) => {
                   comp[key][k] = diff[key][k];
                 });
@@ -168,11 +168,11 @@ export default function makeStylable({component, classNames="", initialProps={},
       });
     }
 
-    pushClassNames(className) {
-      if (!this.hasClassName(className)) {
-        Array.isArray(className)
-          ? this.classNames = [...this.className, ...className]
-          : this.classNames.push(className);
+    pushClassNames(classNames) {
+      if (!this.hasClassName(classNames)) {
+        Array.isArray(classNames)
+          ? this.classNames = [...this.classNames, ...classNames]
+          : this.classNames.push(classNames);
           
         this.isDirty = true;
       }

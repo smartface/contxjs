@@ -86,10 +86,11 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 
 						return function diffStylingReducer(acc, key) {
 							//align is readolnly issue
-							if (key === 'align') {
-								delete acc[key];
-								return acc;
-							} else if (key == "flexProps") {
+							// if (key === 'align') {
+								// delete acc[key];
+								// return acc;
+							// } else 
+							if (key == "flexProps") {
 								Object.keys(newStyles[key])
 									.forEach(function(name) {
 										if (!oldStyles[key] || newStyles[key][name] !== oldStyles[key][name]) {
@@ -114,9 +115,9 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 								acc[key] = newStyles[key];
 							}
 
-							if (acc[key] === null) {
+							/*if (acc[key] === null) {
 								acc[key] = NaN;
-							}
+							}*/
 							
 							return acc;
 						};

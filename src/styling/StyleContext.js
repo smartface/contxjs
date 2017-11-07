@@ -19,7 +19,9 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
    * @param {function} reducer - Reducer function to run actions
    */
   return function composeContext(styling, reducer) {
-    var latestState = context ? context.getState() : {};
+    var latestState = context 
+      ? context.getState() 
+      : {};
     context && context.dispose();
     
     //creates new context

@@ -30,10 +30,7 @@ const ENUMS = {
   "ios": {
     "style": style
   },
-  "align": ScrollViewAlign,
-  "layout": {
-    "align": ScrollViewAlign
-  }
+  "align": ScrollViewAlign
 };
 
 const componentObjectProps = {
@@ -41,27 +38,6 @@ const componentObjectProps = {
   "ios": {},
   "layout": {}
 };
-
-//   ".toggleOffColor",
-//   "searchViewStyle": "ios.searchViewStyle",
-//   "textAlignment": "android.textAlignment",
-//   "scrollEnabled": "ios.scrollEnabled",
-//   "showScrollBar": "ios.showScrollBar",
-//   "hintTextColor": "android.hintTextColor",
-//   "keyboardAppearance": "ios.keyboardAppearance",
-//   "hintTextColor": "android.hintTextColor",
-//   "elevation": "android.elevation",
-//   "keyboardAppearance": "ios.keyboardAppearance",
-//   "clearButtonEnabled": "ios.clearButtonEnabled",
-//   "minimumFontSize": "ios.minimumFontSize",
-//   "adjustFontSizeToFit": "ios.adjustFontSizeToFit",
-//   "align": "layout.align",
-//   "layoutHeight": "layout.height",
-//   "layoutWidth": "layout.width",
-//   "scrollBarEnabled": "ios.scrollBarEnabled",
-//   "style": "ios.style",
-//   "color": "android.color"
-// };
 
 const COLOR_PROPS = [
   "color",
@@ -127,24 +103,21 @@ const LAYOUT_PROPS_MAP = {
  */
 export function createSFCoreProp(key, value) {
   var res;
-  if (ENUMS[key]) {
+  if (componentObjectProps[key] || ENUMS[key]) {
     if (value instanceof Object) {
       res = {};
-      Object.keys(value).forEach(name => {
-        if(ENUMS[key][name]){
-          res[name] = ENUMS[key][name][value[name]];
-        }
+      Object.keys(value).forEach(function (name) {
+        // if (ENUMS[key] && ENUMS[key][name]) {
+        //   res[name] = ENUMS[key][name][value[name]];
+        // } else {
+          res[name] = createSFCoreProp(name, value[name]);
+        // }
       });
+    } else if(ENUMS[key]){
+      res = value === null ? NaN : ENUMS[key][value];
     } else {
-      res = ENUMS[key][value];
+      throw new Error(key+" ENUM value cannot be found");
     }
-  } else if (componentObjectProps[key]) {
-    console.log(JSON.stringify(value));
-    res = {};
-    Object.keys(value).forEach(name => {
-      res[name] = createSFCoreProp(name, value[name])
-    });
-    console.log(JSON.stringify(res));
   } else if (COLOR_PROPS.indexOf(key) !== -1) {
     res = createColorForDevice(value);
   } else if (IMAGE_PROPS.indexOf(key) !== -1) {
@@ -152,7 +125,7 @@ export function createSFCoreProp(key, value) {
   } else if (key === "font") {
     res = Font.create(value && value.family || "Font.DEFAULT", value && value.size || 16, getFontStyle(value));
   } else {
-    res = value;
+    res = value === null ? NaN : value;
   }
 
   return res;
