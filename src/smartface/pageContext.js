@@ -93,7 +93,7 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 							if (key == "flexProps") {
 								Object.keys(newStyles[key])
 									.forEach(function(name) {
-										if (!oldStyles[key] || newStyles[key][name] !== oldStyles[key][name]) {
+										if (oldStyles[key] === undefined || newStyles[key][name] !== oldStyles[key][name]) {
 											acc[name] = newStyles[key][name];
 
 											if (newStyles[key][name] === null) {
@@ -115,9 +115,9 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 								acc[key] = newStyles[key];
 							}
 
-							/*if (acc[key] === null) {
+							if (acc[key] === null) {
 								acc[key] = NaN;
-							}*/
+							}
 							
 							return acc;
 						};
