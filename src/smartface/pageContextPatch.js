@@ -33,6 +33,10 @@ export default function pageContextPatch(page, name){
       type: "onShowUpdate"
     });
     
+    this.dispatch && this.dispatch({
+      type: "invalidate"
+    });
+    
     this.layout.applyLayout();
   }
   

@@ -73,7 +73,7 @@ export function createThemeContextBound(themes) {
       case 'changeTheme':
         return {
           ...state,
-          theme: themesCollection.find(theme => theme.name === action.name)
+          theme: themesCollection.find(theme => theme.name === action.themeName)
         };
       default:
         return newState;

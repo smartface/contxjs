@@ -4,46 +4,42 @@ import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
 import buildProps from "./sfCorePropFactory";
 import Screen from 'sf-core/device/screen';
+import Device from 'sf-core/device/';
+import System from 'sf-core/device/system';
 import isTablet from '../core/isTablet';
 import makeStylable from '../styling/Stylable';
 import hooks from '../core/hooks';
 import Contants from "../core/constants";
 import fromSFComponent, {createActorTreeFromSFComponent} from "./fromSFComponent";
+// import Filtrex from 'filtrex'
 
 var orientationState = "ended";
 
-commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type) {
+commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type, error) {
 	switch (type) {
-		case '+page':
-			return function pageCommand(opts) {
+		case '+Device':
+			return function deviceRule(opts) {
+      	var Device = {
+      		screen: {
+      			width: Screen.width,
+      			height: Screen.height
+      		},
+      		os: System.OS,
+      		osVersion: System.OSVersion,
+      		type: isTablet ? "tablet" : "phone",
+      		orientation: Screen.width > Screen.height ? "portrait" : "landscape",
+      		language: System.language
+      	};
+      	
 				opts = merge(opts);
-				var isOK = (function(Screen) { return eval(opts.args); }({ width: Screen.width, height: Screen.height }));
+				try{
+  				var isOK = eval(opts.args);
+				} catch(e) {
+				  error && error(e);
+				  return {};
+				}
+				
 				return isOK ? opts.value : {};
-			};
-		case '+orientationChange':
-			return function orientationChangeCommand(opts) {
-				opts = merge(opts);
-				var isOK = (function(Screen, orientation) {
-					return eval(opts.args);
-				}({ width: Screen.width, height: Screen.height }, orientationState));
-				return isOK ? opts.value : {};
-			};
-		case "+isTablet_landscape":
-			return function pageCommand(opts) {
-				opts = merge(opts);
-				var isOK = isTablet && Screen.width > Screen.height;
-				return isOK ? opts.value : {};
-			};
-		case "+isTablet_portrait":
-			return function pageCommand(opts) {
-				opts = merge(opts);
-				var isOK = isTablet && Screen.width < Screen.height;
-				return isOK ? opts.value : {};
-			};
-		case "+isTablet":
-			return function pageCommand(opts) {
-				opts = merge(opts);
-				return isTablet ? opts.value : {};
 			};
 	}
 });

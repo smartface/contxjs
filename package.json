@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "@smartface/styler": "^1.3.14",
+    "filtrex": "^0.5.4",
     "install": "^0.10.1",
     "moment": "^2.18.1",
     "moment-hijri": "^2.0.1"
