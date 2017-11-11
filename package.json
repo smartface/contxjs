@@ -1,6 +1,6 @@
 {
   "name": "@smartface/contx",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-rc.1",
   "description": "Calendar Component",
   "main": "index.js",
   "scripts": {
