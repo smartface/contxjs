@@ -1,2 +1,12 @@
-lib
 test
+node_modules
+.babelrc
+.git
+npm-debug.log
+.scripts
+docs
+examples
+.eslintrc
+.cz-config.js
+Makefile
+.travis.yml
