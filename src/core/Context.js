@@ -59,6 +59,17 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
       this.actors.$$map.push(name);
     }
     
+    removeChildren = (name) => {
+      this.actors.$$map.forEach(name => {
+        if(name.indexOf(name+"_") === 0){
+          this.actors.collection[name].dispose();
+          delete this.actors.collection[name];
+        }
+      });
+      
+      this.actors.$$map = Object.keys(this.actors.collection);
+    }
+    
     remove = (name) => {
       const actor = this.actors.collection[name];
       

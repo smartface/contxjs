@@ -7,12 +7,12 @@
  * @params {Object} initialProps - Initial properties of the specified component
  * @returns {Object}
  */
-export default function addPageContextChild(name, component, classNames="", initialProps={}){
+export default function addChild(name, component, classNames="", initialProps={}){
     return {
-        type: "addPageContextChild",
+        type: "addChild",
         name,
         component,
         classNames,
         initialProps
     };
-}
+};

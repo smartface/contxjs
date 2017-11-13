@@ -151,16 +151,13 @@ function contextReducer(context, action, target) {
 	// console.log("page context : "+JSON.stringify(action));
 	
 	switch (action.type) {
-		case "addChild": 
-			
-			return newState;
 		case "invalidate":
 			context.map(function(actor) {
 				actor.setDirty(true);
 			});
 
 			return newState;
-    case 'addPageContextChild':
+    case 'addChild':
     	const ctree = createActorTreeFromSFComponent(action.component, target+"_"+action.name);
     	if(action.classNames && typeof action.classNames !== 'string' && !Array.isArray(action.classNames)){
     		throw new Error(action.classNames+" classNames must be String or Array");
@@ -172,13 +169,23 @@ function contextReducer(context, action, target) {
     			? ctree[target+"_"+action.name].pushClassNames(action.classNames)
     			: ctree[target+"_"+action.name].pushClassNames(action.classNames.split(" "));
     	context.addTree(ctree);
-
+    	
+      return newState;
+      break;
+    case 'removeChild':
+		  context.remove(target);
+	  
+      return newState;
+      break;
+    case 'removeChildren':
+		  context.removeChildren(target);
+	  
       return newState;
       break;
     case 'pushClassNames':
     	context.map((actor, name) => {
     		if(name === target){
-    			actor.pushClassNames(action.classNames);
+					actor.pushClassNames(action.classNames);
     		}
     	});
 
@@ -187,7 +194,7 @@ function contextReducer(context, action, target) {
     case 'removeClassName':
     	context.map((actor) => {
     		if(actor.getName() === target){
-    			actor.removeClassName(action.className)
+    			actor.removeClassName(action.className);
     		}
     	});
 

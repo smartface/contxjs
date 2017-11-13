@@ -1,6 +1,25 @@
 import hooks from '../core/hooks';
 import * as StyleContext from '../styling/StyleContext';
 import makeStylable from '../styling/Stylable';
+import addContextChild from './action/addChild';
+import removeContextChild from './action/removeChild';
+import removeContextChildren from './action/removeChildren';
+import findClassNames from '@smartface/styler/lib/utils/findClassNames';
+
+function addChild(superAddChild, child, name, classNames="", props={}) {
+  superAddChild(child);
+  name && this.dispatch(addContextChild(name, child, classNames, props));
+}
+
+function removeChild(superRemoveChild, child) {
+  superRemoveChild(child);
+  child.dispatch && child.dispatch(removeContextChild());
+}
+
+function removeChildren(superRemoveAll) {
+  superRemoveAll();
+  this.dispatch && this.dispatch(removeContextChildren());
+}
 
 /**
  * Extract components tree from a SF Component
@@ -24,8 +43,34 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
     } else {
       componentVars = component.constructor.$$styleContext || {};
     }
+    
+    if(component.layout && typeof component.layout.addChild === 'function'){
+      Object.defineProperty(component.layout, "addChild", {
+        value: addChild.bind(component, component.layout.addChild.bind(component.layout))
+      });
+      
+      component.layout.removeChild && Object.defineProperty(component.layout, "removeChild", {
+        value: removeChild.bind(component, component.layout.removeChild.bind(component.layout))
+      });
+      
+      component.layout.removeAll && Object.defineProperty(component.layout, "removeAll", {
+        value: removeChildren.bind(component, component.layout.removeAll.bind(component.layout))
+      });
+    } else if(typeof component.addChild === 'function'){
+      Object.defineProperty(component, "addChild", {
+        value: addChild.bind(component, component.addChild.bind(component))
+      });
+      
+      component.removeChild && Object.defineProperty(component, "removeChild", {
+        value: removeChild.bind(component, component.removeChild.bind(component))
+      });
+      
+      component.removeAll && Object.defineProperty(component, "removeAll", {
+        value: removeChildren.bind(component, component.removeAll.bind(component))
+      });
+    }
 
-    const classNames = componentVars.classNames ? componentVars.classNames.trim() + " #" + name : "#" + name;
+    const classNames = componentVars.classNames ? componentVars.classNames+ " #" + name : "#" + name;
 
     if (acc[name] === undefined) {
       delete acc['@@isEmpty'];

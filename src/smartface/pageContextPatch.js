@@ -13,7 +13,7 @@ export default function pageContextPatch(page, name){
   page.setContextDispatcher = patchMethod(page, "setContextDispatcher", setContextDispatcher);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
   page.themeContext = Application.theme();
-
+  
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
     page.themeContext({

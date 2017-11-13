@@ -94,12 +94,12 @@ export default function makeStylable({component, classNames="", initialProps={},
             try {
               /*if (key == "scrollEnabled") {
                 comp.ios && (comp.ios.scrollEnabled = diff[key]);
-              } else if(key === "layoutHeight") { // component.layout.height
+              } else */
+              if(key === "layoutHeight") { // component.layout.height
                 comp.layout['height'] = diff[key];
               } else if(key === "layoutWidth") { // component.layout.width
                 comp.layout['width'] = diff[key];
-              } else */
-              if(key !== "font" && style[key] instanceof Object) {
+              } else if(key !== "font" && style[key] instanceof Object) {
                 Object.keys(diff[key]).forEach((k) => {
                   comp[key][k] = diff[key][k];
                 });
@@ -190,12 +190,14 @@ export default function makeStylable({component, classNames="", initialProps={},
     }
 
     dispose() {
-      component = null;
+      component.setContextDispatcher &&
+        component.setContextDispatcher(null);
+      this._actorInternal_.component = null;
       this._actorInternal_ = null;
       this.context = null;
       this.styles = null;
-      this.component.setContextDispatcher &&
-        this.component.setContextDispatcher(null);
+      component.onDispose && component.onDispose();
+      component = null;
     }
   };
 }
