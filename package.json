@@ -8,7 +8,8 @@
     "build": "babel ./src/ --out-dir -d ./lib/.",
     "build:dev": "babel ./src/ --out-dir -d ../scripts/node_modules/@smartface/contx",
     "dev:sync": "mkdir -p ../scripts/node_modules/@smartface/contx && cp -r -t ../scripts/node_modules/@smartface/contx lib package.json ",
-    "dev:link": "npm run build && npm run dev:sync",
+    "dev:remove": "rm -R ../scripts/node_modules/@smartface/contx && rm -R ./lib",
+    "dev:link": "npm run dev:remove && npm run build && npm run dev:sync",
     "prepublish": "npm run build"
   },
   "repository": {
