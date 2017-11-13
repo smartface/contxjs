@@ -5,6 +5,7 @@ import addContextChild from './action/addChild';
 import removeContextChild from './action/removeChild';
 import removeContextChildren from './action/removeChildren';
 import findClassNames from '@smartface/styler/lib/utils/findClassNames';
+import raiseErrorMaybe from '../core/util/raiseErrorMaybe';
 
 function addChild(superAddChild, child, name, classNames="", props={}) {
   superAddChild(child);
@@ -12,8 +13,13 @@ function addChild(superAddChild, child, name, classNames="", props={}) {
 }
 
 function removeChild(superRemoveChild, child) {
-  superRemoveChild(child);
-  child.dispatch && child.dispatch(removeContextChild());
+  if(child){
+    superRemoveChild && superRemoveChild(child);
+    child.dispatch && child.dispatch(removeContextChild());
+  } else {
+    this.getParent() && this.getParent().removeChild(this);
+    this.dispatch && this.dispatch(removeContextChild());
+  }
 }
 
 function removeChildren(superRemoveAll) {
@@ -68,6 +74,10 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
       component.removeAll && Object.defineProperty(component, "removeAll", {
         value: removeChildren.bind(component, component.removeAll.bind(component))
       });
+    } else {
+      component.removeChild && Object.defineProperty(component, "removeChild", {
+        value: removeChild.bind(component)
+      });
     }
 
     const classNames = componentVars.classNames ? componentVars.classNames+ " #" + name : "#" + name;
@@ -89,7 +99,7 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
           buildContextTree(component.children[child], name + "_" + child);
         } catch (e) {
           e.message = "Error when component would be collected: " + child + ". " + e.message;
-          throw e;
+          raiseErrorMaybe(e, component.onError);
         }
       });
   }
