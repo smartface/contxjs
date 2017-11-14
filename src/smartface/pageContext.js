@@ -174,7 +174,6 @@ function contextReducer(context, action, target) {
       break;
     case 'removeChild':
 		  context.remove(target);
-	  
       return newState;
       break;
     case 'removeChildren':

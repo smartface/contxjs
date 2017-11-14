@@ -71,6 +71,8 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
     }
     
     remove = (name) => {
+      this.removeChildren(name);
+      
       const actor = this.actors.collection[name];
       
       if(actor){
