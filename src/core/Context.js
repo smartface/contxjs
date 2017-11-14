@@ -102,7 +102,13 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
     }
     
     dispatch = (action, target) => {
-      this.setState(reducer(this, action, target));
+      try {
+        const state = reducer(this, action, target);
+        this.setState(state);
+      } catch (e) {
+        e.message = `An Error is occurred When action [${action.name}] run on target [${target}]. ${e.message}`;
+        throw e;
+      }
     }
     
     dispose = () => {
