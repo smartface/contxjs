@@ -106,8 +106,8 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
         const state = reducer(this, action, target);
         this.setState(state);
       } catch (e) {
-        e.message = `An Error is occurred When action [${action.name}] run on target [${target}]. ${e.message}`;
-        throw e;
+        e.message = `An Error is occurred When action [${action.type}] run on target [${target}]. ${e.message}`;
+        throw new Error(e);
       }
     }
     

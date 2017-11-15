@@ -1,17 +1,6 @@
 import Actor from "../core/Actor";
 import merge from "@smartface/styler/lib/utils/merge";
 
-// {"backgroundColor":{"nativeObject":{}},"paddingLeft":10,"paddingRight":10,"paddingTop":null,"paddingBottom":10,"flexDirection":0,"alignItems":2,"direction":0,"flexWrap":0,"justifyContent":4}
-
-// function addChild(componentAddChild, child, actor) {
-//   componentAddChild(child);
-//   actor.dispatch({ type: "invalidateContext" });
-// }
-
-// function addChild(componentAddChild, child, actor) {
-//   componentAddChild(child);
-// }
-
 // TODO create new jsdoc type for the parameter
 /**
  * Styleable Actor HOC. Decorates specifeid component and return an actor component
@@ -34,19 +23,9 @@ export default function makeStylable({component, classNames="", initialProps={},
     constructor() {
       super(component);
 
-      // this.name = name;
       this.classNames = [...initialClassNames];
-      // componentVars.classNames && 
-      //   (this.classNames = this.classNames.concat(componentVars.classNames.split(" ")));
-      // className && this.classNames.push(className);
-      // initialClassNames = [...this.classNames];
       this.styles = initialProps;
       this.isDirty = true;
-
-      // if (typeof component.addChild === "function")
-        // component.addContextChild = addChild.bind(component, this);
-      // else if(name.indexOf("statusBar") == -1 && typeof component.layout.addChild === "function")
-      //   component.layout.addContextChild = addChild.bind(component, component.layout.addChild.bind(component.layout), this);
     }
     
     getName = () => {
@@ -59,11 +38,10 @@ export default function makeStylable({component, classNames="", initialProps={},
      * @param {object} styles - a style object
      */
     setStyles = (style) => {
-      
       const reduceDiffStyleHook = this.hook("reduceDiffStyleHook");
 
-      let diffReducer = reduceDiffStyleHook 
-        ? reduceDiffStyleHook(this.styles || {}, style) 
+      let diffReducer = reduceDiffStyleHook
+        ? reduceDiffStyleHook(this.styles || {}, style)
         : (acc, key) => {
             if (this.styles[key] !== undefined) {
               if (this.styles[key] !== style[key]) {
@@ -117,7 +95,7 @@ export default function makeStylable({component, classNames="", initialProps={},
       this.styles = style;
     }
 
-    getStyles() {
+    getStyles = () => {
       return this.styles ? Object.assign({}, this.styles) : {};
     }
 
@@ -125,28 +103,15 @@ export default function makeStylable({component, classNames="", initialProps={},
       return initialClassNames;
     }
 
-    getClassName() {
+    getClassName = () => {
       return this.classNames.join(" ");
     }
     
-/*    addChild = (child) => {
-      this.component.layout
-      ? this.component.layout.addChild(child)
-      : this.component.addChild(child);
-    }
-
-    removeChild = (child) => {
-      this.component.layout
-      ? this.component.layout.removeChild(child)
-      : this.component.removeChild(child);
-    }
-
-*/
-    classNamesCount() {
+    classNamesCount = () => {
       return this.classNames.length;
     }
 
-    removeClassName(className) {
+    removeClassName = (className) => {
       if (this.hasClassName(className)) {
         this.isDirty = true;
         this.classNames = this.classNames.filter((cname) => {
@@ -157,18 +122,18 @@ export default function makeStylable({component, classNames="", initialProps={},
       return this.getClassName();
     }
 
-    resetClassNames(classNames = []) {
+    resetClassNames = (classNames = []) => {
       this.classNames = [...initialClassNames, ...classNames];
       this.isDirty = true;
     }
 
-    hasClassName(className) {
+    hasClassName = (className) => {
       return this.classNames.some((cname) => {
         return cname === className;
       });
     }
 
-    pushClassNames(classNames) {
+    pushClassNames = (classNames) => {
       if (!this.hasClassName(classNames)) {
         Array.isArray(classNames)
           ? this.classNames = [...this.classNames, ...classNames]
@@ -180,7 +145,7 @@ export default function makeStylable({component, classNames="", initialProps={},
       return this.getClassName();
     }
 
-    addClassName(className, index) {
+    addClassName = (className, index) => {
       if (!this.hasClassName(className)) {
         this.classNames.splice(index, 1, className);
         this.isDirty = true;
@@ -189,7 +154,7 @@ export default function makeStylable({component, classNames="", initialProps={},
       return this.getClassName();
     }
 
-    dispose() {
+    dispose = () => {
       component.setContextDispatcher &&
         component.setContextDispatcher(null);
       this._actorInternal_.component = null;

@@ -27,6 +27,26 @@ function removeChildren(superRemoveAll) {
   this.dispatch && this.dispatch(removeContextChildren());
 }
 
+function createOriginals(component){
+  !component.__original_addChild && Object.defineProperty(component, "__original_addChild", {
+    value: component.addChild,
+    enumerable: false,  
+    configurable: false
+  });
+
+  !component.__original_removeChild && Object.defineProperty(component, "__original_removeChild", {
+    value: component.removeChild,
+    enumerable: false,  
+    configurable: false
+  });
+
+  !component.__original_removeAll && Object.defineProperty(component, "__original_removeAll", {
+    value: component.removeAll,
+    enumerable: false,  
+    configurable: false
+  });
+}
+
 /**
  * Extract components tree from a SF Component
  * 
@@ -50,34 +70,57 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
       componentVars = component.constructor.$$styleContext || {};
     }
     
-    if(component.layout && typeof component.layout.addChild === 'function'){
-      Object.defineProperty(component.layout, "addChild", {
-        value: addChild.bind(component, component.layout.addChild.bind(component.layout))
-      });
+    try {
+      if(component.layout && typeof component.layout.addChild === 'function'){
+        createOriginals(component.layout);
+        Object.defineProperty(component.layout, "addChild", {
+          value: addChild.bind(component, component.layout.__original_addChild.bind(component.layout)),
+          enumerable: true,  
+          configurable: true
+        });
+        
+        component.layout.removeChild && Object.defineProperty(component.layout, "removeChild", {
+          value: removeChild.bind(component, component.layout.__original_removeChild.bind(component.layout)),
+          enumerable: true,  
+          configurable: true
+        });
+        
+        component.layout.removeAll && Object.defineProperty(component.layout, "removeAll", {
+          value: removeChildren.bind(component, component.layout.__original_removeAll.bind(component.layout)),
+          enumerable: true,  
+          configurable: true
+        });
+      } else if(typeof component.addChild === 'function'){
+        createOriginals(component);
+
+        Object.defineProperty(component, "addChild", {
+          value: addChild.bind(component, component.__original_addChild.bind(component)),
+          enumerable: true,  
+          configurable: true
+        });
+        
+        component.removeChild && Object.defineProperty(component, "removeChild", {
+          value: removeChild.bind(component, component.__original_removeChild.bind(component)),
+          enumerable: true,  
+          configurable: true
+        });
+        
+        component.removeAll && Object.defineProperty(component, "removeAll", {
+          value: removeChildren.bind(component, component.__original_removeAll.bind(component)),
+          enumerable: true,  
+          configurable: true
+        });
+      } else {
+        !component.removeChild && Object.defineProperty(component, "removeChild", {
+          value: removeChild.bind(component),
+          enumerable: true,  
+          configurable: true
+        });
+      }
+    } catch (e) {
+      e.message = `An Error is occurred when component [${name}] is patched in the [${rootName}]. ${e.message}`;
       
-      component.layout.removeChild && Object.defineProperty(component.layout, "removeChild", {
-        value: removeChild.bind(component, component.layout.removeChild.bind(component.layout))
-      });
-      
-      component.layout.removeAll && Object.defineProperty(component.layout, "removeAll", {
-        value: removeChildren.bind(component, component.layout.removeAll.bind(component.layout))
-      });
-    } else if(typeof component.addChild === 'function'){
-      Object.defineProperty(component, "addChild", {
-        value: addChild.bind(component, component.addChild.bind(component))
-      });
-      
-      component.removeChild && Object.defineProperty(component, "removeChild", {
-        value: removeChild.bind(component, component.removeChild.bind(component))
-      });
-      
-      component.removeAll && Object.defineProperty(component, "removeAll", {
-        value: removeChildren.bind(component, component.removeAll.bind(component))
-      });
-    } else {
-      component.removeChild && Object.defineProperty(component, "removeChild", {
-        value: removeChild.bind(component)
-      });
+      raiseErrorMaybe(new Error(e), component.onError);
     }
 
     const classNames = componentVars.classNames ? componentVars.classNames+ " #" + name : "#" + name;

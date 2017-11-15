@@ -81,12 +81,11 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 						}
 
 						return function diffStylingReducer(acc, key) {
-							//align is readolnly issue
-							// if (key === 'align') {
-								// delete acc[key];
-								// return acc;
-							// } else 
-							if (key == "flexProps") {
+							// align is readolnly issue on Android
+							if (key === 'align') {
+								delete acc[key];
+								return acc;
+							} else if (key == "flexProps") {
 								Object.keys(newStyles[key])
 									.forEach(function(name) {
 										if (oldStyles[key] === undefined || newStyles[key][name] !== oldStyles[key][name]) {
