@@ -27,7 +27,7 @@ commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type
       		os: System.OS,
       		osVersion: System.OSVersion,
       		type: isTablet ? "tablet" : "phone",
-      		orientation: Screen.width > Screen.height ? "portrait" : "landscape",
+      		orientation: Screen.width > Screen.height ? "landscape" : "portrait",
       		language: System.language
       	};
       	
