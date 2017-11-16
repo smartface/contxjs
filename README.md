@@ -55,6 +55,7 @@ Nested rules allows selector rules to be nested within one another.
 Different from CSS, The Nested Selectors inherit properties from parents and override them if they contain same properties.
 
 **"&" Parent Selector**
+
 Parent Selector is an useful tool. For instance you want to use naming conventions like BEM(Block, Element, Modifier) then parent selector helps you to create well documented selectors. For example:
 
 I have a component that name is header and it contains other components that are named **navbar**, **yearLabel** and **arrow**. In the BEM convention, **header** component is our block and these nested components are its elements. Then we can create style-object as below. 
@@ -81,6 +82,7 @@ const styleObject = {
 Build-time directives are run once while style-objects are compiled by Styler.
 
 **@extend Rule**
+
 Extend rule provides inheritance between selectors so that selectors can inherit properties from another selectors.  @extend rule affects all nested-selectors of a selector but not with parent-selector rule(&). For example:
 
 ```js
@@ -99,6 +101,7 @@ const styles = {
 }
 ```
 **Creating Build-time Rules**
+
 	@TODO: Extending Build-time Rules
 
 ### Run-time Directives
@@ -121,6 +124,7 @@ const styles = {
 ```
 
 **Creating Runtime Rules**
+
 	@TODO: Creating Run-time Rules
 
 
