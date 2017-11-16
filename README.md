@@ -1,7 +1,5 @@
 # contxjs
 
-# Context Management
-
 ## Styling
 
 **Style Objects**
@@ -31,7 +29,7 @@ Styling Selectors are also similar to the CSS selectors. There are 2 kind of sel
 
 
 ## Directives and Rules
-###Nested Rules
+### Nested Rules
 Nested rules allows selector rules to be nested within one another. 
 
 **Nested Selectors**
@@ -125,4 +123,6 @@ const styles = {
 **Creating Runtime Rules**
 	@TODO: Creating Run-time Rules
 
+
+## Context Management
 
