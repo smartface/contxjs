@@ -32,7 +32,7 @@ Styling Selectors are also similar to the CSS selectors. There are 2 kind of sel
 ### Nested Rules
 Nested rules allows selector rules to be nested within one another. 
 
-**Nested Selectors**
+#### Nested Selectors
 ```js
 
  const styleObject = {
@@ -54,7 +54,7 @@ Nested rules allows selector rules to be nested within one another.
 
 Different from CSS, The Nested Selectors inherit properties from parents and override them if they contain same properties.
 
-**"&" Parent Selector**
+#### "&" Parent Selector
 
 Parent Selector is an useful tool. For instance you want to use naming conventions like BEM(Block, Element, Modifier) then parent selector helps you to create well documented selectors. For example:
 
@@ -81,9 +81,9 @@ const styleObject = {
 ### Build-time Directives
 Build-time directives are run once while style-objects are compiled by Styler.
 
-**@extend Rule**
+#### @extend Rule
 
-Extend rule provides inheritance between selectors so that selectors can inherit properties from another selectors.  @extend rule affects all nested-selectors of a selector but not with parent-selector rule(&). For example:
+Extend rule provides inheritance between selectors so that selectors can inherit properties from another selectors.  **@extend** rule affects all nested-selectors of a selector but not with parent-selector rule(&). For example:
 
 ```js
 const styles = {
@@ -100,7 +100,7 @@ const styles = {
   }
 }
 ```
-**Creating Build-time Rules**
+#### Creating Build-time Rules
 
 	@TODO: Extending Build-time Rules
 
@@ -123,7 +123,7 @@ const styles = {
 }
 ```
 
-**Creating Runtime Rules**
+#### Creating Runtime Rules
 
 	@TODO: Creating Run-time Rules
 
