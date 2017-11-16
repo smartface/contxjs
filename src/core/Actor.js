@@ -14,6 +14,17 @@ export default class Actor {
     return this.isDirty;
   }
   
+  onRemove = () => {
+    this._actorInternal_.component.onRemove && this._actorInternal_.component.onRemove();
+  }
+  
+  onError = (err) => {
+    if(this._actorInternal_.component.onError)
+      this._actorInternal_.component.onError(err);
+    // else
+    //   console.log(err.message);
+  }
+  
   setContextDispatcher = (dispatcher) => {
     // console.log("dispatcher : "+this.name+" : "+this._actorInternal_.component.setContextDispatcher+": "+dispatcher);
     this._dispatcher = dispatcher;

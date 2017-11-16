@@ -1,4 +1,5 @@
 import {INIT_CONTEXT_ACTION_TYPE} from "./constants";
+import raiseErrorMaybe from "./util/raiseErrorMaybe";
 
 export function createInitAction(){
   return {
@@ -53,17 +54,22 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
     }
     
     add = (actor, name) => {
+      if(this.actors.collection[name]){
+        raiseErrorMaybe(new Error(`Child's name [${name}] must be unique in the same Container.`), actor.onError);
+      }
+      
       this.actors.collection[name] = actor;
+      this.actors.$$map.push(name);
       actor.hook = hookMaybe;
       actor.setContextDispatcher((action, target) => this.dispatch(action, target));
-      this.actors.$$map.push(name);
     }
     
     removeChildren = (name) => {
-      this.actors.$$map.forEach(name => {
-        if(name.indexOf(name+"_") === 0){
-          this.actors.collection[name].dispose();
-          delete this.actors.collection[name];
+      this.actors.$$map.forEach(nm => {
+        if(nm.indexOf(name+"_") === 0){
+          const actor = this.actors.collection[nm];
+          actor && actor.dispose && actor.dispose();
+          delete this.actors.collection[nm];
         }
       });
       

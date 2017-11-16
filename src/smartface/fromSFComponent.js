@@ -157,6 +157,7 @@ export default function fromSFComponent(root, rootName, hooksList = null, collec
 
   Object.keys(ctree).forEach((name) => {
     const item = ctree[name];
+
     ctree[name] = collection[name] || makeStylable(item);
   });
   
@@ -174,6 +175,7 @@ export function createActorTreeFromSFComponent(root, rootName, collection = {}) 
 
   Object.keys(ctree).forEach((name) => {
     const item = ctree[name];
+
     ctree[name] = collection[name] || makeStylable(item);
   });
 
