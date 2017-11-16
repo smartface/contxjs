@@ -2,6 +2,7 @@ test
 node_modules
 .babelrc
 .git
+src
 npm-debug.log
 .scripts
 docs
