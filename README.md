@@ -182,7 +182,7 @@ When a component is removed from the Context and If the component has onDipose m
 
 **Component::onContextInit(dispatch:function)**
 
-When a component initialized in the Context then If a component has onDipose method and it's triggered by passing the its dispatch method or not dispatch method assign component directly.
+When a component initialized in the Context and If the component has onContextInit method then it's triggered by passing the its dispatch method. If not dispatch method is assigned to component directly.
 
 
 
