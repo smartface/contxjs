@@ -125,6 +125,55 @@ const styles = {
 #### Creating Runtime Rules
 TODO: Creating Run-time Rules
 
+## Styling Conventions and Best Practices
+We assumes you know that what The [BEM](http://getbem.com/) convention is. As a summary, according to the [BEM](http://getbem.com/), pages are built with Blocks, Blocks are built with Elements and another Blocks. And Elements and Blocks have Modifiers that are using to manipulate their display properties. 
+
+In order to imply which one is for the blocks we can use "\__" or "\_" and for the elements we can use "\__" or "\_" and for the modifiers we can use "\--" or "\-".
+
+For example:
+In the CSS 
+```css
+parentBlock {
+...
+}
+parentBlock_element {
+...
+}
+
+parentBlock_element-modifier {
+...
+}
+
+parentBlock_childBlock--modifier {
+...
+}
+
+/* or */
+
+searchBlock_searchInput{
+}
+searchBlock_searchInput-activated{
+}
+searchBlock_searchInput-deactivated{
+}
+
+/* or with variable */
+searchBlock_searchInput-isActivated--true{
+...
+}
+searchBlock_searchInput-isActivated--false{
+...
+}
+searchBlock_searchInput-color{
+...
+}
+searchBlock_searchInput-color--red{
+...
+}
+
+```
+
+This method make style code more readable and easy understanding.
 
 ## Context Management
 Each context encapsulates behaviors and apply theme to decorated components that come from outside of the context via Context's Actors and Reducers.
@@ -183,6 +232,7 @@ When a component is removed from the Context and If the component has onDipose m
 **Component::onContextInit(dispatch:function)**
 
 When a component initialized in the Context and If the component has onContextInit method then it's triggered by passing the its dispatch method. If not dispatch method is assigned to component directly.
+
 
 
 
