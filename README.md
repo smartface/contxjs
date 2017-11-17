@@ -28,7 +28,7 @@ Styling Selectors are also similar to the CSS selectors. There are 2 kind of sel
 ```
 
 
-## Directives and Rules
+## Styling Directives and Rules
 ### Nested Rules
 Nested rules allows selector rules to be nested within one another. 
 
@@ -101,8 +101,7 @@ const styles = {
 }
 ```
 #### Creating Build-time Rules
-
-	@TODO: Extending Build-time Rules
+TODO: Extending Build-time Rules
 
 ### Run-time Directives
 Run-time directives are run every time when making request to style by Styler and override the owner selector's properties.
@@ -124,9 +123,47 @@ const styles = {
 ```
 
 #### Creating Runtime Rules
-
-	@TODO: Creating Run-time Rules
+TODO: Creating Run-time Rules
 
 
 ## Context Management
+Each context encapsulates behaviors and apply theme to decorated components that come from outside of the context via Context's Actors and Reducers.
+
+### Page Context
+Page context create style-able Smartface pages and components so that we can manipulate them using style-objects and selectors. Smartface UIEditor Transpiler generates connection between Pages and PageContext and automatically add static components via Smartface UIEditor. Dynamic Components for instance they might be images that should be created after an api call are able to only manually added. 
+
+#### Page Context API
+**FlexLayout::children: object**
+When PageContext is initialized for the first time then it creates component view-tree recursively using FlexLayout's children property.
+
+**Component::dispatch(action:object)**
+To manipulate Context's states and behaviors using explicitly defined built-in or custom actions that trigger Context's reducers in order to run behaviors. It's same all pages and components only in a PageContext.
+
+**Actions:**
+
+-  **Action::type = addPageContextChild** => 
+Adds specified component and their children to the PageContext.
+	- *Action::contextName: string* - Unique context name to use as Component ID. It must be unique only for same container components.
+	- *Action::childComponent: object* - Component instance that will be added to context, 
+	- *Action::classNames: string* - Class-name selectors of the specified component.
+	- *initialProps: object* - Initial properties of the specified component.
+
+- **Action::type = removeChild** 
+Removes target component and it's children from context.
+- **Action::type = removeChildren**
+Removes target component's children from context.
+- **Action::type = pushClassNames**
+Pushes new className selectors to the target component in order to manipulate component properties.
+	- *Action::classNames:string*
+- **Action::type => removeClassName**
+Removes classNames selectors from the specified component.
+	- *Action::classNames:string* 
+
+**FlexLayout::addChild(childComponent:*, contextName: string, className: string**
+Adds specified component to the FlexLayout instance and if name is specified then dispatches **addPageContextChild** action to the Context.
+
+**FlexLayout::removeChild(childComponent:object)**
+Removes specified component from FlexLayout instance then dispatches **addPageContextChild** action to the Context.
+
+**FlexLayout::removeAll()**
 
