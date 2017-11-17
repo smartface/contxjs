@@ -129,17 +129,17 @@ TODO: Creating Run-time Rules
 ## Context Management
 Each context encapsulates behaviors and apply theme to decorated components that come from outside of the context via Context's Actors and Reducers.
 
-### Page Context
+### Contx/Smartface/pageContext
 Page context create style-able Smartface pages and components so that we can manipulate them using style-objects and selectors. Smartface UIEditor Transpiler generates connection between Pages and PageContext and automatically add static components via Smartface UIEditor. Dynamic Components for instance they might be images that should be created after an api call are able to only manually added. 
 
-#### Page Context API
+#### Contx/Smartface/pageContext API
 **FlexLayout::children: object**
 When PageContext is initialized for the first time then it creates component view-tree recursively using FlexLayout's children property.
 
 **Component::dispatch(action:object)**
 To manipulate Context's states and behaviors using explicitly defined built-in or custom actions that trigger Context's reducers in order to run behaviors. It's same all pages and components only in a PageContext.
 
-**Actions:**
+**Contx/Smartface/Actions/**
 
 -  **Action::type = addPageContextChild**
 Adds the specified Component and their children to the PageContext and applies styles by class-name selectors.
@@ -156,10 +156,10 @@ Removes target component's children from context.
 Pushes new className selectors to the target component in order to manipulate component properties.
 	- *Action::classNames:string*
 - **Action::type = removeClassName** :
-Removes classNames selectors from the specified component.
+Removes className selector from the specified component's actor in the Context.
 	- *Action::classNames:string* 
 - **Action::type = invalidate** : 
-Force update for all components
+Forces to update Context's Actors and applies styles if they are changed.
 - **Action::type = updateContext** : 
 Adds new components to Context or removes ones that doesn't exists in the updated FlexLayout::children.
 
@@ -174,5 +174,16 @@ Removes specified component from FlexLayout instance then dispatches **removeChi
 **FlexLayout::removeAll()**
 
 Removes specified component's children then dispatches **removeChildren** action to the Context.
+
+#### Life-Cycle Events
+**Component::onDispose**
+
+When a component is removed from the Context and If the component has onDipose method then it's triggered.
+
+**Component::onContextInit(dispatch:function)**
+
+When a component initialized in the Context then If a component has onDipose method and it's triggered by passing the its dispatch method or not dispatch method assign component directly.
+
+
 
 
