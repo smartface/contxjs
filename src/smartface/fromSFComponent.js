@@ -59,7 +59,7 @@ function createOriginals(component){
  * @return {function} - context helper
  */
 export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, acc = {'@@isEmpty': true}) {
-  function buildContextTree(component, name) {
+  function buildContextTree(component, name, cNames="") {
     let componentVars;
 
     if (name == rootName + "_statusBar") {
@@ -123,7 +123,9 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
       raiseErrorMaybe(new Error(e), component.onError);
     }
 
-    const classNames = componentVars.classNames ? componentVars.classNames+ " #" + name : "#" + name;
+    const classNames = componentVars.classNames 
+      ? componentVars.classNames+" "+cNames+" #" + name 
+      : cNames+" #" + name;
 
     if (acc[name] === undefined) {
       delete acc['@@isEmpty'];
@@ -138,8 +140,13 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
 
     component.children &&
       Object.keys(component.children).forEach((child) => {
+        const comp = component.children[child];
         try {
-          buildContextTree(component.children[child], name + "_" + child);
+          if (comp.component !== undefined && comp.classNames !== undefined) {
+            buildContextTree(comp.component, name + "_" + child, comp.classNames);
+          } else {
+            buildContextTree(comp, name + "_" + child);
+          }
         } catch (e) {
           e.message = "Error when component would be collected: " + child + ". " + e.message;
           raiseErrorMaybe(e, component.onError);

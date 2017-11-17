@@ -11,3 +11,5 @@ examples
 .cz-config.js
 Makefile
 .travis.yml
+_book
+.jsdoc.json

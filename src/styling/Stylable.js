@@ -159,9 +159,8 @@ export default function makeStylable({component, classNames="", initialProps={},
       this._actorInternal_ = null;
       this.context = null;
       this.styles = null;
+      component.dispatch = null;
       component.onDispose && component.onDispose();
-      component.setContextDispatcher &&
-        component.setContextDispatcher(null);
     }
   };
 }

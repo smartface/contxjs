@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # contxjs
 
 ## Styling
@@ -420,4 +421,48 @@ When a component is removed from the Context and If the component has onDipose m
 **Component::onContextInit(dispatch:function)**
 
 When a component initialized in the Context and If the component has onContextInit method then it's triggered by passing the its dispatch method. If not dispatch method is assigned to component directly.
+=======
+# Contxjs 
+
+Contxjs is a micro-framework that manages Conceptual Contexts and their states of the Javascript applications.
+
+##Built-in Contexts
+###StyleContext
+Creates stylingContext and manage components stylings that would be added.
+		Application Styles as a State with StyleContext
+		
+		Manipulating StyleContext’s Styles State
+		Actions
+		
+	PageContext
+		PageContext Component Shortcuts
+			addChild
+			removeChild
+			removeAll
+		Management of The Page Components
+		Actions
+
+	ThemeContext
+		Switching Themes
+
+
+# Styling 
+	Selectors
+		., #
+	
+	Directives and Rules
+		Nested Rules
+		Parent-selector Rule
+			&
+		Runtime Rules
+			Built-in Rules
+				Device rule
+			Extending Rules
+
+		Compile Time Directives
+			Built-in Rules
+				extend
+			Extending Rules
+	Styling Conventions
+>>>>>>> Add classnames to layout children
 

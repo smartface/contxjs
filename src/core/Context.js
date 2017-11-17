@@ -61,7 +61,7 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
       this.actors.collection[name] = actor;
       this.actors.$$map.push(name);
       actor.hook = hookMaybe;
-      actor.setContextDispatcher((action, target) => this.dispatch(action, target));
+      actor.onContextInit((action, target) => this.dispatch(action, target));
     }
     
     removeChildren = (name) => {

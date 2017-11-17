@@ -1,4 +1,15 @@
+/**
+ * @module core/Actor
+ */
+
+/**
+ * Abstract Actor Class
+ */
 export default class Actor {
+  /**
+   * @constructor
+   * @param {object} component - Wrapped Component
+   */
   constructor(component) {
     this._actorInternal_ = {};
     this._actorInternal_.component = component;
@@ -25,15 +36,15 @@ export default class Actor {
     //   console.log(err.message);
   }
   
-  setContextDispatcher = (dispatcher) => {
+  onContextInit = (dispatcher) => {
     // console.log("dispatcher : "+this.name+" : "+this._actorInternal_.component.setContextDispatcher+": "+dispatcher);
     this._dispatcher = dispatcher;
     this._actorInternal_.component.setContextDispatcher
-    ? this._actorInternal_.component.setContextDispatcher((action) => {
-        dispatcher(action, this.getName());
-      })
-    : this._actorInternal_.component.dispatch = (action) => {
-        dispatcher(action, this.getName());
-      };
+      ? this._actorInternal_.component.setContextDispatcher((action) => {
+          dispatcher(action, this.getName());
+        })
+      : this._actorInternal_.component.dispatch = (action) => {
+          dispatcher(action, this.getName());
+        };
   }
 }
