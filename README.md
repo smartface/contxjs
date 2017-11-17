@@ -173,7 +173,7 @@ searchBlock_searchInput-color--red{
 
 ```
 
-This method make style code more readable and easy understanding.
+This method make styles more readable and easier understanding.
 
 ## Context Management
 Each context encapsulates behaviors and apply theme to decorated components that come from outside of the context via Context's Actors and Reducers.
@@ -232,8 +232,4 @@ When a component is removed from the Context and If the component has onDipose m
 **Component::onContextInit(dispatch:function)**
 
 When a component initialized in the Context and If the component has onContextInit method then it's triggered by passing the its dispatch method. If not dispatch method is assigned to component directly.
-
-
-
-
 
