@@ -25,6 +25,7 @@ Styling Selectors are also similar to the CSS selectors. There are 2 kind of sel
    "#articleHeader":{
      "textColor":"#1775D0"
    }
+}
 ```
 
 
