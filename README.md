@@ -148,7 +148,7 @@ parentBlock_childBlock--modifier {
 ...
 }
 
-/* or */
+/* or with modifiers*/
 
 searchBlock_searchInput{
 }
@@ -157,7 +157,7 @@ searchBlock_searchInput-activated{
 searchBlock_searchInput-deactivated{
 }
 
-/* or with variable */
+/* or with modulfier as variable */
 searchBlock_searchInput-isActivated--true{
 ...
 }
