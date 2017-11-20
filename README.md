@@ -234,3 +234,7 @@ When a component is removed from the Context and If the component has onDipose m
 
 When a component initialized in the Context and If the component has onContextInit method and then it's triggered by passing its dispatch method. If not, dispatch method will be assigned to component directly.
 
+##### Component::onError(error:Error)
+
+If an error is occcured while an operation is running for a component, for example new properties assignment, and the component has onError method then the error is passed to onError method of the component.
+
