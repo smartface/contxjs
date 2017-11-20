@@ -158,7 +158,7 @@ searchBlock_searchInput-activated{
 searchBlock_searchInput-deactivated{
 }
 
-/* or with modulfier as variable */
+/* or with modifiers as variable */
 searchBlock_searchInput-isActivated--true{
 ...
 }
