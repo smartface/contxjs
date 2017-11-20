@@ -1,4 +1,4 @@
-# contxjs
+# Contxjs
 
 ## Styling
 
