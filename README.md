@@ -179,7 +179,7 @@ This method make styles more readable, maintainable and easier understanding
 Each context encapsulates behaviors and apply theme to decorated components that come from outside of the context via Context's Actors and Reducers.
 
 ### Contx/Smartface/pageContext
-Page context create style-able Smartface pages and components so that we can manipulate them using style-objects and selectors. Smartface UIEditor Transpiler generates connection between Pages and PageContext and automatically add static components via Smartface UIEditor. Dynamic Components for instance they might be images that should be created after an api call are able to only manually added. 
+PageContext create style-able Smartface pages and components so that we can manipulate them using style-objects and selectors. Smartface UIEditor Transpiler generates connection between Pages and PageContext and automatically adds components that they are created via Smartface UIEditor. To add Components dynamically, for instance they might be images that should be created after an api, you must use PageContext's actions.
 
 #### Contx/Smartface/pageContext API
 ##### FlexLayout::children: object
