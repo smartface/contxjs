@@ -113,12 +113,12 @@ const styles = {
     width: 100,
     height: 200
     "+anyRuleCreatedByUser:rule-params":{
-	    "width": 400
-	},
+      "width": 400
+    },
     "+anotherRuleCreatedByUser:rule-params":{
-	    "width": 400,
-	    "height": 500
-	}
+      "width": 400,
+      "height": 500
+    }
   }
 }
 ```
@@ -151,7 +151,7 @@ parentBlock_childBlock--modifier {
 
 /* or with modifiers*/
 
-searchBlock_searchInput{
+searchBlock_searchInputE{
 }
 searchBlock_searchInput-activated{
 }
@@ -189,7 +189,7 @@ When PageContext is initialized for the first time then it creates component vie
 ##### Component::dispatch(action:object)
 To manipulate Context's states and behaviors using explicitly defined built-in or custom actions that trigger Context's reducers in order to run behaviors. It's same all pages and components only in a PageContext.
 
-#####  Contx/Smartface/Actions/
+##### Contx/Smartface/Actions/
 
 -  **Action::type = addPageContextChild**
 Adds the specified Component and their children to the PageContext and applies styles by class-name selectors.
@@ -232,5 +232,5 @@ When a component is removed from the Context and If the component has onDipose m
 
 ##### Component::onContextInit(dispatch:function)
 
-When a component initialized in the Context and If the component has onContextInit method then it's triggered by passing the its dispatch method. If not dispatch method is assigned to component directly.
+When a component initialized in the Context and If the component has onContextInit method and then it's triggered by passing its dispatch method. If not, dispatch method will be assigned to component directly.
 
