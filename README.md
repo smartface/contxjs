@@ -6,7 +6,7 @@
 A style object is similar to the CSS definitions. We create style-objects with selectors then we can use whenever we want to assign them to components. For example:
 
 ### Selectors
-Styling Selectors are also similar to the CSS selectors. There are 2 kind of selectors in the StylingObject.
+Styling Selectors are also similar to the CSS selectors. There are 2 kinds of selectors in the StylingObject.
 
 - "." ClassName selector
 - "#" Element ID selectors (Just as a convention, in fact it's completely same with the classname selector)
