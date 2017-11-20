@@ -107,25 +107,33 @@ export function createSFCoreProp(key, value) {
   if (componentObjectProps[key] || ENUMS[key]) {
     if (value instanceof Object) {
       res = {};
-      Object.keys(value).forEach(function (name) {
+      Object.keys(value).forEach(function(name) {
         // if (ENUMS[key] && ENUMS[key][name]) {
         //   res[name] = ENUMS[key][name][value[name]];
         // } else {
-          res[name] = createSFCoreProp(name, value[name]);
+        res[name] = createSFCoreProp(name, value[name]);
         // }
       });
-    } else if(ENUMS[key]){
-      res = value === null ? NaN : ENUMS[key][value];
-    } else {
-      throw new Error(key+" ENUM value cannot be found");
     }
-  } else if (COLOR_PROPS.indexOf(key) !== -1) {
+    else if (ENUMS[key]) {
+      res = value === null ? NaN : ENUMS[key][value];
+    }
+    else {
+      throw new Error(key + " ENUM value cannot be found");
+    }
+  }
+  else if (COLOR_PROPS.indexOf(key) !== -1) {
     res = createColorForDevice(value);
-  } else if (IMAGE_PROPS.indexOf(key) !== -1) {
+  }
+  else if (IMAGE_PROPS.indexOf(key) !== -1) {
     res = Image.createFromFile("images://" + value);
-  } else if (key === "font") {
-    res = Font.create(value && value.family || "Font.DEFAULT", value && value.size || 16, getFontStyle(value));
-  } else {
+  }
+  else if (key === "font") {
+    var family = (!value.family || value.family === "Default") ? Font.DEFAULT : value.family;
+    res = Font.create(family, value.size || 16, getFontStyle(value));
+
+  }
+  else {
     res = value === null ? NaN : value;
   }
 
