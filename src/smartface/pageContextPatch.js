@@ -10,7 +10,7 @@ export default function pageContextPatch(page, name){
   page.onLoad = patchMethod(page, "onLoad", onLoad);
   page.onShow = patchMethod(page, "onShow", onShow);
   page.onHide = patchMethod(page, "onHide", onHide);
-  page.onContextInit = patchMethod(page, "onContextInit", onContextInit);
+  page.didComponentEnter = patchMethod(page, "onContextInit", didComponentEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
   page.themeContext = Application.theme();
   
@@ -59,9 +59,9 @@ export default function pageContextPatch(page, name){
     }, 1);
   }
   
-  function onContextInit(onContextInit, dispatcher) {
-    onContextInit 
-      && onContextInit(dispatcher)
+  function didComponentEnter(didComponentEnter, dispatcher) {
+    didComponentEnter 
+      && didComponentEnter(dispatcher)
       || (this.dispatch = dispatcher);
   }
   

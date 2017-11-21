@@ -17,8 +17,6 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
     }
     
     setActors = (actors) => {
-      // const oldActors = this.actors;
-      // this.actors = [];
       Object.keys(actors)
         .forEach((name) => {
           // if(oldActors.collection[name]){
@@ -61,14 +59,15 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
       this.actors.collection[name] = actor;
       this.actors.$$map.push(name);
       actor.hook = hookMaybe;
-      actor.onContextInit((action, target) => this.dispatch(action, target));
+      actor.didComponentEnter((action, target) => this.dispatch(action, target));
     }
     
     removeChildren = (name) => {
       this.actors.$$map.forEach(nm => {
         if(nm.indexOf(name+"_") === 0){
           const actor = this.actors.collection[nm];
-          actor && actor.dispose && actor.dispose();
+          actor.didComponentLeave();
+          actor.dispose();
           delete this.actors.collection[nm];
         }
       });
@@ -84,6 +83,7 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
       if(actor){
         delete this.actors.collection[name];
         this.actors.$$map = Object.keys(this.actors.collection);
+        actor.didComponentLeave();
         actor.dispose();
       }
     }
@@ -113,7 +113,7 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
         this.setState(state);
       } catch (e) {
         e.message = `An Error is occurred When action [${action.type}] run on target [${target}]. ${e.message}`;
-        raiseErrorMaybe(new Error(e), this.component.onError);
+        throw new Error(e);
       }
     }
     

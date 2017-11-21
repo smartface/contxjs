@@ -120,7 +120,7 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
     } catch (e) {
       e.message = `An Error is occurred when component [${name}] is patched in the [${rootName}]. ${e.message}`;
       
-      raiseErrorMaybe(new Error(e), component.onError);
+      raiseErrorMaybe(e, component.onError);
     }
 
     const classNames = componentVars.classNames 

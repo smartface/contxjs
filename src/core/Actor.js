@@ -31,13 +31,15 @@ export default class Actor {
   
   onError = (err) => {
     if(this._actorInternal_.component.onError)
-      this._actorInternal_.component.onError(err);
-    // else
-    //   console.log(err.message);
+      return this._actorInternal_.component.onError(err);
+    return false;
   }
   
-  onContextInit = (dispatcher) => {
-    // console.log("dispatcher : "+this.name+" : "+this._actorInternal_.component.setContextDispatcher+": "+dispatcher);
+  didComponentLeave = () => {
+    typeof this._actorInternal_.component.didComponentLeave === 'function' && this._actorInternal_.component.didComponentLeave();
+  }
+  
+  didComponentEnter = (dispatcher) => {
     this._dispatcher = dispatcher;
     this._actorInternal_.component.setContextDispatcher
       ? this._actorInternal_.component.setContextDispatcher((action) => {
