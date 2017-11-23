@@ -105,7 +105,7 @@ const styles = {
 TODO: Extending Build-time Rules
 
 ### Run-time Directives
-Run-time directives are run every time when making request to style by Styler and override the owner selector's properties.
+Run-time directives are ran at every style request by @smartface/styler, when making request to style by Styler and override the owner selector's properties.
 
 ```js
 const styles = {
