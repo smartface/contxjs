@@ -114,26 +114,26 @@ export function createSFCoreProp(key, value) {
         res[name] = createSFCoreProp(name, value[name]);
         // }
       });
-    }
-    else if (ENUMS[key]) {
+    } else if (ENUMS[key]) {
       res = value === null ? NaN : ENUMS[key][value];
     }
     else {
       throw new Error(key + " ENUM value cannot be found");
     }
-  }
-  else if (COLOR_PROPS.indexOf(key) !== -1) {
+  } else if (COLOR_PROPS.indexOf(key) !== -1) {
     res = createColorForDevice(value);
-  }
-  else if (IMAGE_PROPS.indexOf(key) !== -1) {
+  } else if (IMAGE_PROPS.indexOf(key) !== -1) {
     res = Image.createFromFile("images://" + value);
-  }
-  else if (key === "font") {
+    
+    if(res === null){
+      throw new Error(`Image [${value}] cannot be found`);
+    }
+      
+  } else if (key === "font") {
     var family = (!value.family || value.family === "Default") ? Font.DEFAULT : value.family;
     res = Font.create(family, value.size || 16, getFontStyle(value));
 
-  }
-  else {
+  } else {
     res = value === null ? NaN : value;
   }
 

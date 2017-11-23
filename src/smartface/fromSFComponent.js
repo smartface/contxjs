@@ -7,9 +7,9 @@ import removeContextChildren from './action/removeChildren';
 import findClassNames from '@smartface/styler/lib/utils/findClassNames';
 import raiseErrorMaybe from '../core/util/raiseErrorMaybe';
 
-function addChild(superAddChild, child, name, classNames="", props={}) {
+function addChild(superAddChild, child, name, classNames="", userProps={}) {
   superAddChild(child);
-  name && this.dispatch(addContextChild(name, child, classNames, props));
+  name && this.dispatch(addContextChild(name, child, classNames, userProps));
 }
 
 function removeChild(superRemoveChild, child) {
@@ -28,23 +28,26 @@ function removeChildren(superRemoveAll) {
 }
 
 function createOriginals(component){
-  !component.__original_addChild && Object.defineProperty(component, "__original_addChild", {
-    value: component.addChild,
-    enumerable: false,  
-    configurable: false
-  });
+  !component.__original_addChild
+    && Object.defineProperty(component, "__original_addChild", {
+        value: component.addChild,
+        enumerable: false,  
+        configurable: false
+      });
 
-  !component.__original_removeChild && Object.defineProperty(component, "__original_removeChild", {
-    value: component.removeChild,
-    enumerable: false,  
-    configurable: false
-  });
+  !component.__original_removeChild 
+    && Object.defineProperty(component, "__original_removeChild", {
+        value: component.removeChild,
+        enumerable: false,  
+        configurable: false
+      });
 
-  !component.__original_removeAll && Object.defineProperty(component, "__original_removeAll", {
-    value: component.removeAll,
-    enumerable: false,  
-    configurable: false
-  });
+  !component.__original_removeAll 
+    && Object.defineProperty(component, "__original_removeAll", {
+        value: component.removeAll,
+        enumerable: false,  
+        configurable: false
+      });
 }
 
 /**
@@ -54,7 +57,7 @@ function createOriginals(component){
  * @param {string} name - component name
  * @param {function} initialClassNameMap - classNames mapping with specified component and children
  * @param {?function} hookList - callback function to capture context's hooks
- * @param {?Object} acc [={}] - Accumulator
+ * @param {?Object} acc [={}] - Initial Accumulator value
  * 
  * @return {function} - context helper
  */
@@ -133,7 +136,7 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
       acc[name] = {
         component,
         classNames,
-        initialProps: componentVars.initialProps,
+        initialProps: componentVars.userProps,
         name
       };
     }

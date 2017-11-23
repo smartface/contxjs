@@ -24,8 +24,13 @@ export default function makeStylable({component, classNames="", initialProps={},
       super(component);
 
       this.classNames = [...initialClassNames];
-      this.styles = initialProps;
+      this.styles = {};
+      this.inlinestyles = {};
       this.isDirty = true;
+    }
+    
+    getInlineStyles = () => {
+      return merge(initialProps, this.inlinestyles);
     }
     
     getName = () => {
@@ -39,7 +44,7 @@ export default function makeStylable({component, classNames="", initialProps={},
      */
     setStyles = (style) => {
       const reduceDiffStyleHook = this.hook("reduceDiffStyleHook");
-
+      style = merge(style, initialProps);
       let diffReducer = reduceDiffStyleHook
         ? reduceDiffStyleHook(this.styles || {}, style)
         : (acc, key) => {
@@ -53,13 +58,19 @@ export default function makeStylable({component, classNames="", initialProps={},
   
             return acc;
           };
-
+          
       let diff = Object.keys(style).reduce(diffReducer, {});
-      
-      this.styles === initialProps && (diff = merge(diff, initialProps));
+
+      // this.styles === initialProps && (diff = merge(diff, initialProps));
       
       const beforeHook = this.hook("beforeStyleDiffAssign");
       beforeHook && (diff = beforeHook(diff));
+
+      if(name.indexOf("imgBanner") > -1){
+        console.log(name+" > "+JSON.stringify(style));
+        console.log(name+" > "+JSON.stringify(initialProps));
+        console.log(name+" > "+JSON.stringify(diff));
+      }
 
       const comp = name.indexOf("_") === -1 && this._actorInternal_.component.layout
         ? this._actorInternal_.component.layout
