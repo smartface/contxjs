@@ -47,6 +47,10 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
       return acc;
     }
     
+    find = (name, notValue) => {
+      return this.actors.collection[name] || notValue;
+    }
+    
     addTree = (tree) => {
       Object.keys(tree).forEach((name) => this.add(tree[name], name));
     }

@@ -11,9 +11,9 @@ import merge from "@smartface/styler/lib/utils/merge";
  * 
  * @returns {Object} - A Stylable Actor
  */
-export default function makeStylable({component, classNames="", initialProps={}, name}) {
+export default function makeStylable({component, classNames="", userStyle={}, name}) {
   const initialClassNames = classNames && classNames.split(" ") || [];
-  initialProps = merge(initialProps);
+  userStyle = merge(userStyle);
   
   /**
    * Styable actor
@@ -29,8 +29,19 @@ export default function makeStylable({component, classNames="", initialProps={},
       this.isDirty = true;
     }
     
-    getInlineStyles = () => {
-      return merge(initialProps, this.inlinestyles);
+    getUserStyle = () => {
+      return merge(userStyle);
+    }
+    
+    updateUserStyle = (props) => {
+      userStyle = merge(userStyle, props);
+      this.isDirty = true;
+    }
+    
+    setUserStyle = (props) => {
+      userStyle = merge(props);
+      console.log(name+""+JSON.stringify(userStyle));
+      this.isDirty = true;
     }
     
     getName = () => {
@@ -44,7 +55,7 @@ export default function makeStylable({component, classNames="", initialProps={},
      */
     setStyles = (style) => {
       const reduceDiffStyleHook = this.hook("reduceDiffStyleHook");
-      style = merge(style, initialProps);
+      style = merge(style, userStyle);
       let diffReducer = reduceDiffStyleHook
         ? reduceDiffStyleHook(this.styles || {}, style)
         : (acc, key) => {
@@ -61,39 +72,37 @@ export default function makeStylable({component, classNames="", initialProps={},
           
       let diff = Object.keys(style).reduce(diffReducer, {});
 
-      // this.styles === initialProps && (diff = merge(diff, initialProps));
+      // this.styles === userStyle && (diff = merge(diff, userStyle));
       
       const beforeHook = this.hook("beforeStyleDiffAssign");
       beforeHook && (diff = beforeHook(diff));
-
-      if(name.indexOf("imgBanner") > -1){
-        console.log(name+" > "+JSON.stringify(style));
-        console.log(name+" > "+JSON.stringify(initialProps));
-        console.log(name+" > "+JSON.stringify(diff));
-      }
 
       const comp = name.indexOf("_") === -1 && this._actorInternal_.component.layout
         ? this._actorInternal_.component.layout
         : this._actorInternal_.component;
       const hasDiff = Object.keys(diff).length > 0;
-        
+      const SCW_LAYOUT_PROPS = {
+        "alignContent": "alignContent",
+        "alignItems": "alignItems",
+        "direction": "direction",
+        "flexDirection": "flexDirection",
+        "justifyContent": "justifyContent",
+        "flexWrap": "flexWrap",
+        "paddingLeft": "paddingLeft",
+        "paddingTop": "paddingTop",
+        "paddingRight": "paddingRight",
+        "paddingBottom": "paddingBottom",
+        "layoutHeight": "height",
+        "layoutWidth": "width"
+      };        
       typeof component.subscribeContext === "function" 
         ? hasDiff && component.subscribeContext({ type: "new-styles", data: Object.assign({}, diff) })
         : hasDiff && Object.keys(diff).forEach((key) => {
             try {
-              /*if (key == "scrollEnabled") {
-                comp.ios && (comp.ios.scrollEnabled = diff[key]);
-              } else */
-              if(key === "layoutHeight") { // component.layout.height
-                comp.layout['height'] = diff[key];
-              } else if(key === "layoutWidth") { // component.layout.width
-                comp.layout['width'] = diff[key];
-              } else if(key !== "font" && style[key] instanceof Object) {
-                Object.keys(diff[key]).forEach((k) => {
-                  comp[key][k] = diff[key][k];
-                });
+              if(component.layout && SCW_LAYOUT_PROPS[key]){
+                component.layout[SCW_LAYOUT_PROPS[key]] = diff[key];
               } else {
-                comp[key] = diff[key];
+                component[key] = diff[key];
               }
             } catch (e) {
               throw new Error(key + " has invalid value " + JSON.stringify(style[key]) + " " + e.message);

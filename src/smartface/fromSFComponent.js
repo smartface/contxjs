@@ -7,7 +7,7 @@ import removeContextChildren from './action/removeChildren';
 import findClassNames from '@smartface/styler/lib/utils/findClassNames';
 import raiseErrorMaybe from '../core/util/raiseErrorMaybe';
 
-function addChild(superAddChild, child, name, classNames="", userProps={}) {
+function addChild(superAddChild, child, name, classNames="", userProps=null) {
   superAddChild(child);
   name && this.dispatch(addContextChild(name, child, classNames, userProps));
 }
@@ -136,7 +136,7 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
       acc[name] = {
         component,
         classNames,
-        initialProps: componentVars.userProps,
+        userStyle: componentVars.userProps,
         name
       };
     }

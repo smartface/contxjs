@@ -51,10 +51,10 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 		//context hooks
 		function(hook) {
 			switch (hook) {
-				case 'beforeAssignComponentStyles':
-					return function beforeAssignComponentStyles(name, className) {
-						return className;
-					};
+				// case 'beforeAssignComponentStyles':
+				// 	return function beforeAssignComponentStyles(name, className) {
+				// 		return className;
+				// 	};
 				case 'beforeStyleDiffAssign':
 					return function beforeStyleDiffAssign(styles) {
 						return buildProps(styles);
@@ -150,6 +150,14 @@ function contextReducer(context, action, target) {
 	// console.log("page context : "+JSON.stringify(action));
 	
 	switch (action.type) {
+		case "updateUserStyle":
+			context.find(target, {updateUserStyle: function(){}}).updateUserStyle(action.userStyle);
+			
+			return newState;
+		case "changeUserStyle":
+			context.find(target, {setUserStyle: function(){}}).setUserStyle(action.userStyle);
+			
+			return newState;
 		case "invalidate":
 			context.map(function(actor) {
 				actor.setDirty(true);
@@ -157,7 +165,9 @@ function contextReducer(context, action, target) {
 
 			return newState;
     case 'addChild':
-    	const ctree = createActorTreeFromSFComponent(action.component, target+"_"+action.name);
+    	const rootName = target+"_"+action.name;
+    	const ctree = createActorTreeFromSFComponent(action.component, rootName);
+    	
     	if(action.classNames && typeof action.classNames !== 'string' && !Array.isArray(action.classNames)){
     		throw new Error(action.classNames+" classNames must be String or Array");
     	}
@@ -165,8 +175,10 @@ function contextReducer(context, action, target) {
     	ctree[target+"_"+action.name]
     		&& action.classNames
     		&& Array.isArray(action.classNames)
-    			? ctree[target+"_"+action.name].pushClassNames(action.classNames)
-    			: ctree[target+"_"+action.name].pushClassNames(action.classNames.split(" "));
+    			? ctree[rootName].pushClassNames(action.classNames)
+    			: ctree[rootName].pushClassNames(action.classNames.split(" "));
+
+    	action.userStyle && ctree[rootName].setUserStyle(action.userStyle);
     	context.addTree(ctree);
     	
       return newState;
