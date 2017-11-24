@@ -198,6 +198,12 @@ Adds the specified Component and their children to the PageContext and applies s
 	- *Action::classNames: string* - Class-name selectors of the specified component.
 	- *initialProps: object* - Initial properties of the specified component.
 
+- **Action::type = changeUserStyle** : 
+Sets component userStyle.
+	- *Action::userStyle:object*
+- **Action::type = updateUserStyle** : 
+	- *Action::userStyle:object*
+Update component userStyle.
 - **Action::type = removeChild** : 
 Removes target component and it's children from context.
 - **Action::type = removeChildren** : 
@@ -228,11 +234,11 @@ Removes specified component's children then dispatches **removeChildren** action
 #### Life-Cycle Events
 ##### Component::didComponentLeave
 
-When a component is removed from the Context and If the component has onDipose method then it's triggered.
+When a component is removed from the Context and If the component has didComponentLeave method then it's triggered.
 
 ##### Component::didComponentEnter(dispatch:function)
 
-When a component initialized in the Context and If the component has onContextInit method and then it's triggered by passing its dispatch method. If not, dispatch method will be assigned to component directly.
+When a component initialized in the Context and If the component has didComponentEnter method and then it's triggered by passing its dispatch method. If not, dispatch method will be assigned to component directly.
 
 ##### Component::onError(error:Error)
 
