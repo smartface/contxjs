@@ -242,5 +242,5 @@ When a component initialized in the Context and If the component has didComponen
 
 ##### Component::onError(error:Error)
 
-If an error is occcured while an operation is running for a component, for example new properties assignment, and the component has onError method then the error is passed to onError method of the component. If not and then the content throws the error.
+If an error is occcured while an operation is running for a component, for example new properties assignment, and the component has onError method then the error is passed to onError method of the component. If not and then the context throws the error.
  
