@@ -213,7 +213,7 @@ Pushes new className selectors to the target component in order to manipulate co
 	- *Action::classNames:string*
 - **Action::type = removeClassName** :
 Removes className selector from the specified component's actor in the Context.
-	- *Action::classNames:string* 
+	- *Action::className:string* 
 - **Action::type = invalidate** : 
 Forces to update Context's Actors and applies styles if they are changed.
 - **Action::type = updateContext** : 
