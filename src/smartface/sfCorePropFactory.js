@@ -146,8 +146,9 @@ export default function buildProps(objectVal) {
   Object
     .keys(objectVal)
     .forEach(function(key) {
-      if (objectVal[key] !== null)
+      if (objectVal[key] !== null){
         props[key] = createSFCoreProp(key, objectVal[key]);
+      }
     });
 
   return props;
@@ -161,12 +162,10 @@ function createColorForDevice(color) {
       endColor: createColorForDevice(color.endColor),
       direction: Color.GradientDirection[color.direction]
     });
-  }
-  else if (color && /rgb/i.test(color)) {
+  } else if (color && /rgb/i.test(color)) {
     var rgba = color.match(/\d\.\d+|\d+/ig);
     res = Color.create((Number(rgba[3]) * 255), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
-  }
-  else if (color) {
+  } else if (color) {
     res = Color.create(color);
   }
 

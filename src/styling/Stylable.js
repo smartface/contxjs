@@ -40,7 +40,6 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     
     setUserStyle = (props) => {
       userStyle = merge(props);
-      console.log(name+""+JSON.stringify(userStyle));
       this.isDirty = true;
     }
     
@@ -81,6 +80,16 @@ export default function makeStylable({component, classNames="", userStyle={}, na
         ? this._actorInternal_.component.layout
         : this._actorInternal_.component;
       const hasDiff = Object.keys(diff).length > 0;
+      
+      //TODO: extract all specified area @cenk
+      // ------------->
+      
+      const componentObjectProps = {
+        "android": {},
+        "ios": {},
+        "layout": {}
+      };
+
       const SCW_LAYOUT_PROPS = {
         "alignContent": "alignContent",
         "alignItems": "alignItems",
@@ -94,20 +103,31 @@ export default function makeStylable({component, classNames="", userStyle={}, na
         "paddingBottom": "paddingBottom",
         "layoutHeight": "height",
         "layoutWidth": "width"
-      };        
+      };
+      
+      function componentAssign(component, key, value){
+        if(value !== null && value instanceof Object && componentObjectProps[key]){
+          Object.keys(value).forEach(k => componentAssign(component[key], k, value[k]));
+        } else {
+          component[key] = value;
+        }
+      }
+      
       typeof component.subscribeContext === "function" 
         ? hasDiff && component.subscribeContext({ type: "new-styles", data: Object.assign({}, diff) })
         : hasDiff && Object.keys(diff).forEach((key) => {
             try {
               if(component.layout && SCW_LAYOUT_PROPS[key]){
-                component.layout[SCW_LAYOUT_PROPS[key]] = diff[key];
+                // component.layout[SCW_LAYOUT_PROPS[key]] = diff[key];
+                componentAssign(component.layout, SCW_LAYOUT_PROPS[key], diff[key]);
               } else {
-                component[key] = diff[key];
+                componentAssign(component, key, diff[key]);
               }
             } catch (e) {
               throw new Error(key + " has invalid value " + JSON.stringify(style[key]) + " " + e.message);
             }
         });
+      // <-------------------
 
       const afterHook = this.hook("afterStyleDiffAssign");
       afterHook && (style = afterHook(style));
@@ -158,7 +178,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
         Array.isArray(classNames)
           ? this.classNames = [...this.classNames, ...classNames]
           : this.classNames.push(classNames);
-          
+      
         this.isDirty = true;
       }
 

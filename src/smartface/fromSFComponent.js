@@ -76,6 +76,7 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
     try {
       if(component.layout && typeof component.layout.addChild === 'function'){
         createOriginals(component.layout);
+        
         Object.defineProperty(component.layout, "addChild", {
           value: addChild.bind(component, component.layout.__original_addChild.bind(component.layout)),
           enumerable: true,  
