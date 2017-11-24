@@ -213,7 +213,7 @@ Forces to update Context's Actors and applies styles if they are changed.
 - **Action::type = updateContext** : 
 Adds new components to Context or removes ones that doesn't exists in the updated FlexLayout::children.
 
-##### FlexLayout::addChild( childComponent:*, ?contextName: string, ?className: string, ?initialProps:StyleObject )
+##### FlexLayout::addChild( childComponent:*, ?contextName: string, ?className: string, ?userStyle:StyleObject=null )
 
 Adds specified component to the FlexLayout instance and if contextName is specified then dispatches **addPageContextChild** action to the Context.
 
@@ -226,11 +226,11 @@ Removes specified component from FlexLayout instance then dispatches **removeChi
 Removes specified component's children then dispatches **removeChildren** action to the Context.
 
 #### Life-Cycle Events
-##### Component::onDispose
+##### Component::didComponentLeave
 
 When a component is removed from the Context and If the component has onDipose method then it's triggered.
 
-##### Component::onContextInit(dispatch:function)
+##### Component::didComponentEnter(dispatch:function)
 
 When a component initialized in the Context and If the component has onContextInit method and then it's triggered by passing its dispatch method. If not, dispatch method will be assigned to component directly.
 
