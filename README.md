@@ -221,15 +221,15 @@ Adds new components to Context or removes ones that doesn't exists in the update
 
 ##### FlexLayout::addChild( childComponent:*, ?contextName: string, ?className: string, ?userStyle:StyleObject=null )
 
-Adds specified component to the FlexLayout instance and if contextName is specified then dispatches **addPageContextChild** action to the Context.
+Adds specified component to the FlexLayout instance and if contextName is specified then dispatches addPageContextChild action to the Context.
 
 #####  FlexLayout::removeChild(childComponent:object)
 
-Removes specified component from FlexLayout instance then dispatches **removeChild** action to the Context.
+Removes specified component from FlexLayout instance then dispatches removeChild action to the Context.
 
 ##### FlexLayout::removeAll()
 
-Removes specified component's children then dispatches **removeChildren** action to the Context.
+Removes specified component's children then dispatches removeChildren action to the Context.
 
 #### Life-Cycle Events
 ##### Component::didComponentLeave
