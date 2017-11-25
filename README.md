@@ -123,6 +123,9 @@ const styles = {
 }
 ```
 
+TODO: Add example
+TODO: Describe Directive rule
+
 #### Creating Runtime Rules
 TODO: Creating Run-time Rules
 
