@@ -123,6 +123,9 @@ const styles = {
 }
 ```
 
+TODO: Add example
+TODO: Describe Directive rule
+
 #### Creating Runtime Rules
 TODO: Creating Run-time Rules
 
@@ -198,6 +201,12 @@ Adds the specified Component and their children to the PageContext and applies s
 	- *Action::classNames: string* - Class-name selectors of the specified component.
 	- *initialProps: object* - Initial properties of the specified component.
 
+- **Action::type = changeUserStyle** : 
+Sets component userStyle.
+	- *Action::userStyle:object*
+- **Action::type = updateUserStyle** : 
+	- *Action::userStyle:object*
+Update component userStyle.
 - **Action::type = removeChild** : 
 Removes target component and it's children from context.
 - **Action::type = removeChildren** : 
@@ -207,34 +216,34 @@ Pushes new className selectors to the target component in order to manipulate co
 	- *Action::classNames:string*
 - **Action::type = removeClassName** :
 Removes className selector from the specified component's actor in the Context.
-	- *Action::classNames:string* 
+	- *Action::className:string* 
 - **Action::type = invalidate** : 
 Forces to update Context's Actors and applies styles if they are changed.
 - **Action::type = updateContext** : 
 Adds new components to Context or removes ones that doesn't exists in the updated FlexLayout::children.
 
-##### FlexLayout::addChild( childComponent:*, ?contextName: string, ?className: string, ?initialProps:StyleObject )
+##### FlexLayout::addChild( childComponent:*, ?contextName: string, ?className: string, ?userStyle:StyleObject=null )
 
-Adds specified component to the FlexLayout instance and if contextName is specified then dispatches **addPageContextChild** action to the Context.
+Adds specified component to the FlexLayout instance and if contextName is specified then dispatches addPageContextChild action to the Context.
 
 #####  FlexLayout::removeChild(childComponent:object)
 
-Removes specified component from FlexLayout instance then dispatches **removeChild** action to the Context.
+Removes specified component from FlexLayout instance then dispatches removeChild action to the Context.
 
 ##### FlexLayout::removeAll()
 
-Removes specified component's children then dispatches **removeChildren** action to the Context.
+Removes specified component's children then dispatches removeChildren action to the Context.
 
 #### Life-Cycle Events
-##### Component::onDispose
+##### Component::didComponentLeave
 
-When a component is removed from the Context and If the component has onDipose method then it's triggered.
+When a component is removed from the Context and If the component has didComponentLeave method then it's triggered.
 
-##### Component::onContextInit(dispatch:function)
+##### Component::didComponentEnter(dispatch:function)
 
-When a component initialized in the Context and If the component has onContextInit method and then it's triggered by passing its dispatch method. If not, dispatch method will be assigned to component directly.
+When a component initialized in the Context and If the component has didComponentEnter method and then it's triggered by passing its dispatch method. If not, dispatch method will be assigned to component directly.
 
 ##### Component::onError(error:Error)
 
-If an error is occcured while an operation is running for a component, for example new properties assignment, and the component has onError method then the error is passed to onError method of the component. If not and then the content throws the error.
+If an error is occcured while an operation is running for a component, for example new properties assignment, and the component has onError method then the error is passed to onError method of the component. If not and then the context throws the error.
  
