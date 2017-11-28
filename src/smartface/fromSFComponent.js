@@ -66,11 +66,11 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
     let componentVars;
 
     if (name == rootName + "_statusBar") {
-      componentVars = root.constructor.$$styleContext.statusBar || {};
+      componentVars = root.constructor && root.constructor.$$styleContext.statusBar || {};
     } else if (name == rootName + "_headerBar") {
-      componentVars = root.constructor.$$styleContext.headerBar || {};
+      componentVars = root.constructor && root.constructor.$$styleContext.headerBar || {};
     } else {
-      componentVars = component.constructor.$$styleContext || {};
+      componentVars = component.constructor && component.constructor.$$styleContext || {};
     }
     
     try {
