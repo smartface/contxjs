@@ -69,17 +69,18 @@ export default function makeStylable({component, classNames="", userStyle={}, na
             return acc;
           };
           
-      let diff = Object.keys(style).reduce(diffReducer, {});
+      const rawDiff = Object.keys(style).reduce(diffReducer, {});
 
       // this.styles === userStyle && (diff = merge(diff, userStyle));
-      
+
       const beforeHook = this.hook("beforeStyleDiffAssign");
-      beforeHook && (diff = beforeHook(diff));
+      const diff = beforeHook && beforeHook(rawDiff) || null;
 
       const comp = name.indexOf("_") === -1 && this._actorInternal_.component.layout
         ? this._actorInternal_.component.layout
         : this._actorInternal_.component;
       const hasDiff = Object.keys(diff).length > 0;
+      
       
       //TODO: extract all specified area @cenk
       // ------------->
@@ -114,11 +115,10 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       }
       
       typeof component.subscribeContext === "function" 
-        ? hasDiff && component.subscribeContext({ type: "new-styles", data: Object.assign({}, diff) })
+        ? hasDiff && component.subscribeContext({ type: "new-styles", style: Object.assign({}, diff), rawStyle: merge(rawDiff) })
         : hasDiff && Object.keys(diff).forEach((key) => {
             try {
               if(component.layout && SCW_LAYOUT_PROPS[key]){
-                // component.layout[SCW_LAYOUT_PROPS[key]] = diff[key];
                 componentAssign(component.layout, SCW_LAYOUT_PROPS[key], diff[key]);
               } else {
                 componentAssign(component, key, diff[key]);
@@ -128,7 +128,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
             }
         });
       // <-------------------
-
+      
       const afterHook = this.hook("afterStyleDiffAssign");
       afterHook && (style = afterHook(style));
 

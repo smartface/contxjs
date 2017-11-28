@@ -44,6 +44,7 @@ commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type
 	}
 });
 
+
 function createPageContext(component, name, classMap = null, reducers = null) {
 	var styleContext = fromSFComponent(
 		component,

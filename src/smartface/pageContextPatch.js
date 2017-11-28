@@ -10,7 +10,7 @@ export default function pageContextPatch(page, name){
   page.onLoad = patchMethod(page, "onLoad", onLoad);
   page.onShow = patchMethod(page, "onShow", onShow);
   page.onHide = patchMethod(page, "onHide", onHide);
-  page.didComponentEnter = patchMethod(page, "onContextInit", didComponentEnter);
+  page.didComponentEnter = patchMethod(page, "didComponentEnter", didComponentEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
   page.themeContext = Application.theme();
   

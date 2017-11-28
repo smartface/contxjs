@@ -17,7 +17,7 @@ function removeChild(superRemoveChild, child) {
     superRemoveChild && superRemoveChild(child);
     child.dispatch && child.dispatch(removeContextChild());
   } else {
-    this.getParent() && this.getParent().removeChild(this);
+    this.getParent && this.getParent() && this.getParent().removeChild(this);
     this.dispatch && this.dispatch(removeContextChild());
   }
 }
