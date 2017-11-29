@@ -39,7 +39,12 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     }
     
     setUserStyle = (props) => {
-      userStyle = merge(props);
+      if(typeof props === 'function'){
+        userStyle = props(this.getUserStyle());
+      } else {
+        userStyle = merge(props);
+      }
+      
       this.isDirty = true;
     }
     
