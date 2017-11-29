@@ -10,6 +10,7 @@ export default function pageContextPatch(page, name){
   page.onLoad = patchMethod(page, "onLoad", onLoad);
   page.onShow = patchMethod(page, "onShow", onShow);
   page.onHide = patchMethod(page, "onHide", onHide);
+  
   page.didComponentEnter = patchMethod(page, "didComponentEnter", didComponentEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
   page.themeContext = Application.theme();
@@ -29,9 +30,9 @@ export default function pageContextPatch(page, name){
   
   function onShow(superOnShow, data) {
     superOnShow && superOnShow(data);
-    this.dispatch && this.dispatch({
-      type: "onShowUpdate"
-    });
+    // this.dispatch && this.dispatch({
+    //   type: "onShowUpdate"
+    // });
     
     this.dispatch && this.dispatch({
       type: "invalidate"

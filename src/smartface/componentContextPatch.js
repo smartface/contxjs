@@ -14,9 +14,5 @@ export default function componentContextPatch(component, name){
   
   function onShow(superOnShow, params){
     superOnShow(params);
-    
-    this.dispatch && this.dispatch({
-      type: "onShowUpdate"
-    }); 
   }
 }
