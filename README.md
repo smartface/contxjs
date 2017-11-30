@@ -1,3 +1,6 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+![npm version](https://img.shields.io/npm/v/@smartface/contx.svg?style=flat)
+
 # Contxjs
 
 ## Styling
