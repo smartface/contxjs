@@ -17,7 +17,7 @@ export default function pageContextPatch(page, name){
   
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
-    page.themeContext = Application.theme(page, name);
+    page.themeContext = Application.theme(createPageContext(page, name, null, null), name);
     
     // page.themeContext({
     //   type: "addThemeableContext",
