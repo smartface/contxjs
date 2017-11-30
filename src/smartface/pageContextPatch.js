@@ -13,15 +13,17 @@ export default function pageContextPatch(page, name){
   
   page.didComponentEnter = patchMethod(page, "didComponentEnter", didComponentEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
-  page.themeContext = Application.theme();
+  
   
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
-    page.themeContext({
-      type: "addThemeableContext",
-      name: name,
-      pageContext: createPageContext(page, name, null, null)
-    });
+    page.themeContext = Application.theme(page, name);
+    
+    // page.themeContext({
+    //   type: "addThemeableContext",
+    //   name: name,
+    //   pageContext: 
+    // });
   }
   
   function onHide(superOnHide) {

@@ -37,6 +37,7 @@ class Themeable extends Actor {
 
   changeTheme(theme) {
     this.pageContext(theme.asStyler());
+    this.isDirty = true;
   }
 
   whenContextChanged = (state, oldState) => {
@@ -71,29 +72,53 @@ export function createThemeContextBound(themes) {
 
         break;
       case 'changeTheme':
+        context.map((actor) => {
+          state.theme instanceof Theme && actor.changeTheme(action.theme);
+        });
+        
         return {
           ...state,
-          theme: themesCollection.find(theme => theme.name === action.themeName)
+          theme: themesCollection.find(theme => theme.name === action.theme)
         };
-      default:
+
+/*        context.dispatch({
+          type: "invalidate"
+        })
+*/      default:
         return newState;
     }
   }
   
-  return function(){
-    const context = createContext(
+  const themeContext = createContext(
+    // creates themes actors
+    {},
+    themesReducer,
+    // initial state
+    { theme: themesCollection.find(theme => theme.isDefault === true) }
+  );
+
+  return function(pageContext, name){
+    
+    /*const context = createContext(
       // creates themes actors
       {},
       themesReducer,
       // initial state
       { theme: themesCollection.find(theme => theme.isDefault === true) }
-    );
+    );*/
     
-    return function themeContextDispatch(action) {
+    themeContext.dispatch({
+      type: "addThemeableContext",
+      name: name,
+      pageContext
+    });
+    
+    return function themeContextDispatch(action, dispose=false) {
       if (action === null) {
-        context.dispose();
+        pageContext.dispose();
+        dispose && themeContext.dispose();
       } else if (context) {
-        context.dispatch(action);
+        themeContext.dispatch(action);
       }
     };
   };
