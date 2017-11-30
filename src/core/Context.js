@@ -117,7 +117,7 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
         this.setState(state);
       } catch (e) {
         e.message = `An Error is occurred When action [${action.type}] run on target [${target}]. ${e.message}`;
-        raiseErrorMaybe(e, this.actors.collection[target].onError);
+        raiseErrorMaybe(e, target && this.actors.collection[target].onError);
       }
     }
     

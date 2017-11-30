@@ -41,8 +41,8 @@ export default class Actor {
   
   didComponentEnter = (dispatcher) => {
     this._dispatcher = dispatcher;
-    this._actorInternal_.component.setContextDispatcher
-      ? this._actorInternal_.component.setContextDispatcher((action) => {
+    this._actorInternal_.component.didComponentEnter
+      ? this._actorInternal_.component.didComponentEnter((action) => {
           dispatcher(action, this.getName());
         })
       : this._actorInternal_.component.dispatch = (action) => {

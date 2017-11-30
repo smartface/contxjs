@@ -76,11 +76,8 @@ export default function makeStylable({component, classNames="", userStyle={}, na
           
       const rawDiff = Object.keys(style).reduce(diffReducer, {});
 
-      // this.styles === userStyle && (diff = merge(diff, userStyle));
-
       const beforeHook = this.hook("beforeStyleDiffAssign");
       const diff = beforeHook && beforeHook(rawDiff) || null;
-
       const comp = name.indexOf("_") === -1 && this._actorInternal_.component.layout
         ? this._actorInternal_.component.layout
         : this._actorInternal_.component;
