@@ -107,8 +107,13 @@ export default function makeStylable({component, classNames="", userStyle={}, na
         "paddingTop": "paddingTop",
         "paddingRight": "paddingRight",
         "paddingBottom": "paddingBottom",
+        "marginRight": "marginRight",
+        "marginLeft": "marginLeft",
+        "marginTop": "marginTop",
+        "marginBottom": "marginBottom",
         "layoutHeight": "height",
-        "layoutWidth": "width"
+        "layoutWidth": "width",
+        "backgroundColor": "backgroundColor"
       };
       
       function componentAssign(component, key, value){
