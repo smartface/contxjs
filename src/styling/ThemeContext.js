@@ -6,21 +6,23 @@ import styler from '@smartface/styler/lib/styler';
 import Actor from '../core/Actor';
 
 class Theme {
-  constructor({ name, rawStyles, isDefault }) {
+  constructor({ name, rawStyles, isDefault=false }) {
     this.name = name;
     this.rawStyles = rawStyles;
     this.setDefault(isDefault);
   }
-
-  setDefault(value) {
-    this.isDefault = value;
-    value && this.build();
+  
+  isDefault = () => {
+    return this._isDefault;
   }
 
-  build() {
-    if (!this.bundle) {
-      this.bundle = styleBuild(this.rawStyles);
-    }
+  setDefault = (value) => {
+    this._isDefault = value;
+    value && !this.bundle && this.build();
+  }
+
+  build = () => {
+    this.bundle = styleBuild(this.rawStyles);
   }
 
   asStyler() {
@@ -35,15 +37,9 @@ class Themeable extends Actor {
     this.pageContext = pageContext;
   }
 
-  changeTheme(theme) {
-    this.pageContext(theme.asStyler());
+  changeStyling(styling) {
+    this.pageContext(styling);
     this.isDirty = true;
-  }
-
-  whenContextChanged = (state, oldState) => {
-    if (state.theme !== oldState.theme) {
-      this.pageContext(state.theme.asStyler());
-    }
   }
 }
 
@@ -63,18 +59,27 @@ export function createThemeContextBound(themes) {
       newState = state;
 
     switch (action.type) {
-      case 'addThemeableContext':
+      case 'addThemeable':
         // make declarative
-        context.setActors({[action.name]: new Themeable(action.pageContext) });
-        context.map((actor) => {
-          state.theme instanceof Theme && actor.changeTheme(state.theme);
-        });
-
+        context.add(new Themeable(action.pageContext), action.name);
+        themesCollection.forEach(theme => 
+          theme.isDefault()
+            && context.map((actor) => {
+                actor.changeStyling(theme.asStyler());
+               })
+          );
+        break;
+      case 'removeThemeable':
+        context.remove(action.name);
         break;
       case 'changeTheme':
-        context.map((actor) => {
-          state.theme instanceof Theme && actor.changeTheme(action.theme);
-        });
+        themesCollection.forEach(theme => 
+          theme.name === action.theme 
+            && theme.setDefault(true) 
+            && context.map((actor) => {
+                actor.changeStyling(theme.asStyler());
+              })
+            || theme.setDefault(false));
         
         return {
           ...state,
@@ -107,17 +112,22 @@ export function createThemeContextBound(themes) {
       { theme: themesCollection.find(theme => theme.isDefault === true) }
     );*/
     
-    themeContext.dispatch({
-      type: "addThemeableContext",
-      name: name,
-      pageContext
-    });
+    pageContext === null 
+      ? themeContext.dispose()
+      : pageContext !== undefined && 
+          themeContext.dispatch({
+            type: "addThemeable",
+            name: name,
+            pageContext: pageContext
+          });
     
-    return function themeContextDispatch(action, dispose=false) {
+    return function themeContextDispatch(action) {
       if (action === null) {
-        pageContext.dispose();
-        dispose && themeContext.dispose();
-      } else if (context) {
+        name && themeContext.dispatch({
+          type: "removeThemeable",
+          name: name
+        });
+      } else {
         themeContext.dispatch(action);
       }
     };

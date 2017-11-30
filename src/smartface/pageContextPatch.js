@@ -14,16 +14,9 @@ export default function pageContextPatch(page, name){
   page.didComponentEnter = patchMethod(page, "didComponentEnter", didComponentEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
   
-  
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
     page.themeContext = Application.theme(createPageContext(page, name, null, null), name);
-    
-    // page.themeContext({
-    //   type: "addThemeableContext",
-    //   name: name,
-    //   pageContext: 
-    // });
   }
   
   function onHide(superOnHide) {
@@ -32,9 +25,6 @@ export default function pageContextPatch(page, name){
   
   function onShow(superOnShow, data) {
     superOnShow && superOnShow(data);
-    // this.dispatch && this.dispatch({
-    //   type: "onShowUpdate"
-    // });
     
     this.dispatch && this.dispatch({
       type: "invalidate"
