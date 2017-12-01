@@ -1,9 +1,10 @@
 import { INIT_CONTEXT_ACTION_TYPE } from "../core/constants";
 import createContext from "../core/Context";
 import merge from "@smartface/styler/lib/utils/merge";
-import styleBuild from "@smartface/styler/lib/buildStyles";
+import buildStyles from "@smartface/styler/lib/buildStyles";
 import styler from '@smartface/styler/lib/styler';
 import Actor from '../core/Actor';
+
 
 class Theme {
   constructor({ name, rawStyles, isDefault=false }) {
@@ -22,10 +23,10 @@ class Theme {
   }
 
   build = () => {
-    this.bundle = styleBuild(this.rawStyles);
+    this.bundle = buildStyles(this.rawStyles);
   }
 
-  asStyler() {
+  asStyler = () => {
     return styler(this.bundle);
   }
 }
@@ -44,10 +45,9 @@ class Themeable extends Actor {
 }
 
 /**
- * Style Context. Returns context composer
+ * Theme Context. Returns context bound
  * 
  * @param {Array.<{name:string, rawStyles:Object, isDefault:boolean}>} themes - h List
- * @param {function} hooks - Hooks factory
  * 
  * @returns {function} - Context dispatcher
  */
@@ -78,7 +78,7 @@ export function createThemeContextBound(themes) {
             && theme.setDefault(true) 
             && context.map((actor) => {
                 actor.changeStyling(theme.asStyler());
-              })
+               })
             || theme.setDefault(false));
         
         return {

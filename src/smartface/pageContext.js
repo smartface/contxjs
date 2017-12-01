@@ -4,7 +4,6 @@ import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
 import buildProps from "./sfCorePropFactory";
 import Screen from 'sf-core/device/screen';
-import Device from 'sf-core/device/';
 import System from 'sf-core/device/system';
 import isTablet from '../core/isTablet';
 import makeStylable from '../styling/Stylable';

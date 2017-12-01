@@ -7,7 +7,15 @@ export function createInitAction(){
   };
 }
 
+var ID = 0;
+
+function getID(){
+  return ++ID;
+}
+
 export default function createContext(actors, reducer, initialState={}, hookMaybe=null){
+  const id = getID();
+  
   class Context {
     constructor(){
       this.actors = {collection: {}, $$map: []};
@@ -57,7 +65,8 @@ export default function createContext(actors, reducer, initialState={}, hookMayb
     
     add = (actor, name) => {
       if(this.actors.collection[name]){
-        raiseErrorMaybe(new Error(`Child's name [${name}] must be unique in the same Container.`), actor.onError);
+        name = name+"@@"+getID();
+        // raiseErrorMaybe(new Error(`Child's name [${name}] must be unique in the same Container.`), actor.onError);
       }
       
       this.actors.collection[name] = actor;
