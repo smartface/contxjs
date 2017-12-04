@@ -61,13 +61,12 @@ export function createThemeContextBound(themes) {
     switch (action.type) {
       case 'addThemeable':
         // make declarative
-        context.add(new Themeable(action.pageContext), action.name);
-        themesCollection.forEach(theme => 
-          theme.isDefault()
-            && context.map((actor) => {
-                actor.changeStyling(theme.asStyler());
-               })
-          );
+        const actor = new Themeable(action.pageContext);
+        context.add(actor, action.name);
+        
+        const theme = themesCollection.find(theme => theme.isDefault());
+        actor.changeStyling(theme.asStyler());
+        
         break;
       case 'removeThemeable':
         context.remove(action.name);
@@ -85,12 +84,8 @@ export function createThemeContextBound(themes) {
           ...state,
           theme: themesCollection.find(theme => theme.name === action.theme)
         };
-
-/*        context.dispatch({
-          type: "invalidate"
-        })
-*/      default:
-        return newState;
+      default:
+          return newState;
     }
   }
   
@@ -103,15 +98,6 @@ export function createThemeContextBound(themes) {
   );
 
   return function(pageContext, name){
-    
-    /*const context = createContext(
-      // creates themes actors
-      {},
-      themesReducer,
-      // initial state
-      { theme: themesCollection.find(theme => theme.isDefault === true) }
-    );*/
-    
     pageContext === null 
       ? themeContext.dispose()
       : pageContext !== undefined && 
