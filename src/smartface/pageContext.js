@@ -4,7 +4,6 @@ import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
 import buildProps from "./sfCorePropFactory";
 import Screen from 'sf-core/device/screen';
-import Device from 'sf-core/device/';
 import System from 'sf-core/device/system';
 import isTablet from '../core/isTablet';
 import makeStylable from '../styling/Stylable';
@@ -152,11 +151,12 @@ function contextReducer(context, action, target) {
 	
 	switch (action.type) {
 		case "updateUserStyle":
-			context.find(target, {updateUserStyle: function(){}}).updateUserStyle(action.userStyle);
+			context.find(target, {updateUserStyle: () => {throw new TypeError(`Target ${target} component cannot be found.`)}}).updateUserStyle(action.userStyle);
 			
 			return newState;
 		case "changeUserStyle":
-			context.find(target, {setUserStyle: function(){}}).setUserStyle(action.userStyle);
+			context.find(target, {setUserStyle: () => {throw new TypeError(`Target ${target} component cannot be found.`)}})
+				.setUserStyle(action.userStyle);
 			
 			return newState;
 		case "invalidate":

@@ -16,7 +16,7 @@ export default function pageContextPatch(page, name){
   
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
-    page.themeContext = Application.theme(createPageContext(page, name, null, null), name);
+    this.themeContext = Application.theme(createPageContext(page, name, null, null), name);
   }
   
   function onHide(superOnHide) {

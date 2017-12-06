@@ -21,7 +21,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
    */
   return new class Stylable extends Actor {
     constructor() {
-      super(component);
+      super(component, name);
 
       this.classNames = [...initialClassNames];
       this.styles = {};
@@ -48,10 +48,6 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       this.isDirty = true;
     }
     
-    getName = () => {
-      return name;
-    }
-
     /**
      * Sets styles
      *
@@ -75,6 +71,8 @@ export default function makeStylable({component, classNames="", userStyle={}, na
           };
           
       const rawDiff = Object.keys(style).reduce(diffReducer, {});
+      
+      console.log(this.getInstanceID()+"::"+JSON.stringify(rawDiff));
 
       const beforeHook = this.hook("beforeStyleDiffAssign");
       const diff = beforeHook && beforeHook(rawDiff) || null;

@@ -1,9 +1,10 @@
 import { INIT_CONTEXT_ACTION_TYPE } from "../core/constants";
-import createContext from "../core/Context";
+import Context from "../core/Context";
 import merge from "@smartface/styler/lib/utils/merge";
-import styleBuild from "@smartface/styler/lib/buildStyles";
+import buildStyles from "@smartface/styler/lib/buildStyles";
 import styler from '@smartface/styler/lib/styler';
 import Actor from '../core/Actor';
+
 
 class Theme {
   constructor({ name, rawStyles, isDefault=false }) {
@@ -19,20 +20,22 @@ class Theme {
   setDefault = (value) => {
     this._isDefault = value;
     value && !this.bundle && this.build();
+    
+    return value;
   }
 
   build = () => {
-    this.bundle = styleBuild(this.rawStyles);
+    this.bundle = buildStyles(this.rawStyles);
   }
 
-  asStyler() {
+  asStyler = () => {
     return styler(this.bundle);
   }
 }
 
 class Themeable extends Actor {
-  constructor(pageContext) {
-    super(pageContext);
+  constructor(pageContext, name) {
+    super(pageContext, name);
 
     this.pageContext = pageContext;
   }
@@ -44,10 +47,9 @@ class Themeable extends Actor {
 }
 
 /**
- * Style Context. Returns context composer
+ * Theme Context. Returns context bound
  * 
  * @param {Array.<{name:string, rawStyles:Object, isDefault:boolean}>} themes - h List
- * @param {function} hooks - Hooks factory
  * 
  * @returns {function} - Context dispatcher
  */
@@ -57,44 +59,50 @@ export function createThemeContextBound(themes) {
   function themesReducer(context, action, target) {
     var state = context.getState(),
       newState = state;
+      
+      console.log(action.type);
 
     switch (action.type) {
       case 'addThemeable':
         // make declarative
-        context.add(new Themeable(action.pageContext), action.name);
-        themesCollection.forEach(theme => 
-          theme.isDefault()
-            && context.map((actor) => {
-                actor.changeStyling(theme.asStyler());
-               })
-          );
+        
+        const actor = new Themeable(action.pageContext, action.name);
+        context.add(actor, action.name);
+        
+        const theme = themesCollection.find(theme => theme.isDefault());
+        actor.changeStyling(theme.asStyler());
+        
         break;
       case 'removeThemeable':
         context.remove(action.name);
         break;
       case 'changeTheme':
-        themesCollection.forEach(theme => 
-          theme.name === action.theme 
-            && theme.setDefault(true) 
-            && context.map((actor) => {
-                actor.changeStyling(theme.asStyler());
-              })
-            || theme.setDefault(false));
+        // const current = themesCollection.find(theme => theme.isDefault());
+        // context.map((actor) => {
+        //   actor.changeStyling(current.asStyler());
+        // });
+        
+        themesCollection.forEach(theme => {
+          if(theme.name === action.theme){
+            theme.setDefault(true);
+            context.map((actor) => {
+              actor.changeStyling(theme.asStyler());
+            });
+          } else {
+            theme.setDefault(false);
+          }
+        });
         
         return {
           ...state,
-          theme: themesCollection.find(theme => theme.name === action.theme)
+          theme: action.theme
         };
-
-/*        context.dispatch({
-          type: "invalidate"
-        })
-*/      default:
-        return newState;
+      default:
+          return newState;
     }
   }
   
-  const themeContext = createContext(
+  const themeContext = new Context(
     // creates themes actors
     {},
     themesReducer,
@@ -103,15 +111,6 @@ export function createThemeContextBound(themes) {
   );
 
   return function(pageContext, name){
-    
-    /*const context = createContext(
-      // creates themes actors
-      {},
-      themesReducer,
-      // initial state
-      { theme: themesCollection.find(theme => theme.isDefault === true) }
-    );*/
-    
     pageContext === null 
       ? themeContext.dispose()
       : pageContext !== undefined && 
