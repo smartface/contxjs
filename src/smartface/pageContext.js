@@ -194,20 +194,12 @@ function contextReducer(context, action, target) {
       return newState;
       break;
     case 'pushClassNames':
-    	context.map((actor, name) => {
-    		if(name === target){
-					actor.pushClassNames(action.classNames);
-    		}
-    	});
+    	const actor = context.find(target).pushClassNames(action.classNames);
 
       return newState;
       break;
     case 'removeClassName':
-    	context.map((actor) => {
-    		if(actor.getName() === target){
-    			actor.removeClassName(action.className);
-    		}
-    	});
+			context.find(target).removeClassName(action.className);
 
       return newState;
       break;

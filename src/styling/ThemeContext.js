@@ -57,11 +57,9 @@ export function createThemeContextBound(themes) {
   const themesCollection = themes.map(theme => new Theme(theme));
   
   function themesReducer(context, action, target) {
-    var state = context.getState(),
-      newState = state;
+    var state = context.getState();
+    var newState = state;
       
-      console.log(action.type);
-
     switch (action.type) {
       case 'addThemeable':
         // make declarative
