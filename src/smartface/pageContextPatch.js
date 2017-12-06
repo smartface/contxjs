@@ -11,14 +11,12 @@ export default function pageContextPatch(page, name){
   page.onShow = patchMethod(page, "onShow", onShow);
   page.onHide = patchMethod(page, "onHide", onHide);
   
-  console.log("init : "+name);
-  
   page.didComponentEnter = patchMethod(page, "didComponentEnter", didComponentEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
   
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
-    page.themeContext = Application.theme(createPageContext(page, name, null, null), name);
+    this.themeContext = Application.theme(createPageContext(page, name, null, null), name);
   }
   
   function onHide(superOnHide) {

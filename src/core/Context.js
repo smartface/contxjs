@@ -1,143 +1,144 @@
-import {INIT_CONTEXT_ACTION_TYPE} from "./constants";
+import { INIT_CONTEXT_ACTION_TYPE } from "./constants";
 import raiseErrorMaybe from "./util/raiseErrorMaybe";
 
-export function createInitAction(){
-  return {
-    type: INIT_CONTEXT_ACTION_TYPE
-  };
-}
-
-var ID = 0;
-
-function getID(){
-  return ++ID;
-}
-
-export default function createContext(actors, reducer, initialState={}, hookMaybe=null){
-  const id = getID();
+export default class Context {
   
-  class Context {
-    constructor(){
-      this.actors = {collection: {}, $$map: []};
-      this.state = Object.assign({}, initialState);
-      this.setActors(Object.assign({}, actors));
-      this.dispatch({type: INIT_CONTEXT_ACTION_TYPE});
-    }
-    
-    setActors = (actors) => {
-      Object.keys(actors)
-        .forEach((name) => {
-          // if(oldActors.collection[name]){
-          //   this.actors.collection[name] !== actors[name]
-          //   this.actors.collection[name] = actors[name];
-          //   actors[name].setContextDispatcher((action, target) => this.dispatch(action, target));
-          //   this.actors.$$map.push(name);
-          // } else {
-            
-            /*this.actors.collection[name] = actors[name];
-            actors[name].hook = hookMaybe;
-            actors[name].setContextDispatcher((action, target) => this.dispatch(action, target));
-            this.actors.$$map.push(name);*/
-            
-            this.add(actors[name], name);
-          // }
-        });
+  constructor(actors, reducer, initialState = {}, hookFactory = null) {
+    this._hookFactory = hookFactory;
+    this.actors = { collection: {}, $$map: [], $$idMap: {}, $$nameMap: {} };
+    this.state = Object.assign({}, initialState);
+    this._reducer = reducer;
+    actors && this.setActors(Object.assign({}, actors));
+    this.dispatch({ type: INIT_CONTEXT_ACTION_TYPE });
+  }
   
-      this.propagateAll();
-    }
-    
-    map = (fn) => {
-      const acc = {};
-      this.actors.$$map.forEach((name, index) => {
-        acc[name] = fn(this.actors.collection[name], name, index);
+  static getID = (function() {
+    var ID = 1;
+    return () => ++ID;
+  }());
+
+  getReducer = () => {
+    return this._reducer;
+  }
+
+  setActors = (actors) => {
+    Object.keys(actors)
+      .forEach((name) => {
+        this.add(actors[name], name);
       });
-      
-      return acc;
-    }
-    
-    find = (name, notValue) => {
-      return this.actors.collection[name] || notValue;
-    }
-    
-    addTree = (tree) => {
-      Object.keys(tree).forEach((name) => this.add(tree[name], name));
-    }
-    
-    add = (actor, name) => {
-      if(this.actors.collection[name]){
-        name = name+"@@"+getID();
-        // raiseErrorMaybe(new Error(`Child's name [${name}] must be unique in the same Container.`), actor.onError);
-      }
-      
-      this.actors.collection[name] = actor;
-      this.actors.$$map.push(name);
-      actor.hook = hookMaybe;
-      actor.didComponentEnter((action, target) => this.dispatch(action, target));
-    }
-    
-    removeChildren = (name) => {
-      this.actors.$$map.forEach(nm => {
-        if(nm.indexOf(name+"_") === 0){
-          const actor = this.actors.collection[nm];
-          actor.didComponentLeave();
-          actor.dispose();
-          delete this.actors.collection[nm];
-        }
-      });
-      
-      this.actors.$$map = Object.keys(this.actors.collection);
-    }
-    
-    remove = (name) => {
-      this.removeChildren(name);
-      
-      const actor = this.actors.collection[name];
-      
-      if(actor){
-        delete this.actors.collection[name];
-        this.actors.$$map = Object.keys(this.actors.collection);
+
+    this.propagateAll();
+  }
+  
+  reduce = (fn, acc = {}) => {
+    return this.actors.$$map.reduce((acc, name, index) => {
+      return fn(acc, this.actors.collection[name], name, index);
+    }, acc);
+  }
+
+  map = (fn) => {
+    return this.actors.$$map.map((name, index) => {
+      return fn(this.actors.collection[name], name, index);
+    });
+  }
+
+  find = (name, notValue) => {
+    return this.actors.collection[name] || notValue;
+  }
+
+  addTree = (tree) => {
+    Object.keys(tree).forEach((name) => this.add(tree[name], name));
+  }
+
+  add = (actor, name) => {
+    // if(this.actors.collection[name]){
+    // raiseErrorMaybe(new Error(`Child's name [${name}] must be unique in the same Container.`), actor.onError);
+    // }
+    !actor.getID() && actor.setID(Context.getID());
+    const instance = actor.getInstanceID();
+    //TODO: map by component type
+    // const type = actor._actorInternal_.constructor.name;
+    // this.actors.$$typeMap[type] ? this.actors.$$typeMap[type].push(id) : this.actors.$$typeMap[name] = [id];
+
+    this.actors.collection[instance] = actor;
+    this.actors.$$idMap[actor.getID()] = instance;
+    this.actors.$$map.push(instance);
+    this.actors.$$nameMap[name] ?
+      this.actors.$$nameMap[name].push(actor.getID()) :
+      this.actors.$$nameMap[name] = [actor.getID()];
+
+    actor.hook = this._hookFactory;
+    actor.didComponentEnter((action, target) => this.dispatch(action, target));
+
+    return name;
+  }
+
+  removeChildren = (name) => {
+    this.actors.$$map.forEach(nm => {
+      if (nm.indexOf(name + "_") === 0) {
+        const actor = this.actors.collection[nm];
         actor.didComponentLeave();
         actor.dispose();
+        delete this.actors.collection[nm];
       }
+    });
+
+    this.actors.$$map = Object.keys(this.actors.collection);
+  }
+
+  remove = (name) => {
+    this.removeChildren(name);
+
+    const actor = this.actors.collection[name];
+
+    if (actor) {
+      delete this.actors.collection[name];
+      this.actors.$$map = Object.keys(this.actors.collection);
+      actor.didComponentLeave();
+      actor.dispose();
     }
+  }
+
+  setState = (state) => {
+    if (state !== this.state) {
+      const oldState = this.state;
+      this.state = Object.assign({}, state);
+      // this.propagateAll(state, oldState);
+    }
+  }
+
+  propagateAll = () => {
+    this.actors.$$map.map((name) => {
+      const actor = this.actors.collection[name];
+      actor.onContextChange && actor.onContextChange(this);
+    });
+  }
+
+  getState = () => {
+    return Object.assign({}, this.state);
+  }
+
+  dispatch = (action, target) => {
+    // if(!this.getReducer()){
+    //   console.log("Reducer cannot be empty! "+this.getReducer());
+    //   return;
+    // }
     
-    setState = (state) => {
-      if(state !== this.state){
-        const oldState = this.state;
-        this.state = Object.assign({}, state);
-        this.propagateAll(state, oldState);
-      }
+    try {
+      const state = this.getReducer()(this, action, target);
+
+      this.setState(state);
     }
-    
-    propagateAll = () => {
-      this.actors.$$map.map((name) => {
-        const actor = this.actors.collection[name];
-        actor.onContextChange && actor.onContextChange(this);
-      });
+    catch (e) {
+      e.message = `An Error is occurred When action [${action.type}] run on target [${target}] in the ${e.pageName}. ${e.message}`;
+      raiseErrorMaybe(e, target && !!this.actors.collection[target] && this.actors.collection[target].onError);
     }
-    
-    getState = () => {
-      return Object.assign({}, this.state);
-    }
-    
-    dispatch = (action, target) => {
-      try {
-        const state = reducer(this, action, target);
-        this.setState(state);
-      } catch (e) {
-        e.message = `An Error is occurred When action [${action.type}] run on target [${target}] in the ${e.pageName}. ${e.message}`;
-        raiseErrorMaybe(e, target && this.actors.collection[target].onError);
-      }
-    }
-    
-    dispose = () => {
-      this.state = null;
-      this.actors = null;
-    }
-    
-    subcribe(fn){
-    }
-  };
-  
-  return new Context();
-}
+  }
+
+  dispose = () => {
+    this.state = null;
+    this.actors = null;
+  }
+
+  subcribe(fn) {}
+};
