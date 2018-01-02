@@ -53,7 +53,8 @@ const COLOR_PROPS = [
   "hintTextColor",
   "minTrackColor",
   "maxTrackColor",
-  "thumbColor"
+  "thumbColor",
+  "itemColor"
 ];
 
 const IMAGE_PROPS = [
@@ -63,7 +64,8 @@ const IMAGE_PROPS = [
   "inactiveImage",
   "maxTrackImage",
   "minTrackImage",
-  "backIndicatorImage"
+  "backIndicatorImage",
+  "icon"
 ];
 
 const FONT_STYLE = {
@@ -114,26 +116,31 @@ export function createSFCoreProp(key, value) {
         res[name] = createSFCoreProp(name, value[name]);
         // }
       });
-    } else if (ENUMS[key]) {
+    }
+    else if (ENUMS[key]) {
       res = value === null ? NaN : ENUMS[key][value];
     }
     else {
       throw new Error(key + " ENUM value cannot be found");
     }
-  } else if (COLOR_PROPS.indexOf(key) !== -1) {
+  }
+  else if (COLOR_PROPS.indexOf(key) !== -1) {
     res = createColorForDevice(value);
-  } else if (IMAGE_PROPS.indexOf(key) !== -1) {
+  }
+  else if (IMAGE_PROPS.indexOf(key) !== -1) {
     res = Image.createFromFile("images://" + value);
-    
-    if(res === null){
+
+    if (res === null) {
       throw new Error(`Image [${value}] cannot be found`);
     }
-      
-  } else if (key === "font") {
+
+  }
+  else if (key === "font") {
     var family = (!value.family || value.family === "Default") ? Font.DEFAULT : value.family;
     res = Font.create(family, value.size || 16, getFontStyle(value));
 
-  } else {
+  }
+  else {
     res = value === null ? NaN : value;
   }
 
@@ -146,7 +153,7 @@ export default function buildProps(objectVal) {
   Object
     .keys(objectVal)
     .forEach(function(key) {
-      if (objectVal[key] !== null){
+      if (objectVal[key] !== null) {
         props[key] = createSFCoreProp(key, objectVal[key]);
       }
     });
@@ -156,16 +163,25 @@ export default function buildProps(objectVal) {
 
 function createColorForDevice(color) {
   var res;
-  if (color instanceof Object && color.startColor) { // gradient color
-    res = Color.createGradient({
-      startColor: createColorForDevice(color.startColor),
-      endColor: createColorForDevice(color.endColor),
-      direction: Color.GradientDirection[color.direction]
-    });
-  } else if (color && /rgb/i.test(color)) {
+  if (color instanceof Object) { 
+    if (color.startColor) { // gradient color
+      res = Color.createGradient({
+        startColor: createColorForDevice(color.startColor),
+        endColor: createColorForDevice(color.endColor),
+        direction: Color.GradientDirection[color.direction]
+      });
+    }else{ // colors object
+      res = {};
+      Object.keys(color).forEach( c => {
+        res[c] = createColorForDevice(c);
+      });
+    }
+  }
+  else if (color && /rgb/i.test(color)) { // rgba color
     var rgba = color.match(/\d\.\d+|\d+/ig);
     res = Color.create((Number(rgba[3]) * 255), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
-  } else if (color) {
+  }
+  else if (color) { // hex color
     res = Color.create(color);
   }
 
