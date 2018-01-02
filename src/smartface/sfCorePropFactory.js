@@ -173,7 +173,7 @@ function createColorForDevice(color) {
     }else{ // colors object
       res = {};
       Object.keys(color).forEach( c => {
-        res[c] = createColorForDevice(c);
+        res[c] = createColorForDevice(color[c]);
       });
     }
   }
