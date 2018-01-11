@@ -1,7 +1,17 @@
-export const addThemeableContext = require("action/addThemeableContext");
-export const changeTheme         = require("action/changeTheme");
-export const pushClassNames      = require("action/pushClassNames");
-export const removeClassName     = require("action/removeClassName");
-export const updateContextTree   = require("action/updateContextTree");
-export const ThemeContext        = require("ThemeContext");
-export const StyleContext        = require("StyleContext");
+import addThemeableContext from "action/addThemeableContext";
+import changeTheme from "action/changeTheme";
+import pushClassNames from "action/pushClassNames";
+import removeClassName from "action/removeClassName";
+import updateContextTree from "action/updateContextTree";
+import ThemeContext from "./ThemeContext";
+import StyleContext from "./StyleContext";
+
+export default {
+  addThemeableContext,
+  changeTheme,
+  pushClassNames,
+  removeClassName,
+  updateContextTree,
+  ThemeContext,
+  StyleContext
+};
