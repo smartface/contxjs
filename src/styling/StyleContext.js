@@ -34,6 +34,11 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
           updateContextTree(context.actors);
           
           break;
+        case 'forceComponentUpdate':
+          const actor = context.find(target+"_"+action.name, null);
+          actor && actor.reset();
+          
+          break;
           /*case 'addContextChild':
             Array.isArray(action.newComp)
               ? action.newComp.forEach((component) => {

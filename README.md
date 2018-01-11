@@ -38,7 +38,9 @@ Styling selectors are also similar to the CSS selectors. There are 2 kinds of se
 ```js
 
  const styleObject = {
+   //base classname
    ".calendar":{
+     // sub classname of .calendar, it interits all styles from base-className .calendar. Usage: .calendar.size
      ".size":{
        right:0,
        left:0,
@@ -46,6 +48,7 @@ Styling selectors are also similar to the CSS selectors. There are 2 kinds of se
        height:360,
        paddingLeft:0,
        paddingRight:0
+       // sub classname of .size, it interits all styles from base-className .calendar.size. Usage: .calendar.size.big
        ".big": {
 	    height: 600
        }
@@ -97,7 +100,7 @@ const styles = {
     width: 100,
     height: 200,
   },
-  "childComponent":{
+  ".childComponent":{
     "@extend": ".baseComponent,.anotherBaseComponent"
   }
 }
@@ -130,41 +133,41 @@ For the blocks we can use "\__" or "\_" and for the elements we can use "\__" or
 For example:
 In the CSS 
 ```css
-parentBlock {
+.parentBlock {
 ...
 }
-parentBlock_element {
-...
-}
-
-parentBlock_element-modifier {
+.parentBlock_element {
 ...
 }
 
-parentBlock_childBlock--modifier {
+.parentBlock_element-modifier {
+...
+}
+
+.parentBlock_childBlock--modifier {
 ...
 }
 
 /* or with modifiers*/
 
-searchBlock_searchInputE{
+.searchBlock_searchInputE{
 }
-searchBlock_searchInput-activated{
+.searchBlock_searchInput-activated{
 }
-searchBlock_searchInput-deactivated{
+.searchBlock_searchInput-deactivated{
 }
 
 /* or with modifiers as variable */
-searchBlock_searchInput-isActivated--true{
+.searchBlock_searchInput-isActivated--true{
 ...
 }
-searchBlock_searchInput-isActivated--false{
+.searchBlock_searchInput-isActivated--false{
 ...
 }
-searchBlock_searchInput-color{
+.searchBlock_searchInput-color{
 ...
 }
-searchBlock_searchInput-color--red{
+.searchBlock_searchInput-color--red{
 ...
 }
 
@@ -185,7 +188,7 @@ When PageContext is initialized for the first time then it creates component vie
 ##### Component::dispatch(action:object)
 To manipulate Context's states and behaviors, explicitly defined or custom actions must be used so that Context's reducers are triggered.
 
-##### Contx/Smartface/Actions/
+##### Contx/Smartface/
 
 -  **Action::type = addPageContextChild**
 Adds specified component and their children to the PageContext and applies styles by class-name selectors.
@@ -228,13 +231,13 @@ Removes specified component from FlexLayout instance then dispatches removeChild
 Removes specified component's children then dispatches removeChildren action to the Context.
 
 #### Life-Cycle Events
-##### Component::didComponentLeave
+##### Component::componentDidLeave
 
-When a component is removed from the Context and if the component has didComponentLeave method then it's triggered.
+When a component is removed from the Context and if the component has componentDidLeave method then it's triggered.
 
-##### Component::didComponentEnter(dispatch:function)
+##### Component::componentDidEnter(dispatch:function)
 
-When a component initialized in the Context and if the component has didComponentEnter method and then it's triggered by passing it's dispatch method. If not, dispatch method will be assigned to component directly.
+When a component initialized in the Context and if the component has componentDidEnter method and then it's triggered by passing it's dispatch method. If not, dispatch method will be assigned to component directly.
 
 ##### Component::onError(error:Error)
 

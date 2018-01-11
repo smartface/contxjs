@@ -11,7 +11,7 @@ export default function pageContextPatch(page, name){
   page.onShow = patchMethod(page, "onShow", onShow);
   page.onHide = patchMethod(page, "onHide", onHide);
   
-  page.didComponentEnter = patchMethod(page, "didComponentEnter", didComponentEnter);
+  page.componentDidEnter = patchMethod(page, "componentDidEnter", componentDidEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
   
   function onLoad(superOnLoad) {
@@ -28,6 +28,10 @@ export default function pageContextPatch(page, name){
     
     this.dispatch && this.dispatch({
       type: "invalidate"
+    });
+    this.dispatch && this.dispatch({
+      type: "forceComponentUpdate",
+      name: "statusbar"
     });
     
     this.layout.applyLayout();
@@ -52,9 +56,9 @@ export default function pageContextPatch(page, name){
     }, 1);
   }
   
-  function didComponentEnter(didComponentEnter, dispatcher) {
-    didComponentEnter 
-      && didComponentEnter(dispatcher)
+  function componentDidEnter(componentDidEnter, dispatcher) {
+    componentDidEnter 
+      && componentDidEnter(dispatcher)
       || (this.dispatch = dispatcher);
   }
   

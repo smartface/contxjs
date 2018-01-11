@@ -68,7 +68,7 @@ export default class Context {
       this.actors.$$nameMap[name] = [actor.getID()];
 
     actor.hook = this._hookFactory;
-    actor.didComponentEnter((action, target) => this.dispatch(action, target));
+    actor.componentDidEnter((action, target) => this.dispatch(action, target));
 
     return name;
   }
@@ -77,7 +77,7 @@ export default class Context {
     this.actors.$$map.forEach(nm => {
       if (nm.indexOf(name + "_") === 0) {
         const actor = this.actors.collection[nm];
-        actor.didComponentLeave();
+        actor.componentDidLeave();
         actor.dispose();
         delete this.actors.collection[nm];
       }
@@ -94,7 +94,7 @@ export default class Context {
     if (actor) {
       delete this.actors.collection[name];
       this.actors.$$map = Object.keys(this.actors.collection);
-      actor.didComponentLeave();
+      actor.componentDidLeave();
       actor.dispose();
     }
   }

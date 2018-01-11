@@ -45,6 +45,9 @@ export default class Actor {
     return this.getName()+"@@"+this.getID();
   }
   
+  reset = () => {
+  }
+  
   setDirty = (value) => {
     this.isDirty = value;
   }
@@ -63,24 +66,24 @@ export default class Actor {
     return false;
   }
   
-  didComponentLeave = () => {
-    typeof this._actorInternal_.component.didComponentLeave === 'function' && this._actorInternal_.component.didComponentLeave();
+  componentDidLeave = () => {
+    typeof this._actorInternal_.component.componentDidLeave === 'function' && this._actorInternal_.component.componentDidLeave();
   }
   
-  didComponentEnter = (dispatcher) => {
+  componentDidEnter = (dispatcher) => {
     this._dispatcher = dispatcher;
     
     try {
-      this._actorInternal_.component.didComponentEnter
-        ? this._actorInternal_.component.didComponentEnter((action) => {
+      this._actorInternal_.component.componentDidEnter
+        ? this._actorInternal_.component.componentDidEnter((action) => {
             dispatcher(action, this.getInstanceID());
           })
         : this._actorInternal_.component.dispatch = (action) => {
             dispatcher(action, this.getInstanceID());
           };
     } catch(e){
-      e.message = `Error when component ${this.getName()} enter the context.`;
-      raiseErrorMaybe(e, !!this._actorInternal_ && !!this._actorInternal_.component && this._actorInternal_.component.onError)
+      e.message = `Error. When component ${this.getName()} entered the context.`;
+      raiseErrorMaybe(e, !!this._actorInternal_ && !!this._actorInternal_.component && this._actorInternal_.component.onError);
     }
   }
 }

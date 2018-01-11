@@ -38,6 +38,10 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       this.isDirty = true;
     }
     
+    reset = () => {
+      this.setStyles(this.getStyles(), true);
+    }
+    
     setUserStyle = (props) => {
       if(typeof props === 'function'){
         userStyle = props(this.getUserStyle());
@@ -53,7 +57,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
      *
      * @param {object} styles - a style object
      */
-    setStyles = (style) => {
+    setStyles = (style, force=false) => {
       const reduceDiffStyleHook = this.hook("reduceDiffStyleHook");
       style = merge(style, userStyle);
       let diffReducer = reduceDiffStyleHook
@@ -69,16 +73,15 @@ export default function makeStylable({component, classNames="", userStyle={}, na
   
             return acc;
           };
-          
-      const rawDiff = Object.keys(style).reduce(diffReducer, {});
+      
+      const rawDiff = !force ? Object.keys(style).reduce(diffReducer, {}) : merge(style);
 
       const beforeHook = this.hook("beforeStyleDiffAssign");
       const diff = beforeHook && beforeHook(rawDiff) || null;
       const comp = name.indexOf("_") === -1 && this._actorInternal_.component.layout
         ? this._actorInternal_.component.layout
         : this._actorInternal_.component;
-      const hasDiff = Object.keys(diff).length > 0;
-      
+      const hasDiff = diff !== null && Object.keys(diff).length > 0;
       
       //TODO: extract all specified area @cenk
       // ------------->
