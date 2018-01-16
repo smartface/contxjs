@@ -128,12 +128,7 @@ export function createSFCoreProp(key, value) {
     res = createColorForDevice(value);
   }
   else if (IMAGE_PROPS.indexOf(key) !== -1) {
-    res = Image.createFromFile("images://" + value);
-
-    if (res === null) {
-      throw new Error(`Image [${value}] cannot be found`);
-    }
-
+    res = createImageForDevice(value);
   }
   else if (key === "font") {
     var family = (!value.family || value.family === "Default") ? Font.DEFAULT : value.family;
@@ -161,18 +156,36 @@ export default function buildProps(objectVal) {
   return props;
 }
 
+function createImageForDevice(image) {
+  var res;
+  if (image instanceof Object) {
+    res = {};
+    Object.keys(image).forEach(function(c) {
+      res[c] = createImageForDevice(image[c]);
+    });
+  }
+  else {
+    res = Image.createFromFile("images://" + image);
+  }
+  if (res === null) {
+    throw new Error(`Image [${image}] cannot be found`);
+  }
+  return res;
+}
+
 function createColorForDevice(color) {
   var res;
-  if (color instanceof Object) { 
+  if (color instanceof Object) {
     if (color.startColor) { // gradient color
       res = Color.createGradient({
         startColor: createColorForDevice(color.startColor),
         endColor: createColorForDevice(color.endColor),
         direction: Color.GradientDirection[color.direction]
       });
-    }else{ // colors object
+    }
+    else { // colors object
       res = {};
-      Object.keys(color).forEach( c => {
+      Object.keys(color).forEach(c => {
         res[c] = createColorForDevice(color[c]);
       });
     }
