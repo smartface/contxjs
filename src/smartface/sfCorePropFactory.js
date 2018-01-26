@@ -75,6 +75,13 @@ const FONT_STYLE = {
   DEFAULT: "NORMAL"
 };
 
+const DEFAULT_FONT_STYLES = [
+  "b",
+  "i",
+  "n",
+  "r"
+];
+
 const SCW_LAYOUT_PROPS = [
   "alignContent",
   "alignItems",
@@ -131,9 +138,7 @@ export function createSFCoreProp(key, value) {
     res = createImageForDevice(value);
   }
   else if (key === "font") {
-    var family = (!value.family || value.family === "Default") ? Font.DEFAULT : value.family;
-    res = Font.create(family, value.size || 16, getFontStyle(value));
-
+    res = createFontForDevice(value);
   }
   else {
     res = value === null ? NaN : value;
@@ -201,12 +206,23 @@ function createColorForDevice(color) {
   return res || color;
 }
 
+function createFontForDevice(font) {
+  var res;
+  if ( !font.family  || font.family === "Default" || ( DEFAULT_FONT_STYLES.indexOf(font.style) !== -1) ) {
+     var family = (!font.family || font.family === "Default") ? Font.DEFAULT : font.family;
+    res = Font.create(family, font.size || 16, getFontStyle(font));
+  }else{
+    res = Font.create(font.family + "-" + font.style, font.size);
+  }
+  return res;
+}
+
 function getFontStyle(font) {
   var res = "";
   if (font && font.bold) {
     res += FONT_STYLE.BOLD;
   }
-  else if (font && font.italic) {
+  if (font && font.italic) {
     res && (res += "_");
     res += FONT_STYLE.ITALIC;
   }
