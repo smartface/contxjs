@@ -208,10 +208,11 @@ function createColorForDevice(color) {
 
 function createFontForDevice(font) {
   var res;
-  if ( !font.family  || font.family === "Default" || ( DEFAULT_FONT_STYLES.indexOf(font.style) !== -1) ) {
-     var family = (!font.family || font.family === "Default") ? Font.DEFAULT : font.family;
+  if (!font.family || font.family === "Default" || (DEFAULT_FONT_STYLES.indexOf(font.style) !== -1)) {
+    var family = (!font.family || font.family === "Default") ? Font.DEFAULT : font.family;
     res = Font.create(family, font.size || 16, getFontStyle(font));
-  }else{
+  }
+  else {
     res = Font.create(font.family + "-" + font.style, font.size);
   }
   return res;
@@ -219,16 +220,13 @@ function createFontForDevice(font) {
 
 function getFontStyle(font) {
   var res = "";
-  if (font && font.bold) {
+  if (font && (font.bold || font.style === "b")) {
     res += FONT_STYLE.BOLD;
   }
-  if (font && font.italic) {
+  if (font && (font.italic || font.style === "i")) {
     res && (res += "_");
     res += FONT_STYLE.ITALIC;
   }
-  else {
-    res = FONT_STYLE.DEFAULT;
-  }
 
-  return Font[res];
+  return Font[res || FONT_STYLE.DEFAULT];
 }
