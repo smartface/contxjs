@@ -169,7 +169,8 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     }
 
     resetClassNames = (classNames = []) => {
-      this.classNames = [...initialClassNames, ...classNames];
+      this.classNames = [];
+      [...initialClassNames, ...classNames].forEach(this.addClassName)
       this.isDirty = true;
     }
 
@@ -180,11 +181,10 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     }
 
     pushClassNames = (classNames) => {
-      if (!this.hasClassName(classNames)) {
-        Array.isArray(classNames)
-          ? this.classNames = [...this.classNames, ...classNames]
-          : this.classNames.push(classNames);
+      const classNamesArr = Array.isArray(classNames) ? classNames : [classNames];
       
+      if (classNamesArr.some(this.hasClassName)) {
+        this.classNames = [...this.classNames, ...classNamesArr];
         this.isDirty = true;
       }
 
