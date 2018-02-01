@@ -211,9 +211,11 @@ function createFontForDevice(font) {
   if (!font.family || font.family === "Default" || (DEFAULT_FONT_STYLES.indexOf(font.style) !== -1)) {
     var family = (!font.family || font.family === "Default") ? Font.DEFAULT : font.family;
     res = Font.create(family, font.size || 16, getFontStyle(font));
+    //console.log(`Font.create(${family}, ${font.size||16}, ${getFontStyle(font)})`);
   }
   else {
-    res = Font.create(font.family + "-" + font.style, font.size);
+    res = Font.create(font.family + (font.style ? "-" + font.style : ""), font.size);
+    //console.log(`Font.create(${font.family + (font.style ? "-" + font.style : "")}, ${font.size || 16})`);
   }
   return res;
 }
