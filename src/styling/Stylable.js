@@ -1,5 +1,6 @@
 import Actor from "../core/Actor";
 import merge from "@smartface/styler/lib/utils/merge";
+import findClassNames from "@smartface/styler/lib/utils/findClassNames";
 
 // TODO create new jsdoc type for the parameter
 /**
@@ -12,7 +13,7 @@ import merge from "@smartface/styler/lib/utils/merge";
  * @returns {Object} - A Stylable Actor
  */
 export default function makeStylable({component, classNames="", userStyle={}, name}) {
-  const initialClassNames = classNames && classNames.split(" ") || [];
+  const initialClassNames = findClassNames(classNames) || [];
   userStyle = merge(userStyle);
   
   /**
@@ -156,7 +157,10 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     classNamesCount = () => {
       return this.classNames.length;
     }
-
+    
+    /**
+     * @deprecated since version 2
+     */
     removeClassName = (className) => {
       if (this.hasClassName(className)) {
         this.isDirty = true;
@@ -164,6 +168,23 @@ export default function makeStylable({component, classNames="", userStyle={}, na
           return cname !== className;
         });
       }
+
+      return this.getClassName();
+    }
+    
+    /**
+     * Added v1.0.6
+     * 
+     * remove specified classnames
+     * 
+     * @return {string}
+     */
+    removeClassNames = (classNames) => {
+      const classNamesArr = Array.isArray(classNames) 
+        ? classNames 
+        : findClassNames(classNames).map(item => item.join(""));
+      this.classNames = this.classNames.filter(cname => !classNamesArr.some(rname => cname === rname));
+      classNamesArr.length || (this.isDirty = true);
 
       return this.getClassName();
     }
@@ -181,9 +202,11 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     }
 
     pushClassNames = (classNames) => {
-      const classNamesArr = Array.isArray(classNames) ? classNames : [classNames];
-      
-      if (classNamesArr.some(this.hasClassName)) {
+      const classNamesArr = Array.isArray(classNames) 
+        ? classNames 
+        : findClassNames(classNames).map(item => item.join(""));
+
+      if (!classNamesArr.some(this.hasClassName)) {
         this.classNames = [...this.classNames, ...classNamesArr];
         this.isDirty = true;
       }
