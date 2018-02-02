@@ -197,25 +197,26 @@ Adds specified component and their children to the PageContext and applies style
 	- *Action::classNames: string* - Class-name of component.
 	- *initialProps: object* - Initial properties of component. (User properties)
 
-- **Action::type = changeUserStyle** : 
+- **Action.type => changeUserStyle** : 
 Sets component userStyle.
 	- *Action::userStyle:object*
-- **Action::type = updateUserStyle** : 
+- **Action.type => updateUserStyle** : 
 	- *Action::userStyle:object*
 Update component userStyle.
-- **Action::type = removeChild** : 
+- **Action.type => removeChild** : 
 Removes target component and it's children from context.
-- **Action::type = removeChildren** : 
+- **Action.type => removeChildren** : 
 Removes target component's children from context.
-- **Action::type = pushClassNames** : 
+- **Action.type => pushClassNames** : 
 Pushes new className selectors to the target component in order to manipulate component properties.
-	- *Action::classNames:string*
-- **Action::type = removeClassName** :
+	- *Action::classNames:string* for one classname
+	- *Action::classNames:Array* for multiple classnames
+- **Action.type => removeClassName** :
 Removes className selector from specified component.
 	- *Action::className:string* 
-- **Action::type = invalidate** : 
+- **Action.type => invalidate** : 
 Forces to update Context's actors and applies styles if they are changed.
-- **Action::type = updateContext** : 
+- **Action.type => updateContext** : 
 Adds new components to Context or removes ones that doesn't exist in the updated FlexLayout::children.
 
 ##### FlexLayout::addChild(childComponent:*, ?contextName: string, ?className: string, ?userStyle:StyleObject=null)
