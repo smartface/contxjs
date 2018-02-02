@@ -41,13 +41,21 @@ describe("Stylable Actor", function() {
   it("should remove classnames", function() {
     const actor  = makeStylable({component: {}, classNames:".test"});
     actor.pushClassNames(".test2 .flexLayout-dotIndicator-item.active");
-
+    actor.isDirty = false;
+    
     let classNames = actor.removeClassName(".flexLayout-dotIndicator-item.active");
     expect(classNames).to.equal( ".test .test2");
+    expect(actor.isDirty).to.equal(true);
+    actor.isDirty = false;
+
     classNames = actor.removeClassNames(".test2");
     expect(classNames).to.equal( ".test");
+    expect(actor.isDirty).to.equal(true);
+    actor.isDirty = false;
+
     classNames = actor.removeClassName(".test");
     expect(classNames).to.equal("");
+    expect(actor.isDirty).to.equal(true);
   });
 
   it("should has unique classnames", function() {

@@ -178,8 +178,9 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       const classNamesArr = Array.isArray(classNames) 
         ? classNames 
         : _findClassNames(classNames);
+        
       this.classNames = this.classNames.filter(cname => !classNamesArr.some(rname => cname === rname));
-      classNamesArr.length || (this.isDirty = true);
+      classNamesArr.length && (this.isDirty = true);
 
       return this.getClassName();
     }
