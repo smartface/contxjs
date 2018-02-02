@@ -28,8 +28,8 @@ describe("Stylable Actor", function() {
 
     const actor3  = makeStylable({component: {}, classNames:""});
     expect(actor3.getClassName()).to.equal("");
-    // actor3.pushClassNames("#bottomtabbar_profile");
-    // expect(actor3.getClassName()).to.equal("#bottomtabbar_profile");
+    actor3.pushClassNames("#bottomtabbar_profile");
+    expect(actor3.getClassName()).to.equal("#bottomtabbar_profile");
 
     const actor5  = makeStylable({component: {}, classNames:" "});
     expect(actor5.getClassName()).to.equal("");
