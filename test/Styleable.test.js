@@ -25,6 +25,9 @@ describe("Stylable Actor", function() {
 
     const actor2  = makeStylable({component: {}, classNames:".flexLayout .flexLayout-default #pgSignupPhone.flMain"});
     expect(actor2.getClassName()).to.equal( ".flexLayout .flexLayout-default #pgSignupPhone.flMain");
+
+    const actor3  = makeStylable({component: {}, classNames:""});
+    expect(actor2.getClassName()).to.equal( ".flexLayout .flexLayout-default #pgSignupPhone.flMain");
   });
 
   it("should remove classnames", function() {
