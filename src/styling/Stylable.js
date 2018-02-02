@@ -162,14 +162,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
      * @deprecated since version 2
      */
     removeClassName = (className) => {
-      if (this.hasClassName(className)) {
-        this.isDirty = true;
-        this.classNames = this.classNames.filter((cname) => {
-          return cname !== className;
-        });
-      }
-
-      return this.getClassName();
+      return this.removeClassNames(className);
     }
     
     /**
