@@ -4,7 +4,7 @@
  * @params {string} classnames - Component classnames
  * @returns {Object}
  */
-export default function removeClassName(className){
+export default function removeClassNames(className){
     return {
         type: "removeClassName",
         className

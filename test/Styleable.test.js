@@ -40,9 +40,14 @@ describe("Stylable Actor", function() {
 
   it("should remove classnames", function() {
     const actor  = makeStylable({component: {}, classNames:".test"});
-    actor.pushClassNames(".test2 .test4");
-    let classNames = actor.removeClassNames(".test4");
+    actor.pushClassNames(".test2 .flexLayout-dotIndicator-item.active");
+
+    let classNames = actor.removeClassName(".flexLayout-dotIndicator-item.active");
     expect(classNames).to.equal( ".test .test2");
+    classNames = actor.removeClassNames(".test2");
+    expect(classNames).to.equal( ".test");
+    classNames = actor.removeClassName(".test");
+    expect(classNames).to.equal("");
   });
 
   it("should has unique classnames", function() {
