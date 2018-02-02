@@ -2,6 +2,8 @@ import Actor from "../core/Actor";
 import merge from "@smartface/styler/lib/utils/merge";
 import findClassNames from "@smartface/styler/lib/utils/findClassNames";
 
+const _findClassNames = (classNames) => findClassNames(classNames).reduce((acc, item) => !item && [] || [...acc, item.join('')] , []) || [];
+
 // TODO create new jsdoc type for the parameter
 /**
  * Styleable Actor HOC. Decorates specifeid component and return an actor component
@@ -13,7 +15,7 @@ import findClassNames from "@smartface/styler/lib/utils/findClassNames";
  * @returns {Object} - A Stylable Actor
  */
 export default function makeStylable({component, classNames="", userStyle={}, name}) {
-  const initialClassNames = classNames && findClassNames(classNames).map(item => item.join('')) || [];
+  const initialClassNames = _findClassNames(classNames);
   userStyle = merge(userStyle);
   
   /**
@@ -175,7 +177,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     removeClassNames = (classNames) => {
       const classNamesArr = Array.isArray(classNames) 
         ? classNames 
-        : classNames && findClassNames(classNames).map(item => item.join('')) || [];
+        : _findClassNames(classNames);
       this.classNames = this.classNames.filter(cname => !classNamesArr.some(rname => cname === rname));
       classNamesArr.length || (this.isDirty = true);
 
@@ -197,7 +199,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     pushClassNames = (classNames) => {
       const classNamesArr = Array.isArray(classNames) 
         ? classNames 
-        : classNames && findClassNames(classNames).map(item => item.join('')) || [];
+        : _findClassNames(classNames);
 
       if (!classNamesArr.some(this.hasClassName)) {
         this.classNames = [...this.classNames, ...classNamesArr];

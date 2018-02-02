@@ -27,7 +27,15 @@ describe("Stylable Actor", function() {
     expect(actor2.getClassName()).to.equal( ".flexLayout .flexLayout-default #pgSignupPhone.flMain");
 
     const actor3  = makeStylable({component: {}, classNames:""});
-    expect(actor2.getClassName()).to.equal( ".flexLayout .flexLayout-default #pgSignupPhone.flMain");
+    expect(actor3.getClassName()).to.equal("");
+    // actor3.pushClassNames("#bottomtabbar_profile");
+    // expect(actor3.getClassName()).to.equal("#bottomtabbar_profile");
+
+    const actor5  = makeStylable({component: {}, classNames:" "});
+    expect(actor5.getClassName()).to.equal("");
+
+    const actor4  = makeStylable({component: {}, classNames:"#bottomtabbar_profile"});
+    expect(actor4.getClassName()).to.equal("#bottomtabbar_profile");
   });
 
   it("should remove classnames", function() {
