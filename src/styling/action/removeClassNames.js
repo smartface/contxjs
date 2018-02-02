@@ -6,7 +6,7 @@
  */
 export default function removeClassName(className){
     return {
-        type: "removeClassNames",
+        type: "removeClassName",
         className
     };
 }

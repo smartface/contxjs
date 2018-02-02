@@ -20,6 +20,11 @@ describe("Stylable Actor", function() {
     expect(actor.getClassName()).to.equal( ".test .test2");
     actor.pushClassNames(".test3 .test4");
     expect(actor.getClassName()).to.equal( ".test .test2 .test3 .test4");
+    actor.pushClassNames(".flexLayout .flexLayout-default #pgSignupPhone.flMain");
+    expect(actor.getClassName()).to.equal( ".test .test2 .test3 .test4 .flexLayout .flexLayout-default #pgSignupPhone.flMain");
+
+    const actor2  = makeStylable({component: {}, classNames:".flexLayout .flexLayout-default #pgSignupPhone.flMain"});
+    expect(actor2.getClassName()).to.equal( ".flexLayout .flexLayout-default #pgSignupPhone.flMain");
   });
 
   it("should remove classnames", function() {
@@ -30,6 +35,5 @@ describe("Stylable Actor", function() {
   });
 
   it("should has unique classnames", function() {
-    
   });
 });

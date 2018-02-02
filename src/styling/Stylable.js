@@ -13,7 +13,7 @@ import findClassNames from "@smartface/styler/lib/utils/findClassNames";
  * @returns {Object} - A Stylable Actor
  */
 export default function makeStylable({component, classNames="", userStyle={}, name}) {
-  const initialClassNames = findClassNames(classNames) || [];
+  const initialClassNames = findClassNames(classNames).map(item => item.join('')) || [];
   userStyle = merge(userStyle);
   
   /**
@@ -175,7 +175,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     removeClassNames = (classNames) => {
       const classNamesArr = Array.isArray(classNames) 
         ? classNames 
-        : findClassNames(classNames).map(item => item.join(""));
+        : findClassNames(classNames).map(item => item.join(''));
       this.classNames = this.classNames.filter(cname => !classNamesArr.some(rname => cname === rname));
       classNamesArr.length || (this.isDirty = true);
 
@@ -197,7 +197,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     pushClassNames = (classNames) => {
       const classNamesArr = Array.isArray(classNames) 
         ? classNames 
-        : findClassNames(classNames).map(item => item.join(""));
+        : findClassNames(classNames).map(item => item.join(''));
 
       if (!classNamesArr.some(this.hasClassName)) {
         this.classNames = [...this.classNames, ...classNamesArr];
