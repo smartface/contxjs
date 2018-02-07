@@ -176,7 +176,7 @@ In the CSS
 This method makes styles more readable, maintainable and easier to understand.
 
 ## Context Management
-Each context encapsulates behaviors and applies theme to decorated components which are came from outside of the context via Context's actors and reducers.
+Each context encapsulates some behaviors and applies theme to decorated components which are came from outside of the context using Context's actors and reducers.
 
 ### Contx/Smartface/pageContext
 PageContext creates stylable Smartface pages and components so that we can manipulate them using style-objects and selectors. Smartface UI-Editor Transpiler connects Pages and PageContext. To add components dynamically in runtime, (For instance there might be images that should be created after an api call) PageContext's actions must be used.
