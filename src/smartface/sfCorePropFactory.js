@@ -68,6 +68,12 @@ const IMAGE_PROPS = [
   "icon"
 ];
 
+const IMAGE_FILLTYPE_COMMON_PROPS = [
+  "ASPECTFIT",
+  "NORMAL",
+  "STRETCH"
+];
+
 const FONT_STYLE = {
   BOLD: "BOLD",
   ITALIC: "ITALIC",
@@ -124,6 +130,9 @@ export function createSFCoreProp(key, value) {
         res[name] = createSFCoreProp(name, value[name]);
         // }
       });
+    }
+    else if ((key === "imageFillType") && (IMAGE_FILLTYPE_COMMON_PROPS.indexOf(value) === -1)) {
+      res = value === null ? NaN : ENUMS[key].ios[value];
     }
     else if (ENUMS[key]) {
       res = value === null ? NaN : ENUMS[key][value];
