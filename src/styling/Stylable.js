@@ -2,7 +2,7 @@ import Actor from "../core/Actor";
 import merge from "@smartface/styler/lib/utils/merge";
 import findClassNames from "@smartface/styler/lib/utils/findClassNames";
 
-const _findClassNames = (classNames) => findClassNames(classNames).reduce((acc, item) => !item && [] || [...acc, item.join('')] , []) || [];
+const _findClassNames = (classNames) => findClassNames(classNames).reduce((acc, item) => !item && [] || [...acc, item.join('')] , []);
 
 // TODO create new jsdoc type for the parameter
 /**

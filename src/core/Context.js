@@ -130,7 +130,7 @@ export default class Context {
       this.setState(state);
     }
     catch (e) {
-      e.message = `An Error is occurred When action [${action.type}] run on target [${target}] in the ${e.pageName}. ${e.message}`;
+      e.message = `An Error is occurred When action [${action.type}] run on target [${target}]. ${e.message}`;
       raiseErrorMaybe(e, target && !!this.actors.collection[target] && this.actors.collection[target].onError);
     }
   }

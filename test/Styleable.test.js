@@ -15,9 +15,11 @@ describe("Stylable Actor", function() {
   beforeEach(function() {});
 
   it("should push new classnames", function() {
-    const actor  = makeStylable({component: {}, classNames:".test"});
+    let actor  = makeStylable({component: {}, classNames:".test"});
+    actor.isDirty = false;
     actor.pushClassNames(".test2");
     expect(actor.getClassName()).to.equal( ".test .test2");
+    expect(actor.isDirty).to.equal(true);
     actor.pushClassNames(".test3 .test4");
     expect(actor.getClassName()).to.equal( ".test .test2 .test3 .test4");
     actor.pushClassNames(".flexLayout .flexLayout-default #pgSignupPhone.flMain");
