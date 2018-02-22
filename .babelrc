@@ -1,6 +1,7 @@
 {
-  "presets": [["es2015", {"loose": true}], "stage-0"],
+  "presets": [["es2015", {"loose": false}], "stage-0"],
   "plugins": [
+    "dynamic-import-webpack",
     "transform-object-rest-spread",
     "add-module-exports",
     "transform-es2015-modules-umd"
