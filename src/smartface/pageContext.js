@@ -162,7 +162,9 @@ function contextReducer(context, action, target) {
 		case "updatePageSafeArea":
 			context
 				.find(target, {setSafeArea: () => {throw new TypeError(`Target ${target} component cannot be found.`)}})
-				.setSafeArea(Object.assign({}, action.safeArea));
+				.setSafeArea(Object.assign({}, action.safeArea))
+				.applyStyles();
+				
 			
 			return newState;
 		case "invalidate":
@@ -200,7 +202,7 @@ function contextReducer(context, action, target) {
       return newState;
       break;
     case 'pushClassNames':
-    	const actor = context.find(target).pushClassNames(action.classNames);
+    	context.find(target).pushClassNames(action.classNames);
 
       return newState;
       break;

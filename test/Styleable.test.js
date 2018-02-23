@@ -59,48 +59,95 @@ describe("Stylable Actor", function() {
     expect(classNames).to.equal("");
     expect(actor.isDirty).to.equal(true);
   });
-
-  it("should be able to add safeArea", function() {
-    const component = {};
-    const actor  = makeStylable({component, name: "mockComponent", classNames:".test"});
-    actor.pushClassNames(".test2 .flexLayout-dotIndicator-item.active");
-    actor.isDirty = false;
+  
+  describe("Safe Area", function() {
+    it("should be able to add safeArea", function() {
+      const component = {};
+      const actor  = makeStylable({component, name: "mockComponent", classNames:".test"});
+      actor.pushClassNames(".test2 .flexLayout-dotIndicator-item.active");
+      actor.isDirty = false;
+      
+      actor.setSafeArea({
+        paddingLeft: 10,
+        paddingTop: 0
+      });
+      
+      actor.setStyles({
+        paddingLeft: 20,
+        paddingTop: 10
+      });
+      
+      actor.applyStyles();
+      
+      expect(component).to.eql({
+        paddingLeft: 30,
+        paddingTop: 10
+      });
+  
+      actor.setStyles({
+        paddingLeft: 40,
+        paddingTop: 0
+      });
+      
+      actor.applyStyles();
+      
+      expect(component).to.eql({
+        paddingLeft: 50,
+        paddingTop: 0
+      });
+  
+      actor.setSafeArea({
+        paddingLeft: 0,
+        paddingTop: 0
+      });
+      
+      actor.applyStyles(true);
+      
+      expect(component).to.eql({
+        paddingLeft: 40,
+        paddingTop: 0
+      });
+    });   
     
-    actor.setSafeArea({
-      paddingLeft: 10,
-      paddingTop: 0
-    });
-    
-    actor.setStyles({
-      paddingLeft: 20,
-      paddingTop: 10
-    });
-    
-    expect(component).to.eql({
-      paddingLeft: 30,
-      paddingTop: 10
-    });
-
-    actor.setStyles({
-      paddingLeft: 40,
-      paddingTop: 0
-    });
-    
-    expect(component).to.eql({
-      paddingLeft: 50,
-      paddingTop: 0
-    });
-
-    actor.setSafeArea({
-      paddingLeft: 0,
-      paddingTop: 0
-    });
-    
-    actor.setStyles(actor.getStyles(), true);
-    
-    expect(component).to.eql({
-      paddingLeft: 40,
-      paddingTop: 0
+    it("should be added to userStyles' paddings", function() {
+      const component = {};
+      const actor  = makeStylable({component, name: "mockComponent", classNames:".test"});
+      
+      actor.pushClassNames(".test2 .flexLayout-dotIndicator-item.active");
+      actor.isDirty = false;
+      
+      actor.setSafeArea({
+        paddingLeft: 50,
+        paddingTop: 0,
+      });
+      
+      actor.applyStyles();
+      
+      expect(component).to.eql({
+        paddingLeft: 50,
+        paddingTop: 0,
+      });
+      
+      actor.setSafeArea({
+        paddingLeft: 20,
+        paddingTop: 20,
+      });
+      
+      actor.setUserStyle({
+        paddingLeft: 20,
+        paddingTop: 10,
+        paddingBottom: 20,
+        paddingRight: 10,
+      });
+      
+      actor.applyStyles(true);
+      
+      expect(component).to.eql({
+        paddingLeft: 40,
+        paddingRight: 10,
+        paddingBottom: 20,
+        paddingTop: 30,
+      });
     });
   });
 });

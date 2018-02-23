@@ -39,15 +39,21 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     setSafeArea = (area) => {
       this.safeArea = area;
       this.isDirty = true;
+      
+      return this;
     }
     
     updateUserStyle = (props) => {
       userStyle = merge(userStyle, props);
       this.isDirty = true;
+      
+      return this;
     }
     
     reset = () => {
       this.setStyles(this.getStyles(), true);
+      
+      return this;
     }
     
     setUserStyle = (props) => {
@@ -58,6 +64,8 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       }
       
       this.isDirty = true;
+      
+      return this;
     }
     
     computeAndAssignStyle = (style, force=false) => {
@@ -81,14 +89,17 @@ export default function makeStylable({component, classNames="", userStyle={}, na
         assignIfNotEmpty("paddingLeft");
       }
       
-      let diffReducer = reduceDiffStyleHook
+      let diffReducer = !force && reduceDiffStyleHook
         ? reduceDiffStyleHook(this.styles || {}, {...style, ...safeAreaPaddings})
-        : (() => ({...this.styles, ...style, ...safeAreaPaddings}));
+        : null;
       
-      const rawDiff = !force ? Object.keys(style).reduce(diffReducer, {}) : merge(style);
+      const rawDiff = typeof diffReducer === 'function' 
+        ? Object.keys(style).reduce(diffReducer, {}) 
+        : ({...this.styles, ...style, ...safeAreaPaddings});
 
       const beforeHook = hooks("beforeStyleDiffAssign");
       const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
+
       const comp = name.indexOf("_") === -1 && this._actorInternal_.component.layout
         ? this._actorInternal_.component.layout
         : this._actorInternal_.component;
@@ -149,7 +160,15 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       const afterHook = hooks("afterStyleDiffAssign");
       afterHook && (style = afterHook(style));
       
-      return style;
+      this.styles = style;
+      
+      return this;
+    }
+    
+    applyStyles = (force=false) => {
+      this.computeAndAssignStyle(this.styles, force=false);
+      
+      return this;
     }
     
     /**
@@ -158,7 +177,9 @@ export default function makeStylable({component, classNames="", userStyle={}, na
      * @param {object} styles - a style object
      */
     setStyles = (style, force=false) => {
-      this.styles = this.computeAndAssignStyle(style, force=false);
+      this.styles = style;
+      
+      return this;
     }
 
     getStyles = () => {
@@ -206,6 +227,8 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       this.classNames = [];
       [...initialClassNames, ...classNames].forEach(this.addClassName)
       this.isDirty = true;
+      
+      return this;
     }
 
     hasClassName = (className) => {
