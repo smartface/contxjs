@@ -60,6 +60,47 @@ describe("Stylable Actor", function() {
     expect(actor.isDirty).to.equal(true);
   });
 
-  it("should has unique classnames", function() {
+  it("should be able to add safeArea", function() {
+    const component = {};
+    const actor  = makeStylable({component, name: "mockComponent", classNames:".test"});
+    actor.pushClassNames(".test2 .flexLayout-dotIndicator-item.active");
+    actor.isDirty = false;
+    
+    actor.setSafeArea({
+      paddingLeft: 10,
+      paddingTop: 0
+    });
+    
+    actor.setStyles({
+      paddingLeft: 20,
+      paddingTop: 10
+    });
+    
+    expect(component).to.eql({
+      paddingLeft: 30,
+      paddingTop: 10
+    });
+
+    actor.setStyles({
+      paddingLeft: 40,
+      paddingTop: 0
+    });
+    
+    expect(component).to.eql({
+      paddingLeft: 50,
+      paddingTop: 0
+    });
+
+    actor.setSafeArea({
+      paddingLeft: 0,
+      paddingTop: 0
+    });
+    
+    actor.setStyles(actor.getStyles(), true);
+    
+    expect(component).to.eql({
+      paddingLeft: 40,
+      paddingTop: 0
+    });
   });
 });

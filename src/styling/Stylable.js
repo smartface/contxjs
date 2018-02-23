@@ -36,6 +36,11 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       return merge(userStyle);
     }
     
+    setSafeArea = (area) => {
+      this.safeArea = area;
+      this.isDirty = true;
+    }
+    
     updateUserStyle = (props) => {
       userStyle = merge(userStyle, props);
       this.isDirty = true;
@@ -55,32 +60,35 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       this.isDirty = true;
     }
     
-    /**
-     * Sets styles
-     *
-     * @param {object} styles - a style object
-     */
-    setStyles = (style, force=false) => {
-      const reduceDiffStyleHook = this.hook("reduceDiffStyleHook");
+    computeAndAssignStyle = (style, force=false) => {
+      const hooks = this.hook || (_ => null)
+      
+      const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
       style = merge(style, userStyle);
+      
+      const safeAreaPaddings = {};
+      
+      if(this.safeArea){
+        const getNotEmpty = (v, y) => (v === undefined || v === null) ? y : v;
+        const sumValsIfSafeAreaExists = (val, assign) => val >= 0 && (val + assign) || assign;
+        const assignIfNotEmpty = 
+          (prop) => this.safeArea[prop] >= 0 && 
+              (safeAreaPaddings[prop] = sumValsIfSafeAreaExists(getNotEmpty(style[prop], this.styles[prop]), this.safeArea[prop]));
+        
+        assignIfNotEmpty("paddingTop");
+        assignIfNotEmpty("paddingBottom");
+        assignIfNotEmpty("paddingRight");
+        assignIfNotEmpty("paddingLeft");
+      }
+      
       let diffReducer = reduceDiffStyleHook
-        ? reduceDiffStyleHook(this.styles || {}, style)
-        : (acc, key) => {
-            if (this.styles[key] !== undefined) {
-              if (this.styles[key] !== style[key]) {
-                acc[key] = style[key];
-              } else {
-                acc[key] = style[key];
-              }
-            }
-  
-            return acc;
-          };
+        ? reduceDiffStyleHook(this.styles || {}, {...style, ...safeAreaPaddings})
+        : (() => ({...this.styles, ...style, ...safeAreaPaddings}));
       
       const rawDiff = !force ? Object.keys(style).reduce(diffReducer, {}) : merge(style);
 
-      const beforeHook = this.hook("beforeStyleDiffAssign");
-      const diff = beforeHook && beforeHook(rawDiff) || null;
+      const beforeHook = hooks("beforeStyleDiffAssign");
+      const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
       const comp = name.indexOf("_") === -1 && this._actorInternal_.component.layout
         ? this._actorInternal_.component.layout
         : this._actorInternal_.component;
@@ -138,10 +146,19 @@ export default function makeStylable({component, classNames="", userStyle={}, na
         });
       // <-------------------
       
-      const afterHook = this.hook("afterStyleDiffAssign");
+      const afterHook = hooks("afterStyleDiffAssign");
       afterHook && (style = afterHook(style));
-
-      this.styles = style;
+      
+      return style;
+    }
+    
+    /**
+     * Sets styles
+     *
+     * @param {object} styles - a style object
+     */
+    setStyles = (style, force=false) => {
+      this.styles = this.computeAndAssignStyle(style, force=false);
     }
 
     getStyles = () => {
