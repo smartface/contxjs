@@ -151,7 +151,9 @@ function contextReducer(context, action, target) {
 	
 	switch (action.type) {
 		case "updateUserStyle":
-			context.find(target, {updateUserStyle: () => {throw new TypeError(`Target ${target} component cannot be found.`)}}).updateUserStyle(action.userStyle);
+			context
+				.find(target, {updateUserStyle: () => {throw new TypeError(`Target ${target} component cannot be found.`)}})
+				.updateUserStyle(action.userStyle);
 			
 			return newState;
 		case "changeUserStyle":
@@ -162,10 +164,8 @@ function contextReducer(context, action, target) {
 		case "updatePageSafeArea":
 			context
 				.find(target, {setSafeArea: () => {throw new TypeError(`Target ${target} component cannot be found.`)}})
-				.setSafeArea(Object.assign({}, action.safeArea))
-				.applyStyles();
+				.setSafeArea(Object.assign({}, action.safeArea));
 				
-			
 			return newState;
 		case "invalidate":
 			context.map(function(actor) {

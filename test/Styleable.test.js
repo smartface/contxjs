@@ -133,14 +133,15 @@ describe("Stylable Actor", function() {
         paddingTop: 20,
       });
       
-      actor.setUserStyle({
-        paddingLeft: 20,
-        paddingTop: 10,
-        paddingBottom: 20,
-        paddingRight: 10,
-      });
+      actor
+        .setUserStyle({
+          paddingLeft: 20,
+          paddingTop: 10,
+          paddingBottom: 20,
+          paddingRight: 10,
+        })
+        .applyStyles(true);
       
-      actor.applyStyles(true);
       
       expect(component).to.eql({
         paddingLeft: 40,
