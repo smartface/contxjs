@@ -43,6 +43,14 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       return this;
     }
     
+    makeDirty = () => {
+      this.isDirty = true;
+    }
+    
+    clearDirty = () => {
+      this.isDirty = false;
+    }
+    
     updateUserStyle = (props) => {
       userStyle = merge(userStyle, props);
       this.isDirty = true;
@@ -167,6 +175,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     
     applyStyles = (force=false) => {
       this.computeAndAssignStyle(this.styles, force=false);
+      this.clearDirty();
       
       return this;
     }

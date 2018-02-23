@@ -69,7 +69,7 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
             try {
               if(className){
                 const styles = styling(className)();
-                actor.setStyles(styles);
+                actor.setStyles(styles).applyStyles();
               }
             } catch (e) {
               e.message = `While actor's style [${name}] is set. ${e.message}`;
@@ -77,7 +77,6 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
               throw e;
             }
             
-            actor.isDirty = false;
           }
         });
       
