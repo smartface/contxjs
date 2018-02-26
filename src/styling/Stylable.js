@@ -17,6 +17,7 @@ const _findClassNames = (classNames) => findClassNames(classNames).reduce((acc, 
 export default function makeStylable({component, classNames="", userStyle={}, name}) {
   const initialClassNames = _findClassNames(classNames);
   userStyle = merge(userStyle);
+  let waitedStyle = {};
   
   /**
    * Styable actor
@@ -97,12 +98,13 @@ export default function makeStylable({component, classNames="", userStyle={}, na
         assignIfNotEmpty("paddingLeft");
       }
       
+      
       let diffReducer = !force && reduceDiffStyleHook
         ? reduceDiffStyleHook(this.styles || {}, {...style, ...safeAreaPaddings})
         : null;
       
       const rawDiff = typeof diffReducer === 'function' 
-        ? Object.keys(style).reduce(diffReducer, {}) 
+        ? Object.keys(style).reduce(diffReducer, {})
         : ({...this.styles, ...style, ...safeAreaPaddings});
 
       const beforeHook = hooks("beforeStyleDiffAssign");
@@ -174,7 +176,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     }
     
     applyStyles = (force=false) => {
-      this.computeAndAssignStyle(this.styles, force=false);
+      this.computeAndAssignStyle(waitedStyle, force=false);
       this.clearDirty();
       
       return this;
@@ -186,8 +188,8 @@ export default function makeStylable({component, classNames="", userStyle={}, na
      * @param {object} styles - a style object
      */
     setStyles = (style, force=false) => {
-      this.styles = style;
-      
+      waitedStyle = merge(waitedStyle, style);
+      this.makeDirty();
       return this;
     }
 
