@@ -83,19 +83,18 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
       style = merge(style, userStyle);
       
-      const safeAreaProps = Object.assign({}, style.flexProps);
+      const safeAreaProps = {};
       
       if(this.safeArea){
-        const getNotEmpty = (p, v, y) => 
-          v && (v[p] !== undefined || v[p] !== null)
-            ? v[p]
-            : y && y[p] || null;
+        const getNotEmpty = (v, y) => v !== undefined
+            ? v
+            : y !== undefined && y || null;
             
-        const addValstoSafeAreaIfExists = (val, assign) => val >= 0 && (val + assign) || assign;
+        const addValstoSafeAreaIfExists = (val, willAdd) => willAdd >= 0 && val >= 0 ? (val + willAdd) : willAdd;
         const assigntoSafeAreaIfNotEmpty = (prop) => 
-          this.safeArea[prop] >= 0 && 
+          this.safeArea[prop] !== undefined && 
             (safeAreaProps[prop] = addValstoSafeAreaIfExists(
-              getNotEmpty(prop, style.flexProps, this.styles.flexProps), 
+              getNotEmpty(style[prop], this.styles[prop]), 
               this.safeArea[prop]
             ));
         
@@ -106,12 +105,12 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       }
       
       let diffReducer = !force && reduceDiffStyleHook
-        ? reduceDiffStyleHook(this.styles || {}, Object.assign({}, style, {flexProps: safeAreaProps}))
+        ? reduceDiffStyleHook(this.styles || {}, Object.assign({}, style, safeAreaProps))
         : null;
       
       const rawDiff = typeof diffReducer === 'function' 
         ? Object.keys(style).reduce(diffReducer, {})
-        : merge(this.styles, style, {flexProps: safeAreaProps});
+        : merge(this.styles, style, safeAreaProps);
 
       const beforeHook = hooks("beforeStyleDiffAssign");
       const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
@@ -281,6 +280,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       this._actorInternal_ = null;
       this.context = null;
       this.styles = null;
+      component.onSafeAreaPaddingChange = null;
       component.dispatch = null;
       component.onDispose && component.onDispose();
     }

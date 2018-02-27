@@ -20,7 +20,7 @@ describe("Stylable Actor", function() {
   });
   
   function getPaddings({...params}){
-    return {flexProps: {...params}}
+    return {...params};
   }
 
   it("should push new classnames", function() {
