@@ -8,8 +8,7 @@ var isTablet = false;
 
 if (System.OS === "iOS" && orientation.shortEdge >= 720) {
     isTablet = true;
-}
-else if (System.OS === "Android") {
+} else if (System.OS === "Android") {
     AndroidConfig = load('sf-core/util/Android/androidconfig');
     const Activity = AndroidConfig.activity;
     const context = Activity;

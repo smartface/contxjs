@@ -18,6 +18,10 @@ describe("Stylable Actor", function() {
     component = {};
     actor =   makeStylable({component, name: "mockComponent", classNames:".test"});
   });
+  
+  function getPaddings({...params}){
+    return {flexProps: {...params}}
+  }
 
   it("should push new classnames", function() {
     actor.isDirty = false;
@@ -90,29 +94,29 @@ describe("Stylable Actor", function() {
         paddingTop: 0
       });
       
-      actor.setStyles({
+      actor.setStyles(getPaddings({
         paddingLeft: 20,
         paddingTop: 10
-      });
+      }));
       
       actor.applyStyles();
       
-      expect(component).to.eql({
+      expect(component).to.eql(getPaddings({
         paddingLeft: 30,
         paddingTop: 10
-      });
+      }));
   
-      actor.setStyles({
+      actor.setStyles(getPaddings({
         paddingLeft: 40,
         paddingTop: 0
-      });
+      }));
       
       actor.applyStyles();
       
-      expect(component).to.eql({
+      expect(component).to.eql(getPaddings( {
         paddingLeft: 50,
         paddingTop: 0
-      });
+      }));
   
       actor.setSafeArea({
         paddingLeft: 0,
@@ -121,10 +125,10 @@ describe("Stylable Actor", function() {
       
       actor.applyStyles(true);
       
-      expect(component).to.eql({
+      expect(component).to.eql(getPaddings({
         paddingLeft: 40,
         paddingTop: 0
-      });
+      }));
     });   
     
     it("should be added to userStyles' paddings", function() {
@@ -132,11 +136,10 @@ describe("Stylable Actor", function() {
       actor.pushClassNames(".test2 .flexLayout-dotIndicator-item.active");
       actor.isDirty = false;
       
-      actor.setStyles({
+      actor.setStyles(getPaddings({
         paddingLeft: 0,
         paddingTop: 0,
-        width: 100
-      });
+      }));
       
       actor.setSafeArea({
         paddingLeft: 50,
@@ -144,46 +147,42 @@ describe("Stylable Actor", function() {
       
       actor.applyStyles();
       
-      expect(component).to.eql({
+      expect(component).to.eql(getPaddings({
         paddingLeft: 50,
-        paddingTop: 0,
-        width: 100
-      });
+        paddingTop: 0
+      }));
       
-      actor.setUserStyle({
+      actor.setUserStyle(getPaddings({
         paddingLeft: 20,
-      });
+      }));
       
       actor.applyStyles();
       
-      expect(component).to.eql({
+      expect(component).to.eql(getPaddings({
         paddingLeft: 70,
-        paddingTop: 0,
-        width: 100,
-      });
+        paddingTop: 0
+      }));
       
       actor.setSafeArea({
         paddingLeft: 20,
         paddingTop: 20,
       });
       
-      actor.setUserStyle({
+      actor.setUserStyle(getPaddings({
         paddingLeft: 20,
         paddingTop: 10,
         paddingBottom: 20,
         paddingRight: 10,
-        width: 100,
-      });
+      }));
       
       actor.applyStyles();
       
-      expect(component).to.eql({
+      expect(component).to.eql(getPaddings({
         paddingLeft: 40,
         paddingRight: 10,
         paddingBottom: 20,
-        paddingTop: 30,
-        width: 100
-      });
+        paddingTop: 30
+      }));
     });
   });
 });

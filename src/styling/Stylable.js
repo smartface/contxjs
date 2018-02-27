@@ -83,29 +83,35 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
       style = merge(style, userStyle);
       
-      const safeAreaPaddings = {};
+      const safeAreaProps = Object.assign({}, style.flexProps);
       
       if(this.safeArea){
-        const getNotEmpty = (v, y) => (v === undefined || v === null) ? y : v;
-        const sumValsIfSafeAreaExists = (val, assign) => val >= 0 && (val + assign) || assign;
-        const assignIfNotEmpty = 
-          (prop) => this.safeArea[prop] >= 0 && 
-              (safeAreaPaddings[prop] = sumValsIfSafeAreaExists(getNotEmpty(style[prop], this.styles[prop]), this.safeArea[prop]));
+        const getNotEmpty = (p, v, y) => 
+          v && (v[p] !== undefined || v[p] !== null)
+            ? v[p]
+            : y && y[p] || null;
+            
+        const addValstoSafeAreaIfExists = (val, assign) => val >= 0 && (val + assign) || assign;
+        const assigntoSafeAreaIfNotEmpty = (prop) => 
+          this.safeArea[prop] >= 0 && 
+            (safeAreaProps[prop] = addValstoSafeAreaIfExists(
+              getNotEmpty(prop, style.flexProps, this.styles.flexProps), 
+              this.safeArea[prop]
+            ));
         
-        assignIfNotEmpty("paddingTop");
-        assignIfNotEmpty("paddingBottom");
-        assignIfNotEmpty("paddingRight");
-        assignIfNotEmpty("paddingLeft");
+        assigntoSafeAreaIfNotEmpty("paddingTop");
+        assigntoSafeAreaIfNotEmpty("paddingBottom");
+        assigntoSafeAreaIfNotEmpty("paddingRight");
+        assigntoSafeAreaIfNotEmpty("paddingLeft");
       }
       
-      
       let diffReducer = !force && reduceDiffStyleHook
-        ? reduceDiffStyleHook(this.styles || {}, {...style, ...safeAreaPaddings})
+        ? reduceDiffStyleHook(this.styles || {}, Object.assign({}, style, {flexProps: safeAreaProps}))
         : null;
       
       const rawDiff = typeof diffReducer === 'function' 
         ? Object.keys(style).reduce(diffReducer, {})
-        : ({...this.styles, ...style, ...safeAreaPaddings});
+        : merge(this.styles, style, {flexProps: safeAreaProps});
 
       const beforeHook = hooks("beforeStyleDiffAssign");
       const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
