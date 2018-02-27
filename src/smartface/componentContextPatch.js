@@ -9,6 +9,6 @@ export default function componentContextPatch(component, name) {
   component.onShow = patchMethod(component, "onShow", onShow);
 
   function onShow(superOnShow, params) {
-    superOnShow(params);
+    superOnShow && superOnShow(params);
   }
 }
