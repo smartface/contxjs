@@ -27,6 +27,23 @@ function removeChildren(superRemoveAll) {
   this.dispatch && this.dispatch(removeContextChildren());
 }
 
+function onSafeAreaPaddingChange(onSafeAreaPaddingChange, paddings){
+  const style = {};
+  paddings.left != undefined && (style.paddingLeft = paddings.left);
+  paddings.right != undefined && (style.paddingRight = paddings.right);
+  paddings.top != undefined && (style.paddingTop = paddings.top);
+  paddings.bottom != undefined && (style.paddingBottom = paddings.bottom);
+  
+  onSafeAreaPaddingChange && onSafeAreaPaddingChange.call(this, paddings);
+  
+  this.dispatch({
+    type: "updatePageSafeArea",
+    safeArea: style
+  });
+  
+  this.layout.applyLayout();
+}
+
 function createOriginals(component){
   !component.__original_addChild
     && Object.defineProperty(component, "__original_addChild", {
@@ -74,6 +91,11 @@ export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, 
     }
     
     try {
+      
+      if (component.ios) {
+        component.ios.onSafeAreaPaddingChange = onSafeAreaPaddingChange.bind(component, component.ios.onSafeAreaPaddingChange);
+      }
+      
       if(component.layout && typeof component.layout.addChild === 'function'){
         createOriginals(component.layout);
         
