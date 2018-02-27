@@ -105,12 +105,17 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       }
       
       let diffReducer = !force && reduceDiffStyleHook
-        ? reduceDiffStyleHook(this.styles || {}, Object.assign({}, style, safeAreaProps))
+        ? reduceDiffStyleHook(this.styles || {}, Object.assign({}, style))
         : null;
       
       const rawDiff = typeof diffReducer === 'function' 
         ? Object.keys(style).reduce(diffReducer, {})
-        : merge(this.styles, style, safeAreaProps);
+        : merge(this.styles, style);
+        
+      if(rawDiff){
+        Object.assign(rawDiff, safeAreaProps);
+        Object.assign(style, safeAreaProps);
+      }
 
       const beforeHook = hooks("beforeStyleDiffAssign");
       const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
