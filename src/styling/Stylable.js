@@ -90,7 +90,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
             ? v
             : y !== undefined && y || null;
             
-        const addValstoSafeAreaIfExists = (val, willAdd) => willAdd >= 0 && val >= 0 ? (val + willAdd) : willAdd;
+        const addValstoSafeAreaIfExists = (val, willAdd) => typeof willAdd === "number" && typeof val === "number" ? (val + willAdd) : willAdd;
         const assigntoSafeAreaIfNotEmpty = (prop) => 
           this.safeArea[prop] !== undefined && 
             (safeAreaProps[prop] = addValstoSafeAreaIfExists(
