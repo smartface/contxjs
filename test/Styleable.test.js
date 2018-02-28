@@ -17,6 +17,7 @@ describe("Stylable Actor", function() {
   beforeEach(function() {
     component = {};
     actor =   makeStylable({component, name: "mockComponent", classNames:".test"});
+    actor.clearDirty();
   });
   
   function getPaddings({...params}){
@@ -85,8 +86,46 @@ describe("Stylable Actor", function() {
   });
   
   describe("Safe Area", function() {
-    it("should be able to add safeArea", function() {
+    it("should be always overrode", function() {
       actor.pushClassNames(".test2 .flexLayout-dotIndicator-item.active");
+      actor.isDirty = false;
+      
+      actor.setSafeArea({
+        paddingLeft: 10,
+        paddingTop: 0
+      });
+
+      actor.setSafeArea({
+        paddingLeft: 20,
+        paddingTop: 10
+      });
+
+      actor.applyStyles();
+
+      expect(component).to.eql(getPaddings({
+        paddingLeft: 20,
+        paddingTop: 10
+      }));
+
+      actor.setSafeArea({
+        paddingLeft: 30,
+        paddingTop: 20
+      });
+
+      expect(component).to.eql(getPaddings({
+        paddingLeft: 20,
+        paddingTop: 10
+      }));
+
+      actor.applyStyles();
+      
+      expect(component).to.eql(getPaddings({
+        paddingLeft: 30,
+        paddingTop: 20
+      }));
+    });
+    
+    it("should be able to add safeArea", function() {
       actor.isDirty = false;
       
       actor.setSafeArea({
@@ -129,11 +168,9 @@ describe("Stylable Actor", function() {
         paddingLeft: 40,
         paddingTop: 0
       }));
-    });   
+    });
     
     it("should be added to userStyles' paddings", function() {
-      
-      actor.pushClassNames(".test2 .flexLayout-dotIndicator-item.active");
       actor.isDirty = false;
       
       actor.setStyles(getPaddings({
@@ -144,7 +181,25 @@ describe("Stylable Actor", function() {
       actor.setSafeArea({
         paddingLeft: 50,
       });
+    })
+    
+    it("should be added to userStyles' paddings", function() {
       
+      actor.setStyles(getPaddings({
+        paddingLeft: 0,
+        paddingTop: 0,
+      }));
+      
+      actor.setSafeArea({
+        paddingLeft: 50,
+      });
+      
+      actor.applyStyles();
+      
+      actor.setSafeArea({
+        paddingLeft: 50,
+      });
+
       actor.applyStyles();
       
       expect(component).to.eql(getPaddings({

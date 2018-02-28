@@ -14,12 +14,14 @@ function onSafeAreaPaddingChange(onSafeAreaPaddingChange, paddings){
   
   onSafeAreaPaddingChange && onSafeAreaPaddingChange.call(this, paddings);
   
-  this.dispatch({
-    type: "updatePageSafeArea",
-    safeArea: style
-  });
-  
-  this.layout.applyLayout();
+  if(this.ios.safeAreaLayoutMode === true){
+    this.dispatch({
+      type: "updatePageSafeArea",
+      safeArea: style
+    });
+    
+    this.layout.applyLayout();
+  }
 }
 
 function onHide(superOnHide) {

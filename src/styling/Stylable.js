@@ -114,7 +114,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
         
       if(rawDiff){
         Object.assign(rawDiff, safeAreaProps);
-        Object.assign(style, safeAreaProps);
+        // Object.assign(style, safeAreaProps);
       }
 
       const beforeHook = hooks("beforeStyleDiffAssign");
