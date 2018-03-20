@@ -54,7 +54,8 @@ const COLOR_PROPS = [
   "minTrackColor",
   "maxTrackColor",
   "thumbColor",
-  "itemColor"
+  "itemColor",
+  "shadowColor"
 ];
 
 const IMAGE_PROPS = [
