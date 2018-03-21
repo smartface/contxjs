@@ -21,14 +21,9 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
   return function recomposeStylingContext(styling, reducer) {
     
     // context reducer
-    function contextUpdater(context, action, target) {
-      var state = context.getState();
-      var newState = state;
+    function contextUpdater(context, action, target, state) {
+      var newState = Object.assign({}, state);
         
-      if (target || action.type == INIT_CONTEXT_ACTION_TYPE){
-        newState = reducer(context, action, target);
-      }
-      
       switch (action.type) {
         case 'updateContext':
           updateContextTree(context.actors);
@@ -52,6 +47,7 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
       }
       
       if (target && action.type !== INIT_CONTEXT_ACTION_TYPE) {
+        newState = reducer(context, action, target, state);
         // state is not changed
         if (newState === state) {
           // return current state instance
@@ -78,7 +74,6 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
               
               throw e;
             }
-            
           }
         });
       

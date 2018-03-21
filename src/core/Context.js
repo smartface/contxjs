@@ -102,7 +102,7 @@ export default class Context {
   setState = (state) => {
     if (state !== this.state) {
       const oldState = this.state;
-      this.state = Object.assign({}, state);
+      this.state = state;
       // this.propagateAll(state, oldState);
     }
   }
@@ -119,17 +119,11 @@ export default class Context {
   }
 
   dispatch = (action, target) => {
-    // if(!this.getReducer()){
-    //   console.log("Reducer cannot be empty! "+this.getReducer());
-    //   return;
-    // }
-    
     try {
-      const state = this.getReducer()(this, action, target);
-
+      const reducer = this.getReducer();
+      const state = reducer(this, action, target, this.state || {});
       this.setState(state);
-    }
-    catch (e) {
+    } catch (e) {
       e.message = `An Error is occurred When action [${action.type}] run on target [${target}]. ${e.message}`;
       raiseErrorMaybe(e, target && !!this.actors.collection[target] && this.actors.collection[target].onError);
     }

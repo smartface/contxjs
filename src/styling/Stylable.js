@@ -78,7 +78,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
     }
     
     computeAndAssignStyle = (style, force=false) => {
-      const hooks = this.hook || (_ => null)
+      const hooks = this.hook || (_ => null);
       
       const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
       style = merge(style, userStyle);

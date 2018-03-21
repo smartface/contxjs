@@ -44,7 +44,7 @@ commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type
 });
 
 
-function createPageContext(component, name, classMap = null, reducers = null) {
+function createPageContext(component, name, reducers = null) {
 	var styleContext = fromSFComponent(
 		component,
 		name,
@@ -124,9 +124,9 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 	);
 
 	const _contextReducer = reducers 
-		? function(context, action, target) {
-				contextReducer(context, action, target);
-				reducers(context, action, target);
+		? function(context, action, target, state) {
+				const newState = contextReducer(context, action, target, state);
+				return reducers(context, action, target, newState || state);
 			}
 		: contextReducer;
 
@@ -144,11 +144,9 @@ function createPageContext(component, name, classMap = null, reducers = null) {
 	};
 }
 
-function contextReducer(context, action, target) {
-	const state = context.getState();
+function contextReducer(context, action, target, state) {
 	const newState = Object.assign({}, state);
-	// console.log("page context : "+JSON.stringify(action));
-	
+
 	switch (action.type) {
 		case "updateUserStyle":
 			context
@@ -202,6 +200,8 @@ function contextReducer(context, action, target) {
       return newState;
       break;
     case 'pushClassNames':
+    	if(!action.classNames)
+    		throw new Error("Classnames must not be null or undefined");
     	context.find(target).pushClassNames(action.classNames);
 
       return newState;
