@@ -1,4 +1,5 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+[![Twitter: @Smartface_io](https://img.shields.io/badge/contact-@Smartface_io-blue.svg?style=flat)](https://twitter.com/smartface_io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/smartface/contxjs/blob/master/LICENSE)
 ![npm version](https://img.shields.io/npm/v/@smartface/contx.svg?style=flat)
 
 # Contxjs
@@ -40,16 +41,36 @@ Adds specified component and their children to the PageContext and applies style
 Sets component userStyle.
 	- *Action::userStyle:object*
 - **Action.type => updateUserStyle** : 
-	- *Action::userStyle:object*
 Update component userStyle.
+	- *Action::userStyle:object*
+	-   ```js
+        button.dispatch({
+            type: "updateUserStyle",
+            userStyle: {
+                backgroundColor: "#AABBCC"
+            }
+        });
+        ```
 - **Action.type => removeChild** : 
 Removes target component and it's children from context.
 - **Action.type => removeChildren** : 
 Removes target component's children from context.
 - **Action.type => pushClassNames** : 
-Pushes new className selectors to the target component in order to manipulate component properties.
+Pushes new className selectors to the target component.
 	- *Action::classNames:string* for one classname
 	- *Action::classNames:Array* for multiple classnames
+	-   ```js
+        button.dispatch({
+            type: "pushClassNames",
+            classNames: [".foo", ".bar"]
+        });
+        ```
+	-   ```js
+        button.dispatch({
+            type: "pushClassNames",
+            classNames: ".foo"
+        });
+        ```
 - **Action.type => removeClassName** :
 Removes className selector from specified component.
 	- *Action::classNames:string* for one classname
@@ -61,18 +82,44 @@ Adds new components to Context or removes ones that doesn't exist in the updated
 
 ##### FlexLayout::addChild(childComponent:*, ?contextName: string, ?className: string, ?userStyle:StyleObject=null)
 
-Adds specified component to the FlexLayout instance and if contextName is specified 
-then dispatches addPageContextChild action to the Context.
+Adds specified component to target layout and if contextName is specified then 
+dispatches addPageContextChild action to the Context.
+
+```js
+var button = new Button();
+page.layout.addChild(button, "myButton", ".button", {
+  width: 250,
+  height: 250
+});
+```
+or
+```js
+page.layout.addChild(button, "myButton", ".button", function(userProps) {
+  userProps.width = 250;
+  userProps.height = 250;
+  return userProps;
+});
+```
 
 #####  FlexLayout::removeChild(childComponent:object)
 
-Removes specified component from FlexLayout instance then dispatches removeChild 
-action to the Context.
+Removes specified component from target layout then dispatches removeChild action 
+to the Context.
+
+```js
+// button component will be removed from both context and page layout
+page.layout.removeChild(button);
+```
 
 ##### FlexLayout::removeAll()
 
-Removes specified component's children then dispatches removeChildren action to 
+Removes target component's children then dispatches removeChildren action to 
 the Context.
+
+```js
+// Children of page will be removed from both context and page layout
+page.layout.removeAll();
+```
 
 #### Life-Cycle Events
 ##### Component::componentDidLeave
