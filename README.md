@@ -31,52 +31,101 @@ must be used so that Context's reducers are triggered.
 ##### Contx/Smartface/
 
 -  **Action::type = addPageContextChild**
-Adds specified component and their children to the PageContext and applies styles by class-name selectors.
-	- *Action::contextName: string* - Unique context name to use as Component ID. It must be unique only in it's own layout.
-	- *Action::childComponent: object* - Component instance to be added to context, 
+Adds specified component and their children to the PageContext and applies styles 
+by class-name selectors.
+	- *Action::contextName: string* - Unique context name to use as component id. 
+It must be unique only in it's belonging layout.
+	- *Action::childComponent: object* - Component instance to be added to context.
 	- *Action::classNames: string* - Class-name of component.
 	- *initialProps: object* - Initial properties of component. (User properties)
 
 - **Action.type => changeUserStyle** : 
 Sets component userStyle.
 	- *Action::userStyle:object*
+	- :warning: This will override component's current user properties.
+	-   ```js
+        myButton.dispatch({
+            type: "changeUserStyle",
+            userStyle: {
+                backgroundColor: "#AABBCC"
+            }
+        });
+        ```
+
 - **Action.type => updateUserStyle** : 
 Update component userStyle.
 	- *Action::userStyle:object*
 	-   ```js
-        button.dispatch({
+        myButton.dispatch({
             type: "updateUserStyle",
             userStyle: {
                 backgroundColor: "#AABBCC"
             }
         });
         ```
+
 - **Action.type => removeChild** : 
 Removes target component and it's children from context.
+    - :warning: This won't remove target component from layout.
+	-   ```js
+        myLayout.dispatch({
+            type: "removeChild"
+        });
+        ```
+
 - **Action.type => removeChildren** : 
 Removes target component's children from context.
+    - :warning: This won't remove target component's children from layout.
+	-   ```js
+        myLayout.dispatch({
+            type: "removeChildren"
+        });
+        ```
+
 - **Action.type => pushClassNames** : 
 Pushes new className selectors to the target component.
 	- *Action::classNames:string* for one classname
 	- *Action::classNames:Array* for multiple classnames
+	- :warning: This action won't work if target component has the class name to 
+	be added.
 	-   ```js
-        button.dispatch({
+        myButton.dispatch({
             type: "pushClassNames",
             classNames: [".foo", ".bar"]
         });
         ```
 	-   ```js
-        button.dispatch({
+        myButton.dispatch({
             type: "pushClassNames",
             classNames: ".foo"
         });
         ```
+
 - **Action.type => removeClassName** :
 Removes className selector from specified component.
-	- *Action::classNames:string* for one classname
-	- *Action::classNames:Array* for multiple classnames
+	- *Action::className:string* for one classname
+	- *Action::className:Array* for multiple classnames
+	-   ```js
+        myButton.dispatch({
+            type: "removeClassName",
+            className: [".foo", ".bar"]
+        });
+        ```
+	-   ```js
+        myButton.dispatch({
+            type: "removeClassName",
+            className: ".foo"
+        });
+        ```
+
 - **Action.type => invalidate** : 
 Forces to update Context's actors and applies styles if they are changed.
+	-   ```js
+        myButton.dispatch({
+            type: "invalidate"
+        });
+        ```
+
 - **Action.type => updateContext** : 
 Adds new components to Context or removes ones that doesn't exist in the updated FlexLayout::children.
 
@@ -84,44 +133,44 @@ Adds new components to Context or removes ones that doesn't exist in the updated
 
 Adds specified component to target layout and if contextName is specified then 
 dispatches addPageContextChild action to the Context.
-
-```js
-var button = new Button();
-page.layout.addChild(button, "myButton", ".button", {
-  width: 250,
-  height: 250
-});
-```
+-   ```js
+    var myButton = new Button();
+    page.layout.addChild(myButton, "myButton", ".button", {
+      width: 250,
+      height: 250
+    });
+    ```
 or
-```js
-page.layout.addChild(button, "myButton", ".button", function(userProps) {
-  userProps.width = 250;
-  userProps.height = 250;
-  return userProps;
-});
-```
+-   ```js
+    page.layout.addChild(myButton, "myButton", ".button", function(userProps) {
+      userProps.width = 250;
+      userProps.height = 250;
+      return userProps;
+    });
+    ```
 
 #####  FlexLayout::removeChild(childComponent:object)
 
 Removes specified component from target layout then dispatches removeChild action 
 to the Context.
 
-```js
-// button component will be removed from both context and page layout
-page.layout.removeChild(button);
-```
+-   ```js
+    // myButton component will be removed from both context and page layout
+    page.layout.removeChild(myButton);
+    ```
 
 ##### FlexLayout::removeAll()
 
 Removes target component's children then dispatches removeChildren action to 
 the Context.
 
-```js
-// Children of page will be removed from both context and page layout
-page.layout.removeAll();
-```
+-   ```js
+    // Children of page will be removed from both context and page layout
+    page.layout.removeAll();
+    ```
 
 #### Life-Cycle Events
+
 ##### Component::componentDidLeave
 
 When a component is removed from the Context and if the component has componentDidLeave 
@@ -139,3 +188,16 @@ If an error occcurs while an operation is being performed for a component, for
 example assignment of new properties, and the component has onError method then 
 the error is passed to onError method of the component. If not and then the 
 context throws the error.
+
+### Tricks
+
+##### Attributes
+
+Some properties are called [attributes](https://github.com/smartface/contxjs/blob/master/attributes.md).
+Context **does not** handle attribute properties.
+
+If you want to set an attribute, just set it directly like below:
+
+```js
+button.text = "Text";
+```
