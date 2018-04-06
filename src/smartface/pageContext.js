@@ -10,7 +10,6 @@ import makeStylable from '../styling/Stylable';
 import hooks from '../core/hooks';
 import Contants from "../core/constants";
 import fromSFComponent, {createActorTreeFromSFComponent} from "./fromSFComponent";
-// import Filtrex from 'filtrex'
 
 var orientationState = "ended";
 
@@ -31,8 +30,10 @@ commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type
       	};
       	
 				opts = merge(opts);
+				let isOK = false;
+				
 				try{
-  				var isOK = eval(opts.args);
+  				isOK = eval(opts.args);
 				} catch(e) {
 				  error && error(e);
 				  return {};
@@ -43,7 +44,13 @@ commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type
 	}
 });
 
-
+/**
+ * Creates new page context boundry
+ * 
+ * @param {object} component - Root component of the context
+ * @param {string} name - Root component ID
+ * @param {function} reducers - Reducers function
+ */
 function createPageContext(component, name, reducers = null) {
 	var styleContext = fromSFComponent(
 		component,
@@ -51,10 +58,6 @@ function createPageContext(component, name, reducers = null) {
 		//context hooks
 		function(hook) {
 			switch (hook) {
-				// case 'beforeAssignComponentStyles':
-				// 	return function beforeAssignComponentStyles(name, className) {
-				// 		return className;
-				// 	};
 				case 'beforeStyleDiffAssign':
 					return function beforeStyleDiffAssign(styles) {
 						return buildProps(styles);
@@ -104,7 +107,7 @@ function createPageContext(component, name, reducers = null) {
 									});
 							} else if (newStyles[key] !== null && typeof newStyles[key] === "object") {
 								if (Object.keys(newStyles[key]).length > 0 && !isEqual(oldStyles[key] || {}, newStyles[key])) {
-									acc[key] = newStyles[key];
+									acc[key] = merge(oldStyles[key], newStyles[key]);
 								}
 							} else if (oldStyles[key] !== newStyles[key]) {
 								acc[key] = newStyles[key];
