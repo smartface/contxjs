@@ -55,7 +55,9 @@ const COLOR_PROPS = [
   "maxTrackColor",
   "thumbColor",
   "itemColor",
-  "shadowColor"
+  "shadowColor",
+  "foregroundColor",
+  "underlineColor"
 ];
 
 const IMAGE_PROPS = [
