@@ -41,7 +41,7 @@ by class-name selectors.
 - **Action.type => changeUserStyle** : 
 Overwrites component userStyle.
 	- *Action::userStyle:object*
-	- :warning: This will change component's current user-styles (User properties).
+	- :warning: This will change component's current user-style (User properties).
  	```js
         myButton.dispatch({
             type: "changeUserStyle",
