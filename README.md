@@ -30,17 +30,16 @@ must be used so that Context's reducers are triggered.
 
 ##### Contx/Smartface/
 
--  **Action::type = addPageContextChild**
+-  **Action::type = addChild**
 Adds specified component and their children to the PageContext and applies styles 
 by class-name selectors.
-	- *Action::contextName: string* - Unique context name to use as component id. 
-It must be unique only in it's belonging layout.
-	- *Action::childComponent: object* - Component instance to be added to context.
+	- *Action::name: string* - Component's name is to use like an unique id. It must be unique only in it's belonging layout.
+	- *Action::component: object* - Component instance to be added to context.
 	- *Action::classNames: string* - Class-name of component.
-	- *initialProps: object* - Initial properties of component. (User properties)
+	- *Action::userStyle: object* - Initial properties of component. (User properties)
 
 - **Action.type => changeUserStyle** : 
-Sets component userStyle.
+Overwrites component userStyle.
 	- *Action::userStyle:object*
 	- :warning: This will override component's current user properties.
 	-   ```js
@@ -50,10 +49,18 @@ Sets component userStyle.
                 backgroundColor: "#AABBCC"
             }
         });
+	//or
+        myButton.dispatch({
+            type: "changeUserStyle",
+            userStyle: (style) => {
+	      style.backgroundColor = "#AABBCC";
+	      return style
+	    }
+        });
         ```
 
 - **Action.type => updateUserStyle** : 
-Update component userStyle.
+Updates component userStyle.
 	- *Action::userStyle:object*
 	-   ```js
         myButton.dispatch({
