@@ -36,13 +36,13 @@ by class-name selectors.
 	- *Action::name: string* - Component's name is to use like an unique id. It must be unique only in it's belonging layout.
 	- *Action::component: object* - Component instance to be added to context.
 	- *Action::classNames: string* - Class-name of component.
-	- *Action::userStyle: object* - Initial properties of component. (User properties)
+	- *Action::userStyle: object* - Initial style of component. (User properties)
 
 - **Action.type => changeUserStyle** : 
 Overwrites component userStyle.
 	- *Action::userStyle:object*
-	- :warning: This will override component's current user properties.
-	-   ```js
+	- :warning: This will change component's current user-styles (User properties).
+ 	```js
         myButton.dispatch({
             type: "changeUserStyle",
             userStyle: {
