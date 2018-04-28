@@ -3,7 +3,7 @@
  */
 
 import { expect } from "chai";
-import createPageContext from '../src/smartface/pageContext';
+// import createPageContext from '../src/smartface/pageContext';
 
 // import {findClassNames} from "../src/styler";
 // const styler = require("../src/styler").styler;
@@ -11,7 +11,7 @@ import createPageContext from '../src/smartface/pageContext';
 // const componentStyler = require("../src/styler").componentStyler;
 
 describe("Page Context", function() {
-  let pageContext;
+  /*let pageContext;
   let page;
   let component1;
   let component2;
@@ -32,7 +32,7 @@ describe("Page Context", function() {
   it("should merge nested objects", () => {
     let style = {};
     let context = pageContext(style);
-  });
+  });*/
 
   it("should push new classnames", function() {
     /*let actor  = makeStylable({component: {}, classNames:".test"});
