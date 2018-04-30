@@ -42,20 +42,21 @@ by class-name selectors.
 Overwrites component userStyle.
 	- *Action::userStyle:object*
 	- :warning: This will change component's current user-style (User properties).
- 	```js
+ 	-   ```js
         myButton.dispatch({
             type: "changeUserStyle",
             userStyle: {
                 backgroundColor: "#AABBCC"
             }
         });
-	//or
+        ```
+    -   ```js
         myButton.dispatch({
             type: "changeUserStyle",
             userStyle: (style) => {
-	      style.backgroundColor = "#AABBCC";
-	      return style
-	    }
+                style.backgroundColor = "#AABBCC";
+                return style;
+            }
         });
         ```
 
