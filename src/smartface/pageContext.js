@@ -192,28 +192,23 @@ function contextReducer(context, action, target, state) {
     	context.addTree(ctree);
     	
       return newState;
-      break;
     case 'removeChild':
 		  context.remove(target);
       return newState;
-      break;
     case 'removeChildren':
 		  context.removeChildren(target);
 	  
       return newState;
-      break;
     case 'pushClassNames':
     	if(!action.classNames)
     		throw new Error("Classnames must not be null or undefined");
     	context.find(target).pushClassNames(action.classNames);
 
       return newState;
-      break;
     case 'removeClassName':
 			context.find(target).removeClassName(action.className);
 
       return newState;
-      break;
 		case "orientationStarted":
 			context.map(function(actor) {
 				actor.setDirty(true);
