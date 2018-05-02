@@ -211,7 +211,7 @@ function createColorForDevice(color) {
   else if (color && /rgb/i.test(color)) { // rgba color
     var rgba = color.match(/\d\.\d+|\d+/ig);
     rgba.length === 3 && (rgba[3] = 1);
-    res = Color.create((Number(rgba[3]) * 255), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
+    res = Color.create((Number(rgba[3]) * 100), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
   }
   else if (color) { // hex color
     res = Color.create(color);
