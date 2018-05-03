@@ -228,7 +228,7 @@ function createFontForDevice(font) {
     //console.log(`Font.create(${family}, ${font.size||16}, ${getFontStyle(font)})`);
   }
   else {
-    res = Font.create(font.family + (font.style ? "-" + font.style : ""), font.size);
+    res = Font.create(font.family + (font.style ? "-" + font.style : ""), font.size || 16);
     //console.log(`Font.create(${font.family + (font.style ? "-" + font.style : "")}, ${font.size || 16})`);
   }
   return res;
