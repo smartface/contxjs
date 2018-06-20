@@ -57,7 +57,9 @@ const COLOR_PROPS = [
   "itemColor",
   "shadowColor",
   "foregroundColor",
-  "underlineColor"
+  "underlineColor",
+  "textFieldBackgroundColor",
+  "cursorColor"
 ];
 
 const IMAGE_PROPS = [
@@ -68,7 +70,9 @@ const IMAGE_PROPS = [
   "maxTrackImage",
   "minTrackImage",
   "backIndicatorImage",
-  "icon"
+  "icon",
+  "iconImage",
+  "closeImage"
 ];
 
 const IMAGE_FILLTYPE_COMMON_PROPS = [
