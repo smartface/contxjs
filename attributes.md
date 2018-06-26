@@ -27,3 +27,6 @@
 - itemCount
 - rowHeight
 - safeAreaEnabled
+- lineSpacing
+- letterSpacing
+- autoSizeEnabled
