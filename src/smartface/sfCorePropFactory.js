@@ -8,6 +8,8 @@ import { Orientation } from 'sf-core/ui/page';
 import { Type as MapViewType } from 'sf-core/ui/mapview';
 import { iOS } from 'sf-core/ui/searchview';
 import { Align as ScrollViewAlign } from 'sf-core/ui/scrollview';
+import LayoutManager from 'sf-core/ui/layoutmanager';
+
 import style from 'sf-core/ui/statusbarstyle';
 
 // require('sf-core/ui/imagefilltype')
@@ -31,13 +33,15 @@ const ENUMS = {
   "ios": {
     "style": style
   },
-  "align": ScrollViewAlign
+  "align": ScrollViewAlign,
+  "scrollDirection": LayoutManager.ScrollDirection
 };
 
 const componentObjectProps = {
   "android": {},
   "ios": {},
-  "layout": {}
+  "layout": {},
+  "layoutManager": {} 
 };
 
 const COLOR_PROPS = [
@@ -78,7 +82,8 @@ const IMAGE_PROPS = [
 const IMAGE_FILLTYPE_COMMON_PROPS = [
   "ASPECTFIT",
   "NORMAL",
-  "STRETCH"
+  "STRETCH",
+  "ASPECTFILL"
 ];
 
 const FONT_STYLE = {
