@@ -119,10 +119,6 @@ export default function makeStylable({component, classNames="", userStyle={}, na
 
       const beforeHook = hooks("beforeStyleDiffAssign");
       const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
-
-      const comp = name.indexOf("_") === -1 && this._actorInternal_.component.layout
-        ? this._actorInternal_.component.layout
-        : this._actorInternal_.component;
       const hasDiff = diff !== null && Object.keys(diff).length > 0;
       
       //TODO: extract all specified area @cenk
@@ -246,7 +242,7 @@ export default function makeStylable({component, classNames="", userStyle={}, na
 
     resetClassNames = (classNames = []) => {
       this.classNames = [];
-      [...initialClassNames, ...classNames].forEach(this.addClassName)
+      [...initialClassNames, ...classNames].forEach(this.addClassName);
       this.isDirty = true;
       
       return this;
@@ -257,14 +253,20 @@ export default function makeStylable({component, classNames="", userStyle={}, na
         return cname === className;
       });
     }
+    
+    notInclude = (className) => {
+      return this.classNames.some((cname) => {
+        return cname !== className;
+      });
+    }
 
     pushClassNames = (classNames) => {
       const classNamesArr = Array.isArray(classNames) 
         ? classNames 
         : _findClassNames(classNames);
-
-      if (!classNamesArr.some(this.hasClassName)) {
-        this.classNames = [...this.classNames, ...classNamesArr];
+      var newClassNames = classNamesArr.filter(this.notInclude);
+      if (newClassNames.length) {
+        this.classNames = [...this.classNames, ...newClassNames];
         this.isDirty = true;
       }
 
