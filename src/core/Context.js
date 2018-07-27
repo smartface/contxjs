@@ -37,6 +37,11 @@ export default class Context {
   }
 
   map = (fn) => {
+    /*for(let i = 0; i < this.actors.$$map.length; i++){
+      const actor = this.actors.collection[this.actors.$$map[i]];
+      fn(actor, i);
+    }*/
+    
     return this.actors.$$map.map((name, index) => {
       return fn(this.actors.collection[name], name, index);
     });

@@ -176,7 +176,7 @@ function contextReducer(context, action, target, state) {
 			return newState;
     case 'addChild':
     	const rootName = target+"_"+action.name;
-    	const ctree = createActorTreeFromSFComponent(action.component, rootName);
+    	const ctree = createActorTreeFromSFComponent(action.component, action.name, target);
     	
     	if(action.classNames && typeof action.classNames !== 'string' && !Array.isArray(action.classNames)){
     		throw new Error(action.classNames+" classNames must be String or Array");
@@ -184,9 +184,7 @@ function contextReducer(context, action, target, state) {
   		
     	ctree[target+"_"+action.name]
     		&& action.classNames
-    		&& Array.isArray(action.classNames)
-    			? ctree[rootName].pushClassNames(action.classNames)
-    			: ctree[rootName].pushClassNames(action.classNames.split(" "));
+			&& ctree[rootName].pushClassNames(action.classNames)
 
     	action.userStyle && ctree[rootName].setUserStyle(action.userStyle);
     	context.addTree(ctree);

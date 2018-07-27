@@ -4,6 +4,41 @@ import findClassNames from "@smartface/styler/lib/utils/findClassNames";
 
 const _findClassNames = (classNames) => findClassNames(classNames).reduce((acc, item) => !item && [] || [...acc, item.join('')] , []);
 
+const componentObjectProps = {
+  "android": {},
+  "ios": {},
+  "layout": {}
+};
+
+const SCW_LAYOUT_PROPS = {
+  "alignContent": "alignContent",
+  "alignItems": "alignItems",
+  "direction": "direction",
+  "flexDirection": "flexDirection",
+  "justifyContent": "justifyContent",
+  "flexWrap": "flexWrap",
+  "paddingLeft": "paddingLeft",
+  "paddingTop": "paddingTop",
+  "paddingRight": "paddingRight",
+  "paddingBottom": "paddingBottom",
+  "marginRight": "marginRight",
+  "marginLeft": "marginLeft",
+  "marginTop": "marginTop",
+  "marginBottom": "marginBottom",
+  "layoutHeight": "height",
+  "layoutWidth": "width",
+  "backgroundColor": "backgroundColor"
+};
+
+
+function componentAssign(component, key, value){
+  if(value !== null && value instanceof Object && componentObjectProps[key]){
+    Object.keys(value).forEach(k => componentAssign(component[key], k, value[k]));
+  } else {
+    component[key] = value;
+  }
+}
+
 // TODO create new jsdoc type for the parameter
 /**
  * Styleable Actor HOC. Decorates specifeid component and return an actor component
@@ -123,40 +158,6 @@ export default function makeStylable({component, classNames="", userStyle={}, na
       
       //TODO: extract all specified area @cenk
       // ------------->
-      
-      const componentObjectProps = {
-        "android": {},
-        "ios": {},
-        "layout": {}
-      };
-
-      const SCW_LAYOUT_PROPS = {
-        "alignContent": "alignContent",
-        "alignItems": "alignItems",
-        "direction": "direction",
-        "flexDirection": "flexDirection",
-        "justifyContent": "justifyContent",
-        "flexWrap": "flexWrap",
-        "paddingLeft": "paddingLeft",
-        "paddingTop": "paddingTop",
-        "paddingRight": "paddingRight",
-        "paddingBottom": "paddingBottom",
-        "marginRight": "marginRight",
-        "marginLeft": "marginLeft",
-        "marginTop": "marginTop",
-        "marginBottom": "marginBottom",
-        "layoutHeight": "height",
-        "layoutWidth": "width",
-        "backgroundColor": "backgroundColor"
-      };
-      
-      function componentAssign(component, key, value){
-        if(value !== null && value instanceof Object && componentObjectProps[key]){
-          Object.keys(value).forEach(k => componentAssign(component[key], k, value[k]));
-        } else {
-          component[key] = value;
-        }
-      }
       
       typeof component.subscribeContext === "function" 
         ? hasDiff && component.subscribeContext({ type: "new-styles", style: Object.assign({}, diff), rawStyle: merge(rawDiff) })

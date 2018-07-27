@@ -1,8 +1,50 @@
 {
-  "presets": [["es2015", {"loose": false}], "stage-0"],
-  "plugins": [
-    "transform-object-rest-spread",
-    "add-module-exports",
-    "transform-es2015-modules-umd"
-  ]
+  "env": {
+    "production": {
+      "presets": [
+        ["@babel/env", {
+          "targets": {
+            "node": "9"
+          },
+          "modules": "commonjs",
+          "useBuiltIns": false,
+          "debug": false,
+          "loose": true
+        }],
+        "@babel/stage-0"
+      ],
+      "plugins": ["add-module-exports", "@babel/plugin-proposal-object-rest-spread"]
+    },
+    "development": {
+      "presets": [
+        ["@babel/env", {
+          "targets": {
+            "node": "9",
+          },
+          "modules": "commonjs",
+          "useBuiltIns": false,
+          "debug": true,
+          "loose": true
+        }],
+        "@babel/stage-0"
+      ],
+      "plugins": [ "add-module-exports", "@babel/plugin-proposal-object-rest-spread"]
+    },
+    "test": {
+      "presets": [
+        "@babel/stage-0",
+        ["@babel/env", {
+          "targets": {
+            "node": "current"
+          },
+          "modules": false,
+          "useBuiltIns": true,
+          "debug": true,
+        }],
+      ],
+      "plugins":  [
+        "@babel/plugin-proposal-object-rest-spread"
+      ]
+    }
+  }
 }
