@@ -50,247 +50,207 @@ function componentAssign(component, key, value){
  * @returns {Object} - A Stylable Actor
  */
 export default function makeStylable({component, classNames="", userStyle={}, name}) {
-  const initialClassNames = _findClassNames(classNames);
   userStyle = merge(userStyle);
-  let waitedStyle = {};
-  
   /**
    * Styable actor
    * @class
    */
-  return new class Stylable extends Actor {
-    constructor() {
-      super(component, name);
+  return new Stylable(component, name, classNames, userStyle);
+}
 
-      this.classNames = [...initialClassNames];
+class Stylable extends Actor {
+    constructor(component, name, classNames, userStyle) {
+      super(component, name);
+      this.waitedStyle = {};
+      this.initialClassNames = _findClassNames(classNames);
+      this.classNames = [...this.initialClassNames];
       this.styles = {};
       this.inlinestyles = {};
       this.isDirty = true;
+      this.userStyle = userStyle;
+      this.component = component;
     }
-    
-    getUserStyle = () => {
-      return merge(userStyle);
-    }
-    
-    setSafeArea = (area) => {
-      this.safeArea = area;
-      this.isDirty = true;
-      
-      return this;
-    }
-    
-    makeDirty = () => {
-      this.isDirty = true;
-    }
-    
-    clearDirty = () => {
-      this.isDirty = false;
-    }
-    
-    updateUserStyle = (props) => {
-      userStyle = merge(userStyle, props);
-      this.isDirty = true;
-      
-      return this;
-    }
-    
-    reset = () => {
-      this.setStyles(this.getStyles(), true);
-      
-      return this;
-    }
-    
-    setUserStyle = (props) => {
-      if(typeof props === 'function'){
-        userStyle = props(this.getUserStyle());
-      } else {
-        userStyle = merge(props);
-      }
-      
-      this.isDirty = true;
-      
-      return this;
-    }
-    
-    computeAndAssignStyle = (style, force=false) => {
-      const hooks = this.hook || (_ => null);
-      
-      const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
-      style = merge(style, userStyle);
-      
-      const safeAreaProps = {};
-      
-      if(this.safeArea){
-        const getNotEmpty = (v, y) => v !== undefined
-            ? v
-            : y !== undefined && y || null;
-            
-        const addValstoSafeAreaIfExists = (val, willAdd) => typeof willAdd === "number" && typeof val === "number" ? (val + willAdd) : willAdd;
-        const assigntoSafeAreaIfNotEmpty = (prop) => 
-          this.safeArea[prop] !== undefined && 
-            (safeAreaProps[prop] = addValstoSafeAreaIfExists(
-              getNotEmpty(style[prop], this.styles[prop]), 
-              this.safeArea[prop]
-            ));
-        
-        assigntoSafeAreaIfNotEmpty("paddingTop");
-        assigntoSafeAreaIfNotEmpty("paddingBottom");
-        assigntoSafeAreaIfNotEmpty("paddingRight");
-        assigntoSafeAreaIfNotEmpty("paddingLeft");
-      }
-      
-      let diffReducer = !force && reduceDiffStyleHook
-        ? reduceDiffStyleHook(this.styles || {}, Object.assign({}, style))
-        : null;
-      
-      const rawDiff = typeof diffReducer === 'function' 
-        ? Object.keys(style).reduce(diffReducer, {})
-        : merge(this.styles, style);
-        
-      if(rawDiff){
-        Object.assign(rawDiff, safeAreaProps);
-        // Object.assign(style, safeAreaProps);
+      getUserStyle(){
+        return (0, merge)(this.userSt);
       }
 
-      const beforeHook = hooks("beforeStyleDiffAssign");
-      const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
-      const hasDiff = diff !== null && Object.keys(diff).length > 0;
-      
-      //TODO: extract all specified area @cenk
-      // ------------->
-      
-      typeof component.subscribeContext === "function" 
-        ? hasDiff && component.subscribeContext({ type: "new-styles", style: Object.assign({}, diff), rawStyle: merge(rawDiff) })
-        : hasDiff && Object.keys(diff).forEach((key) => {
-            try {
-              if(component.layout && SCW_LAYOUT_PROPS[key]){
-                componentAssign(component.layout, SCW_LAYOUT_PROPS[key], diff[key]);
-              } else {
-                componentAssign(component, key, diff[key]);
-              }
-            } catch (e) {
-              throw new Error(key + " has invalid value " + JSON.stringify(style[key]) + " " + e.message);
+      setSafeArea(area) {
+        this.safeArea = area;
+        this.isDirty = true;
+        return this;
+      }
+
+      makeDirty(){
+        this.isDirty = true;
+      }
+
+      clearDirty(){
+        this.isDirty = false;
+      }
+
+      updateUserStyle(props){
+        this.userStyle = (0, merge)(this.userStyle, props);
+        this.isDirty = true;
+        return this;
+      }
+
+      reset() {
+        this.setStyles(this.getStyles(), true);
+        return this;
+      }
+
+      setUserStyle(props){
+        if (typeof props === 'function') {
+          this.userSt = props(this.getUserStyle());
+        } else {
+          this.userSt = (0, merge)(props);
+        }
+
+        this.isDirty = true;
+        return this;
+      }
+
+      computeAndAssignStyle(style, force = false){
+        const hooks = this.hook || (_ => null);
+
+        const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
+        style = (0, merge)(style, this.userSt);
+        const safeAreaProps = {};
+
+        if (this.safeArea) {
+          const getNotEmpty = (v, y) => v !== undefined ? v : y !== undefined && y || null;
+
+          const addValstoSafeAreaIfExists = (val, willAdd) => typeof willAdd === "number" && typeof val === "number" ? val + willAdd : willAdd;
+
+          const assigntoSafeAreaIfNotEmpty = prop => this.safeArea[prop] !== undefined && (safeAreaProps[prop] = addValstoSafeAreaIfExists(getNotEmpty(style[prop], this.styles[prop]), this.safeArea[prop]));
+
+          assigntoSafeAreaIfNotEmpty("paddingTop");
+          assigntoSafeAreaIfNotEmpty("paddingBottom");
+          assigntoSafeAreaIfNotEmpty("paddingRight");
+          assigntoSafeAreaIfNotEmpty("paddingLeft");
+        }
+
+        let diffReducer = !force && reduceDiffStyleHook ? reduceDiffStyleHook(this.styles || {}, Object.assign({}, style)) : null;
+        const rawDiff = typeof diffReducer === 'function' ? Object.keys(style).reduce(diffReducer, {}) : (0, merge)(this.styles, style);
+
+        if (rawDiff) {
+          Object.assign(rawDiff, safeAreaProps); // Object.assign(style, safeAreaProps);
+        }
+
+        const beforeHook = hooks("beforeStyleDiffAssign");
+        const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
+        const hasDiff = diff !== null && Object.keys(diff).length > 0; //TODO: extract all specified area @cenk
+        // ------------->
+
+        typeof this.component.subscribeContext === "function" ? hasDiff && this.component.subscribeContext({
+          type: "new-styles",
+          style: Object.assign({}, diff),
+          rawStyle: (0, merge)(rawDiff)
+        }) : hasDiff && Object.keys(diff).forEach(key => {
+          try {
+            if (this.component.layout && SCW_LAYOUT_PROPS[key]) {
+              componentAssign(this.component.layout, SCW_LAYOUT_PROPS[key], diff[key]);
+            } else {
+              componentAssign(this.component, key, diff[key]);
             }
-        });
-      // <-------------------
-      
-      const afterHook = hooks("afterStyleDiffAssign");
-      afterHook && (style = afterHook(style));
-      
-      this.styles = style;
-      
-      return this;
-    }
-    
-    applyStyles = (force=false) => {
-      this.computeAndAssignStyle(waitedStyle, force=false);
-      this.clearDirty();
-      
-      return this;
-    }
-    
-    /**
-     * Sets styles
-     *
-     * @param {object} styles - a style object
-     */
-    setStyles = (style, force=false) => {
-      waitedStyle = merge(waitedStyle, style);
-      this.makeDirty();
-      return this;
-    }
+          } catch (e) {
+            throw new Error(key + " has invalid value " + JSON.stringify(style[key]) + " " + e.message);
+          }
+        }); // <-------------------
 
-    getStyles = () => {
-      return this.styles ? Object.assign({}, this.styles) : {};
-    }
+        const afterHook = hooks("afterStyleDiffAssign");
+        afterHook && (style = afterHook(style));
+        this.styles = style;
+        return this;
+      }
+
+      applyStyles(force = false){
+        this.computeAndAssignStyle(this.waitedStyle, force = false);
+        this.clearDirty();
+        return this;
+      }
+
+      setStyles(style, force = false){
+        this.waitedStyle = (0, merge)(this.waitedStyle, style);
+        this.makeDirty();
+        return this;
+      }
+
+      getStyles(){
+        return this.styles ? Object.assign({}, this.styles) : {};
+      }
+
+      getClassName(){
+        return this.classNames.join(" ");
+      }
+
+      classNamesCount(){
+        return this.classNames.length;
+      }
+
+      removeClassName(className){
+        return this.removeClassNames(className);
+      }
+
+      removeClassNames(classNames){
+        const classNamesArr = Array.isArray(classNames) ? classNames : _findClassNames(classNames);
+        this.classNames = this.classNames.filter(cname => !classNamesArr.some(rname => cname === rname));
+        classNamesArr.length && (this.isDirty = true);
+        return this.getClassName();
+      }
+
+      resetClassNames(classNames = []) {
+        this.classNames = [];
+        [...this.initialClassNames, ...classNames].forEach(this.addClassName);
+        this.isDirty = true;
+        return this;
+      }
+
+      hasClassName (className){
+        return this.classNames.some(cname => {
+          return cname === className;
+        });
+      }
+
+     notInclude(className){
+        return this.classNames.some(cname => {
+          return cname !== className;
+        });
+      }
+
+      pushClassNames(classNames) {
+        const classNamesArr = Array.isArray(classNames) ? classNames : _findClassNames(classNames);
+        var newClassNames = classNamesArr.filter(this.notInclude);
+
+        if (newClassNames.length) {
+          this.classNames = [...this.classNames, ...newClassNames];
+          this.isDirty = true;
+        }
+
+        return this.getClassName();
+      }
+
+      addClassName(className, index) {
+        if (!this.hasClassName(className)) {
+          this.classNames.splice(index, 1, className);
+          this.isDirty = true;
+        }
+
+        return this.getClassName();
+      }
+
+      dispose(){
+        this._actorInternal_.component = null;
+        this._actorInternal_ = null;
+        this.context = null;
+        this.styles = null;
+        this.component.onSafeAreaPaddingChange = null;
+        this.component.dispatch = null;
+        this.component.onDispose && this.component.onDispose();
+      }
 
     getInitialClassName() {
-      return initialClassNames;
+      return this.initialClassNames;
     }
 
-    getClassName = () => {
-      return this.classNames.join(" ");
-    }
-    
-    classNamesCount = () => {
-      return this.classNames.length;
-    }
-    
-    /**
-     * @deprecated since version 2
-     */
-    removeClassName = (className) => {
-      return this.removeClassNames(className);
-    }
-    
-    /**
-     * Added v1.0.6
-     * 
-     * remove specified classnames
-     * 
-     * @return {string}
-     */
-    removeClassNames = (classNames) => {
-      const classNamesArr = Array.isArray(classNames) 
-        ? classNames 
-        : _findClassNames(classNames);
-        
-      this.classNames = this.classNames.filter(cname => !classNamesArr.some(rname => cname === rname));
-      classNamesArr.length && (this.isDirty = true);
-
-      return this.getClassName();
-    }
-
-    resetClassNames = (classNames = []) => {
-      this.classNames = [];
-      [...initialClassNames, ...classNames].forEach(this.addClassName);
-      this.isDirty = true;
-      
-      return this;
-    }
-
-    hasClassName = (className) => {
-      return this.classNames.some((cname) => {
-        return cname === className;
-      });
-    }
-    
-    notInclude = (className) => {
-      return this.classNames.some((cname) => {
-        return cname !== className;
-      });
-    }
-
-    pushClassNames = (classNames) => {
-      const classNamesArr = Array.isArray(classNames) 
-        ? classNames 
-        : _findClassNames(classNames);
-      var newClassNames = classNamesArr.filter(this.notInclude);
-      if (newClassNames.length) {
-        this.classNames = [...this.classNames, ...newClassNames];
-        this.isDirty = true;
-      }
-
-      return this.getClassName();
-    }
-
-    addClassName = (className, index) => {
-      if (!this.hasClassName(className)) {
-        this.classNames.splice(index, 1, className);
-        this.isDirty = true;
-      }
-
-      return this.getClassName();
-    }
-
-    dispose = () => {
-      this._actorInternal_.component = null;
-      this._actorInternal_ = null;
-      this.context = null;
-      this.styles = null;
-      component.onSafeAreaPaddingChange = null;
-      component.dispatch = null;
-      component.onDispose && component.onDispose();
-    }
-  };
-}
+  }

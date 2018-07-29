@@ -49,9 +49,9 @@ export default class Context {
   }
 
   add = (actor, name) => {
-    if(this.actors.$$nameMap[name]){
-      throw new Error(name+" name must be unique");
-    }
+    //if(this.actors.$$nameMap[name]){
+    //  throw new Error(name+" name must be unique");
+  //  }
     // if(this.actors.collection[name]){
     // raiseErrorMaybe(new Error(`Child's name [${name}] must be unique in the same Container.`), actor.onError);
     // }
