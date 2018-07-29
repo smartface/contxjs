@@ -73,7 +73,7 @@ class Stylable extends Actor {
 
     var that = this;
     this.getUserStyle = () => {
-      return (0, merge)(that.userSt);
+      return (0, merge)(that.userStyle );
     };
 
     this.setSafeArea = (area) => {
@@ -103,10 +103,10 @@ class Stylable extends Actor {
 
     this.setUserStyle = (props) => {
       if (typeof props === 'function') {
-        that.userSt = props(that.getUserStyle());
+        that.userStyle = props(that.getUserStyle());
       }
       else {
-        that.userSt = (0, merge)(props);
+        that.userStyle = (0, merge)(props);
       }
 
       that.isDirty = true;
@@ -117,7 +117,7 @@ class Stylable extends Actor {
       const hooks = that.hook || (_ => null);
 
       const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
-      style = (0, merge)(style, that.userSt);
+      style = (0, merge)(style, that.userStyle );
       const safeAreaProps = {};
 
       if (that.safeArea) {
