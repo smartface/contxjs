@@ -40,8 +40,8 @@ export default class Context {
     return this.actors.collection.map(fn);
   }
 
-  find = (name, notValue) => {
-    return this.actors.collection[this.actors.$$nameMap[name]] || notValue;
+  find = (instance, notValue) => {
+    return this.actors.collection[this.actors.$$idMap[instance]] || notValue;
   }
 
   addTree = (tree) => {
@@ -61,7 +61,7 @@ export default class Context {
     // const type = actor._actorInternal_.constructor.name;
     // this.actors.$$typeMap[type] ? this.actors.$$typeMap[type].push(id) : this.actors.$$typeMap[name] = [id];
 
-    this.actors.$$idMap[actor.getID()] = this.actors.collection.length;
+    this.actors.$$idMap[instance] = this.actors.collection.length;
     // this.actors.$$map.push(this.actors.collection.length);
     // this.actors.$$nameMap[name] ?
     //   this.actors.$$nameMap[name].push(actor.getID()) :
@@ -83,16 +83,16 @@ export default class Context {
     // this.actors.collection = Object.keys(this.actors.collection);
   }
 
-  remove = (name) => {
-    this.removeChildren(name);
+  remove = (instance) => {
+    this.removeChildren(instance);
 
-    const index = this.actors.$$nameMap[name];
+    const index = this.actors.$$idMap[instance];
 
     if (index >= 0) {
       const index = this.actors.$$nameMap[nm];
       const actor = this.actors.collection[index];
-      delete this.actors.$$nameMap[name];
-      delete this.actors.$$idMap[actor.getID()];
+      delete this.actors.$$nameMap[actor.getName()];
+      delete this.actors.$$idMap[actor.getInstanceID()];
       this.actors.collection.splice(index, 1);
       actor.componentDidLeave();
       actor.dispose();
