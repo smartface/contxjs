@@ -5,7 +5,7 @@ export default class Context {
   
   constructor(actors, reducer, initialState = {}, hookFactory = null) {
     this._hookFactory = hookFactory;
-    this.actors = { collection: {}, $$map: [], $$idMap: {}, $$nameMap: {} };
+    this.actors = { collection: [], $$map: [], $$idMap: {}, $$nameMap: {} };
     this.state = Object.assign({}, initialState);
     this._reducer = reducer;
     actors && this.setActors(Object.assign({}, actors));
@@ -31,24 +31,17 @@ export default class Context {
   }
   
   reduce = (fn, acc = {}) => {
-    return this.actors.$$map.reduce((acc, name, index) => {
+    return this.actors.collection.reduce((acc, name, index) => {
       return fn(acc, this.actors.collection[name], name, index);
     }, acc);
   }
 
   map = (fn) => {
-    /*for(let i = 0; i < this.actors.$$map.length; i++){
-      const actor = this.actors.collection[this.actors.$$map[i]];
-      fn(actor, i);
-    }*/
-    
-    return this.actors.$$map.map((name, index) => {
-      return fn(this.actors.collection[name], name, index);
-    });
+    return this.actors.collection.map(fn);
   }
 
   find = (name, notValue) => {
-    return this.actors.collection[name] || notValue;
+    return this.actors.collection[this.actors.$$nameMap[name]] || notValue;
   }
 
   addTree = (tree) => {
@@ -56,6 +49,9 @@ export default class Context {
   }
 
   add = (actor, name) => {
+    if(this.actors.$$nameMap[name]){
+      throw new Error(name+" name must be unique");
+    }
     // if(this.actors.collection[name]){
     // raiseErrorMaybe(new Error(`Child's name [${name}] must be unique in the same Container.`), actor.onError);
     // }
@@ -65,12 +61,12 @@ export default class Context {
     // const type = actor._actorInternal_.constructor.name;
     // this.actors.$$typeMap[type] ? this.actors.$$typeMap[type].push(id) : this.actors.$$typeMap[name] = [id];
 
-    this.actors.collection[instance] = actor;
-    this.actors.$$idMap[actor.getID()] = instance;
-    this.actors.$$map.push(instance);
-    this.actors.$$nameMap[name] ?
-      this.actors.$$nameMap[name].push(actor.getID()) :
-      this.actors.$$nameMap[name] = [actor.getID()];
+    this.actors.$$idMap[actor.getID()] = this.actors.collection.length;
+    // this.actors.$$map.push(this.actors.collection.length);
+    // this.actors.$$nameMap[name] ?
+    //   this.actors.$$nameMap[name].push(actor.getID()) :
+    this.actors.$$nameMap[name] = this.actors.collection.length;
+    this.actors.collection.push(actor);
 
     actor.hook = this._hookFactory;
     actor.componentDidEnter((action, target) => this.dispatch(action, target));
@@ -79,26 +75,25 @@ export default class Context {
   }
 
   removeChildren = (name) => {
-    this.actors.$$map.forEach(nm => {
+    this.actors.collection.forEach(nm => {
       if (nm.indexOf(name + "_") === 0) {
-        const actor = this.actors.collection[nm];
-        actor.componentDidLeave();
-        actor.dispose();
-        delete this.actors.collection[nm];
+        this.remmove(name);
       }
     });
-
-    this.actors.$$map = Object.keys(this.actors.collection);
+    // this.actors.collection = Object.keys(this.actors.collection);
   }
 
   remove = (name) => {
     this.removeChildren(name);
 
-    const actor = this.actors.collection[name];
+    const index = this.actors.$$nameMap[name];
 
-    if (actor) {
-      delete this.actors.collection[name];
-      this.actors.$$map = Object.keys(this.actors.collection);
+    if (index >= 0) {
+      const index = this.actors.$$nameMap[nm];
+      const actor = this.actors.collection[index];
+      delete this.actors.$$nameMap[name];
+      delete this.actors.$$idMap[actor.getID()];
+      this.actors.collection.splice(index, 1);
       actor.componentDidLeave();
       actor.dispose();
     }
@@ -113,8 +108,7 @@ export default class Context {
   }
 
   propagateAll = () => {
-    this.actors.$$map.map((name) => {
-      const actor = this.actors.collection[name];
+    this.actors.collection.map((actor) => {
       actor.onContextChange && actor.onContextChange(this);
     });
   }
