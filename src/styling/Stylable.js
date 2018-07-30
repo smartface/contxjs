@@ -30,9 +30,8 @@ const SCW_LAYOUT_PROPS = {
   "backgroundColor": "backgroundColor"
 };
 
-
 function componentAssign(component, key, value) {
-  if (value !== null && value instanceof Object && componentObjectProps[key]) {
+  if (value !== null && value.constructor === Object && componentObjectProps[key]) {
     Object.keys(value).forEach(k => componentAssign(component[key], k, value[k]));
   }
   else {
@@ -70,192 +69,191 @@ class Stylable extends Actor {
     this.isDirty = true;
     this.userStyle = userStyle;
     this.component = component;
-
-    var that = this;
-    this.getUserStyle = () => {
-      return (0, merge)(that.userStyle );
-    };
-
-    this.setSafeArea = (area) => {
-      this.safeArea = area;
-      this.isDirty = true;
-      return this;
-    };
-
-    this.makeDirty = () => {
-      that.isDirty = true;
-    };
-
-    this.clearDirty = () => {
-      that.isDirty = false;
-    };
-
-    this.updateUserStyle = (props) => {
-      that.userStyle = (0, merge)(that.userStyle, props);
-      that.isDirty = true;
-      return that;
-    };
-
-    this.reset = () => {
-      that.setStyles(that.getStyles(), true);
-      return that;
-    };
-
-    this.setUserStyle = (props) => {
-      if (typeof props === 'function') {
-        that.userStyle = props(that.getUserStyle());
-      }
-      else {
-        that.userStyle = (0, merge)(props);
-      }
-
-      that.isDirty = true;
-      return that;
-    };
-
-    this.computeAndAssignStyle = (style, force = false) => {
-      const hooks = that.hook || (_ => null);
-
-      const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
-      style = (0, merge)(style, that.userStyle );
-      const safeAreaProps = {};
-
-      if (that.safeArea) {
-        const getNotEmpty = (v, y) => v !== undefined ? v : y !== undefined && y || null;
-
-        const addValstoSafeAreaIfExists = (val, willAdd) => typeof willAdd === "number" && typeof val === "number" ? val + willAdd : willAdd;
-
-        const assigntoSafeAreaIfNotEmpty = prop => that.safeArea[prop] !== undefined && (safeAreaProps[prop] = addValstoSafeAreaIfExists(getNotEmpty(style[prop], that.styles[prop]), that.safeArea[prop]));
-
-        assigntoSafeAreaIfNotEmpty("paddingTop");
-        assigntoSafeAreaIfNotEmpty("paddingBottom");
-        assigntoSafeAreaIfNotEmpty("paddingRight");
-        assigntoSafeAreaIfNotEmpty("paddingLeft");
-      }
-
-      let diffReducer = !force && reduceDiffStyleHook ? reduceDiffStyleHook(that.styles || {}, Object.assign({}, style)) : null;
-      const rawDiff = typeof diffReducer === 'function' ? Object.keys(style).reduce(diffReducer, {}) : (0, merge)(that.styles, style);
-
-      if (rawDiff) {
-        Object.assign(rawDiff, safeAreaProps); // Object.assign(style, safeAreaProps);
-      }
-
-      const beforeHook = hooks("beforeStyleDiffAssign");
-      const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
-      const hasDiff = diff !== null && Object.keys(diff).length > 0; //TODO: extract all specified area @cenk
-      // ------------->
-
-      typeof that.component.subscribeContext === "function" ? hasDiff && that.component.subscribeContext({
-        type: "new-styles",
-        style: Object.assign({}, diff),
-        rawStyle: (0, merge)(rawDiff)
-      }) : hasDiff && Object.keys(diff).forEach(key => {
-        try {
-          if (that.component.layout && SCW_LAYOUT_PROPS[key]) {
-            componentAssign(that.component.layout, SCW_LAYOUT_PROPS[key], diff[key]);
-          }
-          else {
-            componentAssign(that.component, key, diff[key]);
-          }
-        }
-        catch (e) {
-          throw new Error(key + " has invalid value " + JSON.stringify(style[key]) + " " + e.message);
-        }
-      }); // <-------------------
-
-      const afterHook = hooks("afterStyleDiffAssign");
-      afterHook && (style = afterHook(style));
-      that.styles = style;
-      return that;
-    };
-
-    this.applyStyles = (force = false) => {
-      that.computeAndAssignStyle(that.waitedStyle, force = false);
-      that.clearDirty();
-      return that;
-    };
-
-    this.setStyles = (style, force = false) => {
-      that.waitedStyle = (0, merge)(that.waitedStyle, style);
-      that.makeDirty();
-      return that;
-    };
-
-    this.getStyles = () => {
-      return that.styles ? Object.assign({}, that.styles) : {};
-    };
-
-    this.getClassName = () => {
-      return that.classNames.join(" ");
-    };
-
-    this.classNamesCount = () => {
-      return that.classNames.length;
-    };
-
-    this.removeClassName = (className) => {
-      return that.removeClassNames(className);
-    };
-
-    this.removeClassNames = (classNames) => {
-      const classNamesArr = Array.isArray(classNames) ? classNames : _findClassNames(classNames);
-      that.classNames = that.classNames.filter(cname => !classNamesArr.some(rname => cname === rname));
-      classNamesArr.length && (that.isDirty = true);
-      return that.getClassName();
-    };
-
-    this.resetClassNames = (classNames = []) => {
-      that.classNames = [];
-      [...that.initialClassNames, ...classNames].forEach(that.addClassName);
-      that.isDirty = true;
-      return that;
-    };
-
-    this.hasClassName = (className) => {
-      return that.classNames.some(cname => {
-        return cname === className;
-      });
-    };
-
-
-
-    this.pushClassNames = (classNames) => {
-      const classNamesArr = Array.isArray(classNames) ? classNames : _findClassNames(classNames);
-      var newClassNames = classNamesArr.filter(className => that.classNames.some(cname => {
-        return cname !== className;
-      }));
-
-      if (newClassNames.length) {
-        that.classNames = [...that.classNames, ...newClassNames];
-        that.isDirty = true;
-      }
-
-      return that.getClassName();
-    };
-
-    this.addClassName = (className, index) => {
-      if (!that.hasClassName(className)) {
-        that.classNames.splice(index, 1, className);
-        that.isDirty = true;
-      }
-
-      return that.getClassName();
-    };
-
-    this.dispose = () => {
-      that._actorInternal_.component = null;
-      that._actorInternal_ = null;
-      that.context = null;
-      that.styles = null;
-      that.component.onSafeAreaPaddingChange = null;
-      that.component.dispatch = null;
-      that.component.onDispose && that.component.onDispose();
-    };
-
-    this.getInitialClassName = () => {
-      return that.initialClassNames;
-    };
-
+  }
+  getUserStyle() {
+    return (0, merge)(this.userStyle);
   }
 
+  setSafeArea(area) {
+    this.safeArea = area;
+    this.isDirty = true;
+    return this;
+  }
+
+  makeDirty() {
+    this.isDirty = true;
+  }
+
+  clearDirty() {
+    this.isDirty = false;
+  }
+
+  updateUserStyle(props) {
+    this.userStyle = (0, merge)(this.userStyle, props);
+    this.isDirty = true;
+    return this;
+  }
+
+  reset() {
+    this.setStyles(this.getStyles(), true);
+    return this;
+  }
+
+  setUserStyle(props) {
+    if (typeof props === 'function') {
+      this.userStyle = props(this.getUserStyle());
+    }
+    else {
+      this.userStyle = (0, merge)(props);
+    }
+
+    this.isDirty = true;
+    return this;
+  }
+
+  computeAndAssignStyle(style, force = false) {
+    const hooks = this.hook || (_ => null);
+
+    const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
+    style = (0, merge)(style, this.userStyle);
+    const safeAreaProps = {};
+
+    if (this.safeArea) {
+      const getNotEmpty = (v, y) => v !== undefined ? v : y !== undefined && y || null;
+
+      const addValstoSafeAreaIfExists = (val, willAdd) => typeof willAdd === "number" && typeof val === "number" ? val + willAdd : willAdd;
+
+      const assigntoSafeAreaIfNotEmpty = prop => this.safeArea[prop] !== undefined && (safeAreaProps[prop] = addValstoSafeAreaIfExists(getNotEmpty(style[prop], this.styles[prop]), this.safeArea[prop]));
+
+      assigntoSafeAreaIfNotEmpty("paddingTop");
+      assigntoSafeAreaIfNotEmpty("paddingBottom");
+      assigntoSafeAreaIfNotEmpty("paddingRight");
+      assigntoSafeAreaIfNotEmpty("paddingLeft");
+    }
+
+    let diffReducer = !force && reduceDiffStyleHook ? reduceDiffStyleHook(this.styles || {}, Object.assign({}, style)) : null;
+    const rawDiff = isFunction(diffReducer) ? Object.keys(style).reduce(diffReducer, {}) : (0, merge)(this.styles, style);
+
+    if (rawDiff) {
+      Object.assign(rawDiff, safeAreaProps); // Object.assign(style, safeAreaProps);
+    }
+
+    const beforeHook = hooks("beforeStyleDiffAssign");
+    const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
+    const hasDiff = diff !== null && Object.keys(diff).length > 0; //TODO: extract all specified area @cenk
+    // ------------->
+
+    this.component.subscribeContext ? hasDiff && this.component.subscribeContext({
+      type: "new-styles",
+      style: Object.assign({}, diff),
+      rawStyle: (0, merge)(rawDiff)
+    }) : hasDiff && Object.keys(diff).forEach(key => {
+      try {
+        if (this.component.layout && SCW_LAYOUT_PROPS[key]) {
+          componentAssign(this.component.layout, SCW_LAYOUT_PROPS[key], diff[key]);
+        }
+        else {
+          componentAssign(this.component, key, diff[key]);
+        }
+      }
+      catch (e) {
+        throw new Error(key + " has invalid value " + JSON.stringify(style[key]) + " " + e.message);
+      }
+    }); // <-------------------
+    const afterHook = hooks("afterStyleDiffAssign");
+    afterHook && (style = afterHook(style));
+    this.styles = style;
+    return this;
+  }
+
+  applyStyles(force = false) {
+    this.computeAndAssignStyle(this.waitedStyle, force = false);
+    this.clearDirty();
+    return this;
+  }
+
+  setStyles(style, force = false) {
+    this.waitedStyle = (0, merge)(this.waitedStyle, style);
+    this.makeDirty();
+    return this;
+  }
+
+  getStyles() {
+    return this.styles ? Object.assign({}, this.styles) : {};
+  }
+
+  getClassName() {
+    return this.classNames.join(" ");
+  }
+
+  classNamesCount() {
+    return this.classNames.length;
+  }
+
+  removeClassName(className) {
+    return this.removeClassNames(className);
+  }
+
+  removeClassNames(classNames) {
+    const classNamesArr = Array.isArray(classNames) ? classNames : _findClassNames(classNames);
+    this.classNames = this.classNames.filter(cname => !classNamesArr.some(rname => cname === rname));
+    classNamesArr.length && (this.isDirty = true);
+    return this.getClassName();
+  }
+
+  resetClassNames(classNames = []) {
+    this.classNames = [];
+    [...this.initialClassNames, ...classNames].forEach(this.addClassName);
+    this.isDirty = true;
+    return this;
+  }
+
+  hasClassName(className) {
+    return this.classNames.some(cname => {
+      return cname === className;
+    });
+  }
+
+  pushClassNames(classNames) {
+    const classNamesArr = Array.isArray(classNames) ? classNames : _findClassNames(classNames);
+    var newClassNames = classNamesArr.filter(className => this.classNames.some(cname => {
+      return cname !== className;
+    }));
+
+    if (newClassNames.length) {
+      this.classNames = [...this.classNames, ...newClassNames];
+      this.isDirty = true;
+    }
+
+    return this.getClassName();
+  }
+
+  addClassName(className, index) {
+    if (!this.hasClassName(className)) {
+      this.classNames.splice(index, 1, className);
+      this.isDirty = true;
+    }
+
+    return this.getClassName();
+  }
+
+  dispose() {
+    this._actorInternal_.component = null;
+    this._actorInternal_ = null;
+    this.context = null;
+    this.styles = null;
+    this.component.onSafeAreaPaddingChange = null;
+    this.component.dispatch = null;
+    this.component.onDispose && this.component.onDispose();
+  }
+
+  getInitialClassName() {
+    return this.initialClassNames;
+  }
+
+}
+
+
+function isFunction(functionToCheck) {
+  return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
 }

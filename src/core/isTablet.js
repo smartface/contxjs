@@ -1,4 +1,4 @@
-import { orientation } from "sf-extension-utils";
+import * as orientation  from "sf-extension-utils/lib/orientation";
 import System from 'sf-core/device/system';
 function load(src){
     return require(src);

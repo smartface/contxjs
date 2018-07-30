@@ -41,7 +41,7 @@ const componentObjectProps = {
   "android": {},
   "ios": {},
   "layout": {},
-  "layoutManager": {} 
+  "layoutManager": {}
 };
 
 const COLOR_PROPS = [
@@ -133,7 +133,7 @@ const LAYOUT_PROPS_MAP = {
 export function createSFCoreProp(key, value) {
   var res;
   if (componentObjectProps[key] || ENUMS[key]) {
-    if (value instanceof Object) {
+    if (value.constructor === Object) {
       res = {};
       Object.keys(value).forEach(function(name) {
         // if (ENUMS[key] && ENUMS[key][name]) {
@@ -183,51 +183,64 @@ export default function buildProps(objectVal) {
   return props;
 }
 
-function createImageForDevice(image) {
-  var res;
-  if (image instanceof Object) {
-    res = {};
-    Object.keys(image).forEach(function(c) {
-      res[c] = createImageForDevice(image[c]);
-    });
-  }
-  else {
-    res = Image.createFromFile("images://" + image);
-  }
-  if (res === null) {
-    throw new Error(`Image [${image}] cannot be found`);
-  }
-  return res;
-}
-
-function createColorForDevice(color) {
-  var res;
-  if (color instanceof Object) {
-    if (color.startColor) { // gradient color
-      res = Color.createGradient({
-        startColor: createColorForDevice(color.startColor),
-        endColor: createColorForDevice(color.endColor),
-        direction: Color.GradientDirection[color.direction]
-      });
-    }
-    else { // colors object
+const createImageForDevice = (function() {
+  const cache = {};
+  return (image) => {
+    var res;
+    if (cache[image])
+      return cache[image];
+    if (image.constructor === Object) {
       res = {};
-      Object.keys(color).forEach(c => {
-        res[c] = createColorForDevice(color[c]);
+      Object.keys(image).forEach(function(c) {
+        res[c] = createImageForDevice(image[c]);
       });
     }
-  }
-  else if (color && /rgb/i.test(color)) { // rgba color
-    var rgba = color.match(/\d\.\d+|\d+/ig);
-    rgba.length === 3 && (rgba[3] = 1);
-    res = Color.create((Number(rgba[3]) * 100), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
-  }
-  else if (color) { // hex color
-    res = Color.create(color);
-  }
+    else {
+      cache[image] = res = Image.createFromFile("images://" + image);
+    }
+    if (res === null) {
+      throw new Error(`Image [${image}] cannot be found`);
+    }
+    return res;
+  };
+})();
 
-  return res || color;
-}
+const createColorForDevice = (function() {
+  const reRGB = /rgb/i;
+  const reRGBA = /\d\.\d+|\d+/ig;
+  const cache = {};
+  return (color) => {
+    reRGBA.lastIndex = reRGB.lastIndex = 0;
+    if (cache[color])
+      return cache[color];
+    var res;
+    if (color.constructor === Object) {
+      if (color.startColor) { // gradient color
+        res = Color.createGradient({
+          startColor: createColorForDevice(color.startColor),
+          endColor: createColorForDevice(color.endColor),
+          direction: Color.GradientDirection[color.direction]
+        });
+      }
+      else { // colors object
+        res = {};
+        Object.keys(color).forEach(c => {
+          res[c] = createColorForDevice(color[c]);
+        });
+      }
+    }
+    else if (color && reRGB.test(color)) { // rgba color
+      var rgba = color.match(reRGBA);
+      rgba.length === 3 && (rgba[3] = 1);
+      cache[color] = res = Color.create((Number(rgba[3]) * 100), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
+    }
+    else if (color) { // hex color
+      cache[color] = res = Color.create(color);
+    }
+    return (res || color);
+  };
+})();
+
 
 function createFontForDevice(font) {
   var res;

@@ -178,13 +178,13 @@ function contextReducer(context, action, target, state) {
     	const rootName = target+"_"+action.name;
     	const ctree = createActorTreeFromSFComponent(action.component, action.name, target);
     	
-    	if(action.classNames && typeof action.classNames !== 'string' && !Array.isArray(action.classNames)){
+    	/*if(action.classNames && typeof action.classNames !== 'string' && !Array.isArray(action.classNames)){
     		throw new Error(action.classNames+" classNames must be String or Array");
-    	}
+    	}*/
   		
     	ctree[target+"_"+action.name]
     		&& action.classNames
-			&& ctree[rootName].pushClassNames(action.classNames)
+			&& ctree[rootName].pushClassNames(action.classNames);
 
     	action.userStyle && ctree[rootName].setUserStyle(action.userStyle);
     	context.addTree(ctree);
