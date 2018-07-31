@@ -100,7 +100,7 @@ class Stylable extends Actor {
   }
 
   setUserStyle(props) {
-    if (typeof props === 'function') {
+    if (isFunction(props)) {
       this.userStyle = props(this.getUserStyle());
     }
     else {

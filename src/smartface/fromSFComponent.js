@@ -107,9 +107,6 @@ function createTreeItem(component, name, rootName, root) {
     componentVars.classNames + " " + classNames + " #" + name :
     classNames + " #" + name;
 
-  // if (acc[name] === undefined) {
-  //   delete acc['@@isEmpty'];
-
   return {
     component,
     classNames,
@@ -123,8 +120,6 @@ function createTreeItem(component, name, rootName, root) {
 function buildContextTree(component, name, root, rootName, acc) {
 
   if (acc[name] === undefined) {
-    delete acc['@@isEmpty'];
-
     acc[name] = createTreeItem(component, name, rootName, root);
   }
 
@@ -161,9 +156,8 @@ function createName(root, name) {
  * 
  * @return {function} - context helper
  */
-export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, acc = { '@@isEmpty': true }) {
+export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, acc = {}) {
   buildContextTree(root, rootName, root, rootName, acc);
-
   return acc;
 }
 
@@ -188,15 +182,10 @@ export default function fromSFComponent(root, rootName, hooksList = null, collec
 export function createActorTreeFromSFComponent(component, name, rootName) {
 
   if (component.addChild || component.layout) {
-    const ctree = extractTreeFromSFComponent(component, rootName, null);
-
-    Object.keys(ctree).forEach((name) => {
-      const item = ctree[name];
-
-      ctree[name] = makeStylable(item);
-    });
-
-    return ctree;
+    const ctree = extractTreeFromSFComponent(component, name, null);
+    const _ctree = {};
+    Object.keys(ctree).forEach((name) => _ctree[createName(rootName, name)] = makeStylable(ctree[name]));
+    return _ctree;
   }
   else {
     return {

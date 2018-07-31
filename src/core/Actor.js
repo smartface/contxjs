@@ -64,7 +64,7 @@ export default class Actor {
     }
 
     componentDidLeave(){
-      typeof this._actorInternal_.component.componentDidLeave === 'function' && this._actorInternal_.component.componentDidLeave();
+      this._actorInternal_.component.componentDidLeave && this._actorInternal_.component.componentDidLeave();
     }
 
     componentDidEnter(dispatcher){
