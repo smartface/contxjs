@@ -183,27 +183,19 @@ export default function buildProps(objectVal) {
   return props;
 }
 
-const createImageForDevice = (function() {
-  const cache = {};
-  return (image) => {
-    var res;
-    if (cache[image])
-      return cache[image];
-    if (image.constructor === Object) {
-      res = {};
-      Object.keys(image).forEach(function(c) {
-        res[c] = createImageForDevice(image[c]);
-      });
-    }
-    else {
-      cache[image] = res = Image.createFromFile("images://" + image);
-    }
-    if (res === null) {
-      throw new Error(`Image [${image}] cannot be found`);
-    }
-    return res;
-  };
-})();
+function createImageForDevice(image) {
+  var res;
+  if (image.constructor === Object) {
+    res = {};
+    Object.keys(image).forEach(function(c) {
+      res[c] = createImageForDevice(image[c]);
+    });
+  }
+  else {
+    res = "images://" + image;
+  }
+  return res;
+}
 
 const createColorForDevice = (function() {
   const reRGB = /rgb/i;

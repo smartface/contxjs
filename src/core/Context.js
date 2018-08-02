@@ -74,7 +74,7 @@ export default class Context {
         const actor = this.actors.collection[nm];
         actor.componentDidLeave();
         actor.dispose();
-        this.actors.collection[nm] = undefined;
+        delete this.actors.collection[nm];
       }
     });
     this.actors.$$map = Object.keys(this.actors.collection);
@@ -85,7 +85,7 @@ export default class Context {
     const actor = this.actors.collection[name];
 
     if (actor) {
-      this.actors.collection[name] = undefined;
+      delete this.actors.collection[name];
       this.actors.$$map = Object.keys(this.actors.collection);
       actor.componentDidLeave();
       actor.dispose();
