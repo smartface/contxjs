@@ -1,40 +1,45 @@
-import FlexLayout from 'sf-core/ui/flexlayout';
 import Color from 'sf-core/ui/color';
-import Image from 'sf-core/ui/image';
 import Font from 'sf-core/ui/font';
-import imageFillType from 'sf-core/ui/imagefilltype';
-import textAlignment from 'sf-core/ui/textalignment';
-import { Orientation } from 'sf-core/ui/page';
-import { Type as MapViewType } from 'sf-core/ui/mapview';
-import { iOS } from 'sf-core/ui/searchview';
-import { Align as ScrollViewAlign } from 'sf-core/ui/scrollview';
-import LayoutManager from 'sf-core/ui/layoutmanager';
 
-import style from 'sf-core/ui/statusbarstyle';
-
-// require('sf-core/ui/imagefilltype')
 const ENUMS = {
-  "imageFillType": imageFillType,
-  "textAlignment": textAlignment,
-  "orientation": Orientation,
-  "type": MapViewType,
-  "gradientOrientation": Color.GradientOrientation,
-  "searchViewStyle": iOS && iOS.style || {},
-  "alignSelf": FlexLayout.AlignSelf,
-  "alignContent": FlexLayout.AlignContent,
-  "alignItems": FlexLayout.AlignItems,
-  "direction": FlexLayout.Direction,
-  "flexDirection": FlexLayout.FlexDirection,
-  "flexWrap": FlexLayout.FlexWrap,
-  "justifyContent": FlexLayout.JustifyContent,
-  "positionType": FlexLayout.PositionType,
-  "overflow": FlexLayout.OverFlow,
-  "style": style,
+  "imageFillType": 'sf-core/ui/imagefilltype',
+  "textAlignment": 'sf-core/ui/textalignment',
+  "orientation": 'sf-core/ui/page',
+  "type": 'sf-core/ui/mapview',
+  "gradientOrientation": 'sf-core/ui/color',
+  "searchViewStyle": 'sf-core/ui/searchview',
+  "alignSelf": 'sf-core/ui/flexlayout',
+  "alignContent": 'sf-core/ui/flexlayout',
+  "alignItems": 'sf-core/ui/flexlayout',
+  "direction": 'sf-core/ui/flexlayout',
+  "flexDirection": 'sf-core/ui/flexlayout',
+  "flexWrap":'sf-core/ui/flexlayout',
+  "justifyContent": 'sf-core/ui/flexlayout',
+  "positionType": 'sf-core/ui/flexlayout',
+  "overflow": 'sf-core/ui/flexlayout',
+  "style": 'sf-core/ui/statusbarstyle',
   "ios": {
-    "style": style
+    "style": 'sf-core/ui/statusbarstyle'
   },
-  "align": ScrollViewAlign,
-  "scrollDirection": LayoutManager.ScrollDirection
+  "align": 'sf-core/ui/scrollview',
+  "scrollDirection": 'sf-core/ui/layoutmanager'
+};
+
+const ENUMS_META_FIELD = {
+  "orientation": "Orientation",
+  "type": "Type",
+  "searchViewStyle": "iOS",
+  "alignSelf": "AlignSelf",
+  "alignContent": "AlignContent",
+  "alignItems": "AlignItems",
+  "direction": "Direction",
+  "flexDirection": "FlexDirection",
+  "flexWrap": "FlexWrap",
+  "justifyContent": "JustifyContent",
+  "positionType": "PositionType",
+  "overflow": "OverFlow",
+  "scrollDirection": "ScrollDirection",
+  "gradientOrientation": "GradientOrientation"
 };
 
 const componentObjectProps = {
@@ -121,6 +126,13 @@ const LAYOUT_PROPS_MAP = {
   "layoutWidth": "width"
 };
 
+function _requireEnum(key){
+  var res = require(ENUMS[key]);
+  if(ENUMS_META_FIELD[key]){
+    res = res[ENUMS_META_FIELD[key]];
+  }
+  return res;
+}
 /**
  * Create a sf-core value
  * 
@@ -144,10 +156,10 @@ export function createSFCoreProp(key, value) {
       });
     }
     else if ((key === "imageFillType") && (IMAGE_FILLTYPE_COMMON_PROPS.indexOf(value) === -1)) {
-      res = value === null ? NaN : ENUMS[key].ios[value];
+      res = value === null ? NaN : _requireEnum(key).ios[value];
     }
     else if (ENUMS[key]) {
-      res = value === null ? NaN : ENUMS[key][value];
+      res = value === null ? NaN : _requireEnum(key)[value];
     }
     else {
       throw new Error(key + " ENUM value cannot be found");
