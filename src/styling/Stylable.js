@@ -157,7 +157,15 @@ class Stylable extends Actor {
         }
       }
       catch (e) {
-        throw new Error(key + " has invalid value " + JSON.stringify(style[key]) + " " + e.message);
+        e.message = "When " + 
+        key + 
+        " raw value : \n" +
+        toStringUtil(style[key]) + 
+        "\n \n is being assigned as : \n" + 
+        toStringUtil(diff[key]) + 
+        "\n\r" +
+        e.message;
+        throw e;
       }
     }); // <-------------------
     const afterHook = hooks("afterStyleDiffAssign");
@@ -256,4 +264,10 @@ class Stylable extends Actor {
 
 function isFunction(functionToCheck) {
   return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+}
+
+function toStringUtil(value){
+  if(value instanceof Object)
+    return JSON.stringify(value, null, "\t");
+  return value;
 }

@@ -145,7 +145,7 @@ function _requireEnum(key){
 export function createSFCoreProp(key, value) {
   var res;
   if (componentObjectProps[key] || ENUMS[key]) {
-    if (value.constructor === Object) {
+    if (value instanceof Object) {
       res = {};
       Object.keys(value).forEach(function(name) {
         // if (ENUMS[key] && ENUMS[key][name]) {
@@ -197,7 +197,7 @@ export default function buildProps(objectVal) {
 
 function createImageForDevice(image) {
   var res;
-  if (image.constructor === Object) {
+  if (image instanceof Object) {
     res = {};
     Object.keys(image).forEach(function(c) {
       res[c] = createImageForDevice(image[c]);
@@ -218,7 +218,7 @@ const createColorForDevice = (function() {
     if (cache[color])
       return cache[color];
     var res;
-    if (color.constructor === Object) {
+    if (color instanceof Object) {
       if (color.startColor) { // gradient color
         res = Color.createGradient({
           startColor: createColorForDevice(color.startColor),
