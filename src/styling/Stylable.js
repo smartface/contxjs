@@ -211,7 +211,7 @@ class Stylable extends Actor {
 
   resetClassNames(classNames = []) {
     this.classNames = [];
-    [...this.initialClassNames, ...classNames].forEach(this.addClassName);
+    [...this.initialClassNames, ...classNames].forEach(this.addClassName.bind(this));
     this.isDirty = true;
     return this;
   }
