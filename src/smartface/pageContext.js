@@ -109,7 +109,7 @@ function createPageContext(component, name, reducers = null) {
 										}
 									});
 							}
-							else if (newStyles[key] !== null && newStyles[key].constructor === Object) {
+							else if (newStyles[key] !== null && newStyles[key] instanceof Object) {
 								if (Object.keys(newStyles[key]).length > 0 && !isEqual(oldStyles[key] || {}, newStyles[key])) {
 									acc[key] = merge(oldStyles[key], newStyles[key]);
 								}

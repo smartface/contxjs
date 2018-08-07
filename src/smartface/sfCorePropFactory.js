@@ -13,7 +13,7 @@ const ENUMS = {
   "alignItems": 'sf-core/ui/flexlayout',
   "direction": 'sf-core/ui/flexlayout',
   "flexDirection": 'sf-core/ui/flexlayout',
-  "flexWrap":'sf-core/ui/flexlayout',
+  "flexWrap": 'sf-core/ui/flexlayout',
   "justifyContent": 'sf-core/ui/flexlayout',
   "positionType": 'sf-core/ui/flexlayout',
   "overflow": 'sf-core/ui/flexlayout',
@@ -26,6 +26,7 @@ const ENUMS = {
 };
 
 const ENUMS_META_FIELD = {
+  "align": "Align",
   "orientation": "Orientation",
   "type": "Type",
   "searchViewStyle": "iOS",
@@ -126,9 +127,9 @@ const LAYOUT_PROPS_MAP = {
   "layoutWidth": "width"
 };
 
-function _requireEnum(key){
+function _requireEnum(key) {
   var res = require(ENUMS[key]);
-  if(ENUMS_META_FIELD[key]){
+  if (ENUMS_META_FIELD[key]) {
     res = res[ENUMS_META_FIELD[key]];
   }
   return res;

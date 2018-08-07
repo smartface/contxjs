@@ -31,7 +31,7 @@ const SCW_LAYOUT_PROPS = {
 };
 
 function componentAssign(component, key, value) {
-  if (value !== null && value.constructor === Object && componentObjectProps[key]) {
+  if (value !== null && value instanceof Object && componentObjectProps[key]) {
     Object.keys(value).forEach(k => componentAssign(component[key], k, value[k]));
   }
   else {
