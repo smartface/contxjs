@@ -213,11 +213,8 @@ function createImageForDevice(image) {
 const createColorForDevice = (function() {
   const reRGB = /rgb/i;
   const reRGBA = /\d\.\d+|\d+/ig;
-  const cache = {};
   return (color) => {
     reRGBA.lastIndex = reRGB.lastIndex = 0;
-    if (cache[color])
-      return cache[color];
     var res;
     if (color instanceof Object) {
       if (color.startColor) { // gradient color
@@ -237,10 +234,10 @@ const createColorForDevice = (function() {
     else if (color && reRGB.test(color)) { // rgba color
       var rgba = color.match(reRGBA);
       rgba.length === 3 && (rgba[3] = 1);
-      cache[color] = res = Color.create((Number(rgba[3]) * 100), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
+      res = Color.create((Number(rgba[3]) * 100), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
     }
     else if (color) { // hex color
-      cache[color] = res = Color.create(color);
+      res = Color.create(color);
     }
     return (res || color);
   };
