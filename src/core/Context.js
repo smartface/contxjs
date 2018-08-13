@@ -21,7 +21,8 @@ export default class Context {
       collection: {},
       $$map: [],
       $$idMap: {},
-      $$nameMap: {}
+      $$nameMap: {},
+      $$lastID: null
     };
     // new
     this._reducers = [];
@@ -46,6 +47,10 @@ export default class Context {
       this.add(actors[name], name);
     });
     this.propagateAll();
+  }
+  
+  getLastActorID(){
+    return this.actors.$$lastID;
   }
 
   reduce(fn, acc = {}) {
@@ -83,6 +88,8 @@ export default class Context {
     this.actors.$$nameMap[name] ? this.actors.$$nameMap[name].push(actor.getID()) : this.actors.$$nameMap[name] = [actor.getID()];
     actor.hook = this._hookFactory;
     actor.componentDidEnter((action, target) => this.dispatch(action, target));
+    this.actors.$$lastID = actor.getInstanceID();
+    
     return name;
   }
 
@@ -109,13 +116,13 @@ export default class Context {
     this.removeChildren(instance);
     const actor = this.actors.collection[instance];
     
-    console.log("remove actor: "+actor.getInstanceID());
+    // console.log("remove actor: "+actor.getInstanceID());
 
     if (actor) {
       delete this.actors.collection[instance];
-      console.log("before remove actor : "+JSON.stringify(this.actors.$$map));
+      // console.log("before remove actor : "+JSON.stringify(this.actors.$$map));
       this.actors.$$map = Object.keys(this.actors.collection);
-      console.log("after remove actor : "+JSON.stringify(this.actors.$$map));
+      // console.log("after remove actor : "+JSON.stringify(this.actors.$$map));
       actor.componentDidLeave();
       actor.dispose();
     }

@@ -65,7 +65,7 @@ export function createThemeContextBound(themes) {
   
   function themesReducer(context, action, target, state) {
     var newState = Object.assign({}, state);
-    console.log("themesReducer "+action.type+" : "+target);
+
     switch (action.type) {
       case 'unload':
         context.remove(target);
@@ -80,11 +80,12 @@ export function createThemeContextBound(themes) {
         
         return newState;
       case 'removeThemeable':
-        context.map((actor) => {
-          if(actor.getName() === action.name){
-            context.remove(actor.getInstanceID());
-          }
-        })
+        // context.map((actor) => {
+        //   if(actor.getName() === action.name){
+        //     context.remove(actor.getInstanceID());
+        //   }
+        // })
+        context.remove(target);
         return newState;
       case 'changeTheme':
         themesCollection.forEach(theme => {
@@ -124,13 +125,14 @@ export function createThemeContextBound(themes) {
             name: name,
             pageContext: pageContext
           });
+          
+    const id = themeContext.getLastActorID();
     
     return function themeContextDispatch(action) {
       if (action === null) {
         name && themeContext.dispatch({
-          type: "removeThemeable",
-          name: name
-        });
+          type: "removeThemeable"
+        }, id);
       } else {
         themeContext.dispatch(action);
       }
