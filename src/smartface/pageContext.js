@@ -34,8 +34,7 @@ commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type
 
 				try {
 					isOK = eval(opts.args);
-				}
-				catch (e) {
+				} catch (e) {
 					error && error(e);
 					return {};
 				}

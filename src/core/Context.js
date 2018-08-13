@@ -131,4 +131,4 @@ export default class Context {
     var ID = 1;
     return () => ++ID;
   })();
-};
+}

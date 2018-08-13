@@ -186,8 +186,7 @@ export function createActorTreeFromSFComponent(component, name, rootName) {
     const _ctree = {};
     Object.keys(ctree).forEach((name) => _ctree[createName(rootName, name)] = makeStylable(ctree[name]));
     return _ctree;
-  }
-  else {
+  } else {
     return {
       [createName(rootName, name)]: makeStylable(createTreeItem(component, name, rootName, component))
     };
