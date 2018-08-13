@@ -67,8 +67,6 @@ function componentDidEnter(componentDidEnter, dispatcher) {
     || (this.dispatch = dispatcher);
 }
 
-
-
 // monkey patching wrapper for any page.
 export default function pageContextPatch(page, name){
   page.onLoad = patchMethod(page, "onLoad", onLoad);
@@ -77,17 +75,26 @@ export default function pageContextPatch(page, name){
   
   page.componentDidEnter = patchMethod(page, "componentDidEnter", componentDidEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
+  page.onUnload = patchMethod(page, "onUnload", onPageUnload);
       
   if (page.ios) {
     page.ios.onSafeAreaPaddingChange = onSafeAreaPaddingChange.bind(page, page.ios.onSafeAreaPaddingChange);
   }
 
+  function onPageUnload(superOnUnload){
+    superOnUnload && superOnUnload();
+    this.themeContext(null);
+    
+    // pageContextPatchDispose();
+  }
+
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
     this.themeContext = Application.theme(createPageContext(page, name, null, null), name);
+    
   }
   
-  return function pageContextPatchDispose(){
+  function pageContextPatchDispose(){
     page.dispatch(null);
     page.dispatch = null;
     page.onLoad = null;
@@ -96,4 +103,6 @@ export default function pageContextPatch(page, name){
     page.onOrientationChange = null;
     page = null;
   };
+  
+  return pageContextPatchDispose;
 };

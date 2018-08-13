@@ -39,10 +39,17 @@ class Themeable extends Actor {
 
     this.pageContext = pageContext;
   }
-
+  
   changeStyling(styling) {
     this.pageContext(styling);
     this.isDirty = true;
+  }
+  
+  dispose(){
+    super.dispose();
+    
+    this.pageContext(null)
+    this.pageContext = null;
   }
 }
 
@@ -58,8 +65,12 @@ export function createThemeContextBound(themes) {
   
   function themesReducer(context, action, target, state) {
     var newState = Object.assign({}, state);
-      
+    console.log("themesReducer "+action.type+" : "+target);
     switch (action.type) {
+      case 'unload':
+        context.remove(target);
+        
+        return newState;
       case 'addThemeable':
         const actor = new Themeable(action.pageContext, action.name);
         context.add(actor, action.name);
@@ -69,7 +80,11 @@ export function createThemeContextBound(themes) {
         
         return newState;
       case 'removeThemeable':
-        context.remove(action.name);
+        context.map((actor) => {
+          if(actor.getName() === action.name){
+            context.remove(actor.getInstanceID());
+          }
+        })
         return newState;
       case 'changeTheme':
         themesCollection.forEach(theme => {

@@ -246,13 +246,8 @@ class Stylable extends Actor {
   }
 
   dispose() {
-    this._actorInternal_.component = null;
-    this._actorInternal_ = null;
-    this.context = null;
+    super.dispose();
     this.styles = null;
-    this.component.onSafeAreaPaddingChange = null;
-    this.component.dispatch = null;
-    this.component.onDispose && this.component.onDispose();
   }
 
   getInitialClassName() {

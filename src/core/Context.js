@@ -1,6 +1,18 @@
 import { INIT_CONTEXT_ACTION_TYPE } from "./constants";
 import raiseErrorMaybe from "./util/raiseErrorMaybe";
 
+const coreReduer = function(context, action, target, state) {
+  switch (action.type) {
+    case 'unload':
+      context.remove(target);
+      
+      break;
+    
+    default:
+      return state;
+  }
+};
+
 export default class Context {
 
   constructor(actors, reducer, initialState = {}, hookFactory = null) {
@@ -11,8 +23,14 @@ export default class Context {
       $$idMap: {},
       $$nameMap: {}
     };
+    // new
+    this._reducers = [];
+    // new
     this.state = Object.assign({}, initialState);
-    this._reducer = reducer;
+    // new
+    this._reducers.push(coreReduer);
+    reducer && this._reducers.push(reducer);
+    
     actors && this.setActors(Object.assign({}, actors));
     this.dispatch({
       type: INIT_CONTEXT_ACTION_TYPE
@@ -31,19 +49,19 @@ export default class Context {
   }
 
   reduce(fn, acc = {}) {
-    return this.actors.$$map.reduce((acc, name, index) => {
-      return fn(acc, this.actors.collection[name], name, index);
+    return this.actors.$$map.reduce((acc, instance, index) => {
+      return fn(acc, this.actors.collection[instance], instance, index);
     }, acc);
   }
 
   map(fn) {
-    return this.actors.$$map.map((name, index) => {
-      return fn(this.actors.collection[name], name, index);
+    return this.actors.$$map.map((instance, index) => {
+      return fn(this.actors.collection[instance], instance, index);
     });
   }
 
-  find(name, notValue) {
-    return this.actors.collection[name] || notValue;
+  find(instance, notValue) {
+    return this.actors.collection[instance] || notValue;
   }
 
   addTree(tree) {
@@ -68,25 +86,36 @@ export default class Context {
     return name;
   }
 
-  removeChildren(name) {
+  removeChildren(instance) {
+    const actor = this.actors.collection[instance];
+    
     this.actors.$$map.forEach(nm => {
-      if (nm.indexOf(name + "_") === 0) {
+      if (nm.indexOf(actor.getName() + "_") === 0) {
         const actor = this.actors.collection[nm];
         actor.componentDidLeave();
         actor.dispose();
         delete this.actors.collection[nm];
       }
     });
+    
     this.actors.$$map = Object.keys(this.actors.collection);
   }
 
-  remove(name) {
-    this.removeChildren(name);
-    const actor = this.actors.collection[name];
+  remove(instance) {
+    if(!instance){
+      throw new Error("name cannot be empty");
+    }
+    
+    this.removeChildren(instance);
+    const actor = this.actors.collection[instance];
+    
+    console.log("remove actor: "+actor.getInstanceID());
 
     if (actor) {
-      delete this.actors.collection[name];
+      delete this.actors.collection[instance];
+      console.log("before remove actor : "+JSON.stringify(this.actors.$$map));
       this.actors.$$map = Object.keys(this.actors.collection);
+      console.log("after remove actor : "+JSON.stringify(this.actors.$$map));
       actor.componentDidLeave();
       actor.dispose();
     }
@@ -99,8 +128,8 @@ export default class Context {
   }
 
   propagateAll() {
-    this.actors.$$map.map(name => {
-      const actor = this.actors.collection[name];
+    this.actors.$$map.map(instance => {
+      const actor = this.actors.collection[instance];
       actor.onContextChange && actor.onContextChange(this);
     });
   }
@@ -111,9 +140,12 @@ export default class Context {
 
   dispatch(action, target) {
     try {
-      const reducer = this.getReducer();
-      const state = reducer(this, action, target, this.state || {});
-      this.setState(state);
+      let state = this.state || {};
+      this._reducers.forEach((reducer) => {
+        state = reducer(this, action, target, state);
+      });
+      
+      state && this.setState(state);
     } catch (e) {
       e.message = `An Error is occurred When action [${action.type}] run on target [${target}]. ${e.message}`;
       raiseErrorMaybe(e, target && !!this.actors.collection[target] && (e => this.actors.collection[target].onError(e)));

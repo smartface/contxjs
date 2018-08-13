@@ -14,26 +14,27 @@ export default class Actor {
    */
  constructor(component, name, id) {
     this._actorInternal_ = {};
-    this._actorInternal_.componentKey = {};
-    this._actorInternal_.component = new WeakMap();
-    this._actorInternal_.component.add(this._actorInternal_.componentKey, component);
+    // this._actorInternal_.componentKey = {};
+    // this._actorInternal_.component = new WeakMap();
+    // this._actorInternal_.component.add(this._actorInternal_.componentKey, component);
+    this._actorInternal_.component = component;
     this._actorInternal_.name = name;
     this._actorInternal_.id = id;
     this.isDirty = true;
     this.hooks = null;
   }
-  
+
   getName() {
     return this._actorInternal_.name;
   }
 
-  setID(id){
+  setID(id) {
     if (!this._actorInternal_.id) {
       this._actorInternal_.id = id;
     }
   }
 
-  setName(name ){
+  setName(name) {
     if (!this._actorInternal_.name) {
       this._actorInternal_.name = name;
     }
@@ -46,22 +47,7 @@ export default class Actor {
   getInstanceID () {
     return this.getName() + "@@" + this.getID();
   }
-
-  reset () {}
-
-  setDirty (value) {
-    this.isDirty = value;
-  }
-
-  getDirty (value) {
-    return this.isDirty;
-  }
-
-  onRemove() {
-    const component = this.getComponent();
-    component.onRemove && component.onRemove();
-  }
-
+  
   onError(err) {
     const component = this.getComponent();
     if (component.onError) return component.onError(err);
@@ -69,7 +55,8 @@ export default class Actor {
   }
   
   getComponent(){
-    return this._actorInternal_.component.get(this._actorInternal_.componentKey);
+    // return this._actorInternal_.component.get(this._actorInternal_.componentKey);
+    return this._actorInternal_.component;
   }
 
   componentDidLeave(){
@@ -77,16 +64,55 @@ export default class Actor {
     component.componentDidLeave && component.componentDidLeave();
   }
 
+  reset () {}
+
+  setDirty (value) {
+    this.isDirty = value;
+  }
+
+  getDirty ( value) {
+    return this.isDirty;
+  }
+  
+  isChildof(parent){
+    return this.name.indexOf(parent+"_") === 0;
+  }
+
+  onRemove() {
+    const component = this.getComponent();
+    component.onRemove && component.onRemove();
+  }
+  
+  dispose(){
+    this.getComponent().onDispose && this.component.onDispose();
+    this.getComponent().onSafeAreaPaddingChange = null;
+    this.getComponent().dispatch = null;
+    this.getComponent().onUnload = null;
+    this._actorInternal_.component = null;
+    this._actorInternal_ = null;
+    this.context = null;
+    this.styles = null;
+  }
+
   componentDidEnter(dispatcher){
+    this._dispatcher = dispatcher;
+
     const component = this.getComponent();
     this._dispatcher = dispatcher;
     
-    component.onUnload = function(){
+    let _onUnload = component.onUnload;
+    
+    component.onUnload = () => {
       dispatcher({
         type: "unload"
-      });
+      },
+      this.getInstanceID()
+      );
+      
+      _onUnload && _onUnload();
+      _onUnload = null;
     };
-
+    
     try {
       component.componentDidEnter ? component.componentDidEnter(action => {
         dispatcher(action, this.getInstanceID());
@@ -95,7 +121,7 @@ export default class Actor {
       };
     } catch (e) {
       e.message = `Error. When component ${this.getName()} entered the context.`;
-      (raiseErrorMaybe)(e, !!this._actorInternal_ && !!component && component.onError);
+      (0, raiseErrorMaybe)(e, !!this._actorInternal_ && !!component.component && component.onError);
     }
   }
 }
