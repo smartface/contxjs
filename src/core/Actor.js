@@ -14,10 +14,10 @@ export default class Actor {
    */
  constructor(component, name, id) {
     this._actorInternal_ = {};
-    // this._actorInternal_.componentKey = {};
-    // this._actorInternal_.component = new WeakMap();
-    // this._actorInternal_.component.add(this._actorInternal_.componentKey, component);
-    this._actorInternal_.component = component;
+    this._actorInternal_.componentKey = {};
+    this._actorInternal_.component = new WeakMap();
+    this._actorInternal_.component.set(this._actorInternal_.componentKey, component);
+    // this._actorInternal_.component = component;
     this._actorInternal_.name = name;
     this._actorInternal_.id = id;
     this.isDirty = true;
@@ -55,8 +55,8 @@ export default class Actor {
   }
   
   getComponent(){
-    // return this._actorInternal_.component.get(this._actorInternal_.componentKey);
-    return this._actorInternal_.component;
+    return this._actorInternal_.component.get(this._actorInternal_.componentKey);
+    // return this._actorInternal_.component;
   }
 
   componentDidLeave(){
