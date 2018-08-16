@@ -109,7 +109,7 @@ export default class Actor {
       this.getInstanceID()
       );
       
-      _onUnload && _onUnload();
+      //_onUnload && _onUnload();
       _onUnload = null;
     };
     
