@@ -75,8 +75,9 @@ export default function pageContextPatch(page, name){
   
   page.componentDidEnter = patchMethod(page, "componentDidEnter", componentDidEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
-  page.onUnload = patchMethod(page, "onUnload", onPageUnload);
-      
+  // hides unload logic
+  // page.onUnload = patchMethod(page, "onUnload", onPageUnload);
+  
   if (page.ios) {
     page.ios.onSafeAreaPaddingChange = onSafeAreaPaddingChange.bind(page, page.ios.onSafeAreaPaddingChange);
   }

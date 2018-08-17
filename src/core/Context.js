@@ -18,7 +18,7 @@ export default class Context {
   constructor(actors, reducer, initialState = {}, hookFactory = null) {
     this._hookFactory = hookFactory;
     this.actors = {
-      collection: {},
+      collection: new Map(),
       $$map: [],
       $$idMap: {},
       $$nameMap: {},
@@ -55,21 +55,38 @@ export default class Context {
   }
 
   reduce(fn, acc = {}) {
-    return this.actors.$$map.reduce((acc, instance, index) => {
+    var res = [];
+    
+    for (let item of this.actors.collection) {
+      acc = fn(acc, item[1], item[0]);
+    }
+    
+    return acc;
+   /* return this.actors.$$map.reduce((acc, instance, index) => {
       return fn(acc, this.actors.collection[instance], instance, index);
-    }, acc);
+    }, acc);*/
   }
 
   map(fn) {
-    return this.actors.$$map.map((instance, index) => {
-      return fn(this.actors.collection[instance], instance, index);
-    });
+    var res = [];
+    
+    for (let item of this.actors.collection) {
+      res.push(fn(item[1]));
+    }
+    
+    return res;
+    // return this.actors.$$map.map((instance, index) => {
+    //   return fn(this.actors.collection[instance], instance, index);
+    // });
   }
 
   find(instance, notValue) {
-    return this.actors.collection[instance] || notValue;
+    return this.actors.collection.get(instance) || notValue;
   }
-
+  
+  /**
+   * @params {} tree
+   */
   addTree(tree) {
     Object.keys(tree).forEach(name => this.add(tree[name], name));
   }
@@ -83,10 +100,10 @@ export default class Context {
     // const type = actor._actorInternal_.constructor.name;
     // this.actors.$$typeMap[type] ? this.actors.$$typeMap[type].push(id) : this.actors.$$typeMap[name] = [id];
 
-    this.actors.collection[instance] = actor;
-    this.actors.$$idMap[actor.getID()] = instance;
-    this.actors.$$map.push(instance);
-    this.actors.$$nameMap[name] ? this.actors.$$nameMap[name].push(actor.getID()) : this.actors.$$nameMap[name] = [actor.getID()];
+    this.actors.collection.set(instance, actor);
+    // this.actors.$$idMap[actor.getID()] = instance;
+    // this.actors.$$map.push(instance);
+    // this.actors.$$nameMap[name] ? this.actors.$$nameMap[name].push(actor.getID()) : this.actors.$$nameMap[name] = [actor.getID()];
     actor.hook = this._hookFactory;
     actor.componentDidEnter((action, target) => this.dispatch(action, target));
     this.actors.$$lastID = actor.getInstanceID();
@@ -95,18 +112,19 @@ export default class Context {
   }
 
   removeChildren(instance) {
-    const actor = this.actors.collection[instance];
+    const removeActor = this.actors.collection.get(instance);
+    this.actors.collection.delete(instance);
     
-    this.actors.$$map.forEach(nm => {
-      if (nm.indexOf(actor.getName() + "_") === 0) {
-        const actor = this.actors.collection[nm];
+    this.actors.collection.forEach((actor, nm) => {
+      if (nm.indexOf(removeActor.getName() + "_") === 0) {
+        // const actor = this.actors.collection[nm];
         actor.componentDidLeave();
         actor.dispose();
-        delete this.actors.collection[nm];
+        this.actors.collection.delete(nm);
       }
     });
     
-    this.actors.$$map = Object.keys(this.actors.collection);
+    // this.actors.$$map = Object.keys(this.actors.collection);
   }
 
   remove(instance) {
@@ -115,14 +133,14 @@ export default class Context {
     }
     
     this.removeChildren(instance);
-    const actor = this.actors.collection[instance];
+    const actor = this.actors.collection.get(instance);
     
     // console.log("remove actor: "+actor.getInstanceID());
 
     if (actor) {
-      delete this.actors.collection[instance];
+      this.actors.collection.delete(instance);
       // console.log("before remove actor : "+JSON.stringify(this.actors.$$map));
-      this.actors.$$map = Object.keys(this.actors.collection);
+      // this.actors.$$map = Object.keys(this.actors.collection);
       // console.log("after remove actor : "+JSON.stringify(this.actors.$$map));
       actor.componentDidLeave();
       actor.dispose();
@@ -136,8 +154,10 @@ export default class Context {
   }
 
   propagateAll() {
-    this.actors.$$map.map(instance => {
-      const actor = this.actors.collection[instance];
+    
+
+    this.map(actor => {
+      // const actor = this.actors.collection[instance];
       actor.onContextChange && actor.onContextChange(this);
     });
   }
