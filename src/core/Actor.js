@@ -100,18 +100,18 @@ export default class Actor {
     const component = this.getComponent();
     this._dispatcher = dispatcher;
     
-    let _onUnload = component.onUnload;
+    // let _onUnload = component.onUnload;
     
-    component.onUnload = () => {
-      dispatcher({
-        type: "unload"
-      },
-      this.getInstanceID()
-      );
+    // component.onUnload = () => {
+    //   dispatcher({
+    //     type: "unload"
+    //   },
+    //   this.getInstanceID()
+    //   );
       
-      //_onUnload && _onUnload();
-      _onUnload = null;
-    };
+      // _onUnload && _onUnload();
+      // _onUnload = null;
+    // };
     
     try {
       component.componentDidEnter ? component.componentDidEnter(action => {

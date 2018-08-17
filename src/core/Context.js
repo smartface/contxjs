@@ -46,10 +46,11 @@ export default class Context {
     Object.keys(actors).forEach(name => {
       this.add(actors[name], name);
     });
+    
     this.propagateAll();
   }
   
-  getLastActorID(){
+  getLastActorID() {
     return this.actors.$$lastID;
   }
 

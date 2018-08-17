@@ -13,22 +13,22 @@ class Theme {
     this.setDefault(isDefault);
   }
   
-  isDefault = () => {
+  isDefault() {
     return this._isDefault;
   }
 
-  setDefault = (value) => {
+  setDefault(value) {
     this._isDefault = value;
     value && !this.bundle && this.build();
     
     return value;
   }
 
-  build = () => {
-    this.bundle = buildStyles(this.rawStyles);
+  build() {
+    this.bundle = buildStyles(typeof this.rawStyles === 'function' ? this.rawStyles() : this.rawStyles);
   }
 
-  asStyler = () => {
+  asStyler() {
     return styler(this.bundle);
   }
 }
