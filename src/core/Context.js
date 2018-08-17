@@ -113,7 +113,7 @@ export default class Context {
 
   removeChildren(instance) {
     const removeActor = this.actors.collection.get(instance);
-    this.actors.collection.delete(instance);
+    //this.actors.collection.delete(instance);
     
     this.actors.collection.forEach((actor, nm) => {
       if (nm.indexOf(removeActor.getName() + "_") === 0) {
