@@ -175,7 +175,7 @@ export default class Context {
       
       state && this.setState(state);
     } catch (e) {
-      e.message = `An Error is occurred When action [${action.type}] run on target [${target}]. ${e.message}`;
+      e.message = `An Error is occurred When action [${action.type}] run on target [${target||""}]. ${e.message}`;
       raiseErrorMaybe(e, target && !!this.actors.collection[target] && (e => this.actors.collection[target].onError(e)));
     }
   }

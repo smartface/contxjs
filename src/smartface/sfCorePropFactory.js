@@ -1,6 +1,8 @@
 import Color from 'sf-core/ui/color';
 import Font from 'sf-core/ui/font';
 
+
+const HexColorValidationRegexp = /^#[0-9A-Fa-f]{6}$/ig;
 const ENUMS = {
   "imageFillType": 'sf-core/ui/imagefilltype',
   "textAlignment": 'sf-core/ui/textalignment',
@@ -237,6 +239,9 @@ const createColorForDevice = (function() {
       res = Color.create((Number(rgba[3]) * 100), Number(rgba[0]), Number(rgba[1]), Number(rgba[2]));
     }
     else if (color) { // hex color
+      HexColorValidationRegexp.lastIndex = 0;
+      if(!HexColorValidationRegexp.test(color))
+        throw new Error(`${color} is invalid value. Please, check your styles`);
       res = Color.create(color);
     }
     return (res || color);

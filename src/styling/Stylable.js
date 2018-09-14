@@ -1,6 +1,7 @@
 import Actor from "../core/Actor";
 import merge from "@smartface/styler/lib/utils/merge";
 import findClassNames from "@smartface/styler/lib/utils/findClassNames";
+import toStringUtil from '../util/toStringUtil';
 
 const _findClassNames = (classNames) => findClassNames(classNames).reduce((acc, item) => !item && [] || [...acc, item.join('')], []);
 
@@ -157,13 +158,13 @@ class Stylable extends Actor {
         }
       }
       catch (e) {
-        e.message = "When " + 
+        e.message = "When [" + 
         key + 
-        " raw value : \n" +
+        "] raw value : [\n" +
         toStringUtil(style[key]) + 
-        "\n \n is being assigned as : \n" + 
+        "\n] \n is being assigned as : [\n" + 
         toStringUtil(diff[key]) + 
-        "\n\r" +
+        "\n\r] " +
         e.message;
         throw e;
       }
@@ -259,10 +260,4 @@ class Stylable extends Actor {
 
 function isFunction(functionToCheck) {
   return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
-}
-
-function toStringUtil(value){
-  if(value instanceof Object)
-    return JSON.stringify(value, null, "\t");
-  return value;
 }

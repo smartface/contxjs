@@ -70,8 +70,7 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
               
               actor.applyStyles();
             } catch (e) {
-              e.message = `While actor's style [${name}] is set. ${e.message}`;
-              
+              e.message = `While actor's style [${name || className}] is set. \nActor name: [${actor.getName()}]\n${e.message}`;
               throw e;
             }
           }
