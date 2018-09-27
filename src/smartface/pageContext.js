@@ -89,6 +89,10 @@ function createPageContext(component, name, reducers = null) {
 								acc[key] = undefined;
 								return acc;
 							}
+							else if(key === "layout"){
+								var diffReducer = reduceDiffStyleHook(oldStyles[key] || {}, newStyles[key] || {});
+								Object.keys(newStyles[key] || {}).reduce(diffReducer, acc[key] = {} );
+							}
 							else if (key == "flexProps") {
 								Object.keys(newStyles[key])
 									.forEach(function(name) {

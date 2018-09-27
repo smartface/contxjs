@@ -143,14 +143,14 @@ class Stylable extends Actor {
     const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
     const hasDiff = diff !== null && Object.keys(diff).length > 0; //TODO: extract all specified area @cenk
     // ------------->
-
+    var isScrollView = this.component.layout && (this.component instanceof require("sf-core/ui/scrollview"));
     this.component.subscribeContext ? hasDiff && this.component.subscribeContext({
       type: "new-styles",
       style: Object.assign({}, diff),
       rawStyle: (0, merge)(rawDiff)
     }) : hasDiff && Object.keys(diff).forEach(key => {
       try {
-        if (this.component.layout && SCW_LAYOUT_PROPS[key]) {
+        if (!isScrollView && this.component.layout && SCW_LAYOUT_PROPS[key]) {
           componentAssign(this.component.layout, SCW_LAYOUT_PROPS[key], diff[key]);
         }
         else {
@@ -158,18 +158,20 @@ class Stylable extends Actor {
         }
       }
       catch (e) {
-        e.message = "When [" + 
-        key + 
-        "] raw value : [\n" +
-        toStringUtil(style[key]) + 
-        "\n] \n is being assigned as : [\n" + 
-        toStringUtil(diff[key]) + 
-        "\n\r] " +
-        e.message;
+        e.message = "When [" +
+          key +
+          "] raw value : [\n" +
+          toStringUtil(style[key]) +
+          "\n] \n is being assigned as : [\n" +
+          toStringUtil(diff[key]) +
+          "\n\r] " +
+          e.message;
         throw e;
       }
     }); // <-------------------
     const afterHook = hooks("afterStyleDiffAssign");
+    //isScrollView && console.log("diff: " + JSON.stringify(diff)+"\nRawDiff: " + JSON.stringify(rawDiff)+"\n");
+    //this.component.onStylesApply && this.component.onStylesApply(diff);
     afterHook && (style = afterHook(style));
     this.styles = style;
     return this;
