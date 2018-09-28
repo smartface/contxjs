@@ -1,5 +1,6 @@
 import Actor from "../core/Actor";
 import merge from "@smartface/styler/lib/utils/merge";
+import Application from "sf-core/application";
 import findClassNames from "@smartface/styler/lib/utils/findClassNames";
 import toStringUtil from '../util/toStringUtil';
 
@@ -114,7 +115,7 @@ class Stylable extends Actor {
 
   computeAndAssignStyle(style, force = false) {
     const hooks = this.hook || (_ => null);
-
+    var _component = this.getName().endsWith("_statusBar") ? Application.statusBar : this.component;
     const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
     style = (0, merge)(style, this.userStyle);
     const safeAreaProps = {};
@@ -143,18 +144,18 @@ class Stylable extends Actor {
     const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
     const hasDiff = diff !== null && Object.keys(diff).length > 0; //TODO: extract all specified area @cenk
     // ------------->
-    var isScrollView = this.component.layout && (this.component instanceof require("sf-core/ui/scrollview"));
-    this.component.subscribeContext ? hasDiff && this.component.subscribeContext({
+    var isScrollView = _component.layout && (_component instanceof require("sf-core/ui/scrollview"));
+    _component.subscribeContext ? hasDiff && _component.subscribeContext({
       type: "new-styles",
       style: Object.assign({}, diff),
       rawStyle: (0, merge)(rawDiff)
     }) : hasDiff && Object.keys(diff).forEach(key => {
       try {
-        if (!isScrollView && this.component.layout && SCW_LAYOUT_PROPS[key]) {
-          componentAssign(this.component.layout, SCW_LAYOUT_PROPS[key], diff[key]);
+        if (!isScrollView && _component.layout && SCW_LAYOUT_PROPS[key]) {
+          componentAssign(_component.layout, SCW_LAYOUT_PROPS[key], diff[key]);
         }
         else {
-          componentAssign(this.component, key, diff[key]);
+          componentAssign(_component, key, diff[key]);
         }
       }
       catch (e) {
