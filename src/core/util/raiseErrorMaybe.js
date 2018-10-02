@@ -1,5 +1,5 @@
-export default function raiseErrorMaybe(e, fn) {
-  if (fn && fn(e) === false || !fn) {
+module.exports = function raiseErrorMaybe(e, fn) {
+  if ((fn && fn(e) === false) || !fn) {
     throw e;
   }
-}
+};

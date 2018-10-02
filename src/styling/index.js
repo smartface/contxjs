@@ -6,7 +6,7 @@ import updateContextTree from "action/updateContextTree";
 import ThemeContext from "./ThemeContext";
 import StyleContext from "./StyleContext";
 
-export default {
+module.exports = {
   addThemeableContext,
   changeTheme,
   pushClassNames,

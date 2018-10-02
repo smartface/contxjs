@@ -13,7 +13,7 @@ const coreReduer = function(context, action, target, state) {
   }
 };
 
-export default class Context {
+class Context {
 
   constructor(actors, reducer, initialState = {}, hookFactory = null) {
     this._hookFactory = hookFactory;

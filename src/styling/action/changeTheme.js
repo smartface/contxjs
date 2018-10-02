@@ -1,6 +1,8 @@
-export default function changeTheme(themeName){
-    return {
-        type: "changeTheme",
-        themeName
-    };
+function changeTheme(themeName) {
+  return {
+    type: "changeTheme",
+    themeName
+  };
 }
+
+module.exports = changeTheme;

@@ -1,4 +1,4 @@
-export default function flush(str = "", obj) {
+function flush(str = "", obj) {
   Object.keys(obj).forEach(function(key) {
     if (obj[key] != null && obj[key] instanceof Object) {
       str += key + ": " + flush("", obj[key]) + ", ";
@@ -9,3 +9,4 @@ export default function flush(str = "", obj) {
 
   return "{ " + str.trim(", ") + " }";
 }
+module.exports = flush;

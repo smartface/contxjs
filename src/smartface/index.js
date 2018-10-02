@@ -1,15 +1,13 @@
-import addChild from "./action/addChild";
-import removeChild from "./action/removeChild";
-import removeChildren from "./action/removeChildren";
-import pageContext from "./pageContext";
-import pageContextPatch from "./pageContextPatch";
-import componentContextPatch from "./componentContextPatch";
+const addChild = require("./action/addChild");
+const removeChild = require("./action/removeChild");
+const removeChildren = require("./action/removeChildren");
+const pageContext = require("./pageContext");
+const pageContextPatch = require("./pageContextPatch");
+const componentContextPatch = require("./componentContextPatch");
 
-export default {
-  addChild,
-  removeChild,
-  removeChildren,
-  pageContext,
-  pageContextPatch,
-  componentContextPatch
-};
+exports.addChild = addChild;
+exports.removeChild = removeChild;
+exports.removeChildren = removeChildren;
+exports.pageContext = pageContext;
+exports.pageContextPatch = pageContextPatch;
+exports.componentContextPatch = componentContextPatch;

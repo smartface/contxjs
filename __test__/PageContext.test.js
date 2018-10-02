@@ -2,7 +2,6 @@
  * Created by smartface on 10/18/16.
  */
 
-import { expect } from "chai";
 // import createPageContext from '../src/smartface/pageContext';
 
 // import {findClassNames} from "../src/styler";
@@ -61,5 +60,4 @@ describe("Page Context", function() {
     // const rootComponent = {};
     // const context = pageContext(rootComponent, "root");
   });
-
 });
