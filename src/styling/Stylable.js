@@ -115,7 +115,7 @@ class Stylable extends Actor {
 
   computeAndAssignStyle(style, force = false) {
     const hooks = this.hook || (_ => null);
-    var _component = this.getName().endsWith("_statusBar") ? Application.statusBar : this.component;
+    var _component = this.getName().endsWith("_statusBar") ? (Application.statusBar || this.component): this.component;
     const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
     style = (0, merge)(style, this.userStyle);
     const safeAreaProps = {};

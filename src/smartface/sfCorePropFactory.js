@@ -71,7 +71,8 @@ const COLOR_PROPS = [
   "foregroundColor",
   "underlineColor",
   "textFieldBackgroundColor",
-  "cursorColor"
+  "cursorColor",
+  "tintColor"
 ];
 
 const IMAGE_PROPS = [
@@ -201,6 +202,12 @@ export default function buildProps(objectVal) {
 function createImageForDevice(image) {
   var res;
   if (image instanceof Object) {
+    if (image.src !== undefined || image.autoMirrored !== undefined )
+      return {
+        src: createImageForDevice(image.src),
+        autoMirrored: image.autoMirrored
+      };
+
     res = {};
     Object.keys(image).forEach(function(c) {
       res[c] = createImageForDevice(image[c]);
@@ -240,7 +247,7 @@ const createColorForDevice = (function() {
     }
     else if (color) { // hex color
       HexColorValidationRegexp.lastIndex = 0;
-      if(!HexColorValidationRegexp.test(color))
+      if (!HexColorValidationRegexp.test(color))
         throw new Error(`${color} is invalid value. Please, check your styles`);
       res = Color.create(color);
     }
