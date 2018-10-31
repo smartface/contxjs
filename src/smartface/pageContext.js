@@ -93,7 +93,7 @@ function createPageContext(component, name, reducers = null) {
 								var diffReducer = reduceDiffStyleHook(oldStyles[key] || {}, newStyles[key] || {});
 								Object.keys(newStyles[key] || {}).reduce(diffReducer, acc[key] = {} );
 							}
-							else if (key == "flexProps") {
+							else if (key == "flexProps" && newStyles[key]) {
 								Object.keys(newStyles[key])
 									.forEach(function(name) {
 										if (oldStyles[key] === undefined || newStyles[key][name] !== oldStyles[key][name]) {
