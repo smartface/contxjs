@@ -10,6 +10,7 @@ const ENUMS = {
   "type": 'sf-core/ui/mapview',
   "gradientOrientation": 'sf-core/ui/color',
   "searchViewStyle": 'sf-core/ui/searchview',
+  "activityIndicatorViewStyle": "sf-core/ui/activityindicator/ios/activityindicatorviewstyle",
   "alignSelf": 'sf-core/ui/flexlayout',
   "alignContent": 'sf-core/ui/flexlayout',
   "alignItems": 'sf-core/ui/flexlayout',
