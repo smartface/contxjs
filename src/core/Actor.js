@@ -12,7 +12,7 @@ export default class Actor {
    * @constructor
    * @param {object} component - Wrapped Component
    */
- constructor(component, name, id) {
+  constructor(component, name, id) {
     this._actorInternal_ = {};
     this._actorInternal_.componentKey = {};
     this._actorInternal_.component = new WeakMap();
@@ -22,6 +22,11 @@ export default class Actor {
     this._actorInternal_.id = id;
     this.isDirty = true;
     this.hooks = null;
+  }
+
+  updateComponent(comp) {
+    this._actorInternal_.component.set(this._actorInternal_.componentKey, comp);
+    this.setDirty(true);
   }
 
   getName() {
@@ -40,50 +45,50 @@ export default class Actor {
     }
   }
 
-  getID () {
+  getID() {
     return this._actorInternal_.id;
   }
 
-  getInstanceID () {
+  getInstanceID() {
     return this.getName() + "@@" + this.getID();
   }
-  
+
   onError(err) {
     const component = this.getComponent();
     if (component.onError) return component.onError(err);
     return false;
   }
-  
-  getComponent(){
+
+  getComponent() {
     return this._actorInternal_.component.get(this._actorInternal_.componentKey);
     // return this._actorInternal_.component;
   }
 
-  componentDidLeave(){
+  componentDidLeave() {
     const component = this.getComponent();
     component.componentDidLeave && component.componentDidLeave();
   }
 
-  reset () {}
+  reset() {}
 
-  setDirty (value) {
+  setDirty(value) {
     this.isDirty = value;
   }
 
-  getDirty ( value) {
+  getDirty(value) {
     return this.isDirty;
   }
-  
-  isChildof(parent){
-    return this.name.indexOf(parent+"_") === 0;
+
+  isChildof(parent) {
+    return this.name.indexOf(parent + "_") === 0;
   }
 
   onRemove() {
     const component = this.getComponent();
     component.onRemove && component.onRemove();
   }
-  
-  dispose(){
+
+  dispose() {
     this.getComponent().onDispose && this.component.onDispose();
     this.getComponent().onSafeAreaPaddingChange = null;
     this.getComponent().dispatch = null;
@@ -94,32 +99,33 @@ export default class Actor {
     this.styles = null;
   }
 
-  componentDidEnter(dispatcher){
+  componentDidEnter(dispatcher) {
     this._dispatcher = dispatcher;
 
     const component = this.getComponent();
     this._dispatcher = dispatcher;
-    
+
     // let _onUnload = component.onUnload;
-    
+
     // component.onUnload = () => {
     //   dispatcher({
     //     type: "unload"
     //   },
     //   this.getInstanceID()
     //   );
-      
-      // _onUnload && _onUnload();
-      // _onUnload = null;
+
+    // _onUnload && _onUnload();
+    // _onUnload = null;
     // };
-    
+
     try {
       component.componentDidEnter ? component.componentDidEnter(action => {
         dispatcher(action, this.getInstanceID());
       }) : component.dispatch = action => {
         dispatcher(action, this.getInstanceID());
       };
-    } catch (e) {
+    }
+    catch (e) {
       e.message = `Error. When component ${this.getName()} entered the context.`;
       (0, raiseErrorMaybe)(e, !!this._actorInternal_ && !!component.component && component.onError);
     }

@@ -34,7 +34,8 @@ commands.addRuntimeCommandFactory(function pageContextRuntimeCommandFactory(type
 
 				try {
 					isOK = eval(opts.args);
-				} catch (e) {
+				}
+				catch (e) {
 					error && error(e);
 					return {};
 				}
@@ -89,9 +90,9 @@ function createPageContext(component, name, reducers = null) {
 								acc[key] = undefined;
 								return acc;
 							}
-							else if(key === "layout"){
+							else if (key === "layout") {
 								var diffReducer = reduceDiffStyleHook(oldStyles[key] || {}, newStyles[key] || {});
-								Object.keys(newStyles[key] || {}).reduce(diffReducer, acc[key] = {} );
+								Object.keys(newStyles[key] || {}).reduce(diffReducer, acc[key] = {});
 							}
 							else if (key == "flexProps" && newStyles[key]) {
 								Object.keys(newStyles[key])
@@ -229,6 +230,11 @@ function contextReducer(context, action, target, state) {
 			});
 
 			orientationState = "ended";
+			return newState;
+		case "updateComponent":
+			let stylable = context.find(target);
+			stylable.updateComponent(action.component);
+			stylable.applyStyles(true);
 			return newState;
 	}
 

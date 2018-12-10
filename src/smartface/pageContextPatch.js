@@ -30,6 +30,16 @@ function onHide(superOnHide) {
 
 function onShow(superOnShow, data) {
   superOnShow && superOnShow(data);
+  if (this.parentController &&
+    this.parentController.headerBar &&
+    this.headerBar.dispatch &&
+    !this.headerBar.__isUpdated) {
+    this.headerBar.__isUpdated = true;
+    this.headerBar.dispatch({
+      type: "updateComponent",
+      component: this.parentController.headerBar
+    });
+  }
 
   this.dispatch && this.dispatch({
     type: "invalidate"

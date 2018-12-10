@@ -6,6 +6,7 @@ import removeContextChild from './action/removeChild';
 import removeContextChildren from './action/removeChildren';
 import findClassNames from '@smartface/styler/lib/utils/findClassNames';
 import raiseErrorMaybe from '../core/util/raiseErrorMaybe';
+import Application from "sf-core/application";
 
 function addChild(superAddChild, child, name, classNames = "", userProps = null) {
   superAddChild(child);
@@ -93,6 +94,7 @@ function createTreeItem(component, name, rootName, root) {
 
   if (name == rootName + "_statusBar") {
     componentVars = root.constructor && root.constructor.$$styleContext.statusBar || {};
+    component = Application.statusBar || component;
   }
   else if (name == rootName + "_headerBar") {
     componentVars = root.constructor && root.constructor.$$styleContext.headerBar || {};
@@ -186,7 +188,8 @@ export function createActorTreeFromSFComponent(component, name, rootName) {
     const _ctree = {};
     Object.keys(ctree).forEach((name) => _ctree[createName(rootName, name)] = makeStylable(ctree[name]));
     return _ctree;
-  } else {
+  }
+  else {
     return {
       [createName(rootName, name)]: makeStylable(createTreeItem(component, name, rootName, component))
     };

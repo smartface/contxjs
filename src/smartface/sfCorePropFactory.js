@@ -4,48 +4,48 @@ import Font from 'sf-core/ui/font';
 
 const HexColorValidationRegexp = /^#[0-9A-Fa-f]{6}$/ig;
 const ENUMS = {
-  "imageFillType": 'sf-core/ui/imagefilltype',
-  "textAlignment": 'sf-core/ui/textalignment',
-  "orientation": 'sf-core/ui/page',
-  "type": 'sf-core/ui/mapview',
-  "gradientOrientation": 'sf-core/ui/color',
-  "searchViewStyle": 'sf-core/ui/searchview',
-  "activityIndicatorViewStyle": "sf-core/ui/activityindicator/ios/activityindicatorviewstyle",
-  "alignSelf": 'sf-core/ui/flexlayout',
-  "alignContent": 'sf-core/ui/flexlayout',
-  "alignItems": 'sf-core/ui/flexlayout',
-  "direction": 'sf-core/ui/flexlayout',
-  "flexDirection": 'sf-core/ui/flexlayout',
-  "flexWrap": 'sf-core/ui/flexlayout',
-  "justifyContent": 'sf-core/ui/flexlayout',
-  "positionType": 'sf-core/ui/flexlayout',
-  "overflow": 'sf-core/ui/flexlayout',
-  "style": 'sf-core/ui/statusbarstyle',
-  "ios": {
-    "style": 'sf-core/ui/statusbarstyle'
+  imageFillType: 'sf-core/ui/imagefilltype',
+  textAlignment: 'sf-core/ui/textalignment',
+  orientation: 'sf-core/ui/page',
+  type: 'sf-core/ui/mapview',
+  gradientOrientation: 'sf-core/ui/color',
+  searchViewStyle: 'sf-core/ui/searchview',
+  activityIndicatorViewStyle: "sf-core/ui/activityindicator/ios/activityindicatorviewstyle",
+  alignSelf: 'sf-core/ui/flexlayout',
+  alignContent: 'sf-core/ui/flexlayout',
+  alignItems: 'sf-core/ui/flexlayout',
+  direction: 'sf-core/ui/flexlayout',
+  flexDirection: 'sf-core/ui/flexlayout',
+  flexWrap: 'sf-core/ui/flexlayout',
+  justifyContent: 'sf-core/ui/flexlayout',
+  positionType: 'sf-core/ui/flexlayout',
+  overflow: 'sf-core/ui/flexlayout',
+  style: 'sf-core/ui/statusbarstyle',
+  shimmeringDirection: 'sf-core/ui/shimmerflexlayout',
+  ios: {
+    style: 'sf-core/ui/statusbarstyle'
   },
-  "align": 'sf-core/ui/scrollview',
-  "scrollDirection": 'sf-core/ui/layoutmanager'
+  align: 'sf-core/ui/scrollview',
+  scrollDirection: 'sf-core/ui/layoutmanager'
 };
-
 const ENUMS_META_FIELD = {
-  "align": "Align",
-  "orientation": "Orientation",
-  "type": "Type",
-  "searchViewStyle": "iOS",
-  "alignSelf": "AlignSelf",
-  "alignContent": "AlignContent",
-  "alignItems": "AlignItems",
-  "direction": "Direction",
-  "flexDirection": "FlexDirection",
-  "flexWrap": "FlexWrap",
-  "justifyContent": "JustifyContent",
-  "positionType": "PositionType",
-  "overflow": "OverFlow",
-  "scrollDirection": "ScrollDirection",
-  "gradientOrientation": "GradientOrientation"
+  align: "Align",
+  orientation: "Orientation",
+  type: "Type",
+  searchViewStyle: "iOS",
+  alignSelf: "AlignSelf",
+  alignContent: "AlignContent",
+  alignItems: "AlignItems",
+  direction: "Direction",
+  flexDirection: "FlexDirection",
+  flexWrap: "FlexWrap",
+  justifyContent: "JustifyContent",
+  positionType: "PositionType",
+  overflow: "OverFlow",
+  scrollDirection: "ScrollDirection",
+  shimmeringDirection: "ShimmeringDirection",
+  gradientOrientation: "GradientOrientation"
 };
-
 const componentObjectProps = {
   "android": {},
   "ios": {},
@@ -73,7 +73,9 @@ const COLOR_PROPS = [
   "underlineColor",
   "textFieldBackgroundColor",
   "cursorColor",
-  "tintColor"
+  "tintColor",
+  "baseColor",
+  "highlightColor"
 ];
 
 const IMAGE_PROPS = [

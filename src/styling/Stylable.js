@@ -114,8 +114,8 @@ class Stylable extends Actor {
   }
 
   computeAndAssignStyle(style, force = false) {
-    const hooks = this.hook || (_ => null);
-    var _component = this.getName().endsWith("_statusBar") ? (Application.statusBar || this.component): this.component;
+    const hooks = this.hook || (() => null);
+    var _component = this.getComponent();
     const reduceDiffStyleHook = hooks("reduceDiffStyleHook") || null;
     style = (0, merge)(style, this.userStyle);
     const safeAreaProps = {};
@@ -179,7 +179,7 @@ class Stylable extends Actor {
   }
 
   applyStyles(force = false) {
-    this.computeAndAssignStyle(this.waitedStyle, force = false);
+    this.computeAndAssignStyle(this.waitedStyle, force);
     this.clearDirty();
     return this;
   }
