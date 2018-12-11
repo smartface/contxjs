@@ -28,8 +28,7 @@ function onHide(superOnHide) {
   superOnHide && superOnHide();
 }
 
-function onShow(superOnShow, data) {
-  superOnShow && superOnShow(data);
+function updateHeaderBar() {
   if (this.parentController &&
     this.parentController.headerBar &&
     this.headerBar.dispatch &&
@@ -40,7 +39,11 @@ function onShow(superOnShow, data) {
       component: this.parentController.headerBar
     });
   }
+}
 
+function onShow(superOnShow, data) {
+  superOnShow && superOnShow(data);
+  updateHeaderBar.call(this);
   this.dispatch && this.dispatch({
     type: "invalidate"
   });
@@ -96,14 +99,13 @@ export default function pageContextPatch(page, name) {
   function onPageUnload(superOnUnload) {
     superOnUnload && superOnUnload();
     this.themeContext(null);
-
     // pageContextPatchDispose();
   }
 
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
     this.themeContext = Application.theme(createPageContext(page, name, null, null), name);
-
+    updateHeaderBar.call(this);
   }
 
   function pageContextPatchDispose() {
