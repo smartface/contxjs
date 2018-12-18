@@ -197,7 +197,7 @@ example assignment of new properties, and the component has onError method then
 the error is passed to onError method of the component. If not and then the 
 context throws the error.
 
-### Tricks
+### Warning
 
 ##### Attributes
 
