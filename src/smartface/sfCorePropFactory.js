@@ -1,5 +1,6 @@
 import Color from 'sf-core/ui/color';
 import Font from 'sf-core/ui/font';
+import Image from 'sf-core/ui/image';
 
 
 const HexColorValidationRegexp = /^#[0-9A-Fa-f]{6}$/ig;
@@ -205,16 +206,16 @@ export default function buildProps(objectVal) {
 function createImageForDevice(image) {
   var res;
   if (image instanceof Object) {
-    /*if (image.src !== undefined || image.autoMirrored !== undefined )
-      return {
-        src: createImageForDevice(image.src),
-        autoMirrored: image.autoMirrored
-      };
-    */
-    res = {};
-    Object.keys(image).forEach(function(c) {
-      res[c] = createImageForDevice(image[c]);
-    });
+    if (image.src !== undefined) {
+      res = Image.createFromFile("images://" + image.src);
+      res.autoMirrored = image.autoMirrored;
+    }
+    else {
+      res = {};
+      Object.keys(image).forEach(function(c) {
+        res[c] = createImageForDevice(image[c]);
+      });
+    }
   }
   else {
     res = "images://" + image;
