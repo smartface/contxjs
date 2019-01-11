@@ -92,6 +92,8 @@ const IMAGE_PROPS = [
   "closeImage"
 ];
 
+const GIFIMAGE_PROPS = ["gifImage"];
+
 const IMAGE_FILLTYPE_COMMON_PROPS = [
   "ASPECTFIT",
   "NORMAL",
@@ -181,11 +183,11 @@ export function createSFCoreProp(key, value) {
   }
   else if (key === "font") {
     res = createFontForDevice(value);
-  }
-  else {
+  }else if( GIFIMAGE_PROPS.indexOf(key) !== -1){
+    res = createGifImageForDevice(value);
+  } else {
     res = value === null ? NaN : value;
   }
-
   return res;
 }
 
@@ -201,6 +203,10 @@ export default function buildProps(objectVal) {
     });
 
   return props;
+}
+
+function createGifImageForDevice(gifImage){
+  return require('sf-core/ui/gifimage').createFromFile(`assets://${gifImage}`);
 }
 
 function createImageForDevice(image) {
