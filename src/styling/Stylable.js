@@ -1,6 +1,5 @@
 import Actor from "../core/Actor";
 import merge from "@smartface/styler/lib/utils/merge";
-import Application from "sf-core/application";
 import findClassNames from "@smartface/styler/lib/utils/findClassNames";
 import toStringUtil from '../util/toStringUtil';
 
@@ -9,7 +8,8 @@ const _findClassNames = (classNames) => findClassNames(classNames).reduce((acc, 
 const componentObjectProps = {
   "android": {},
   "ios": {},
-  "layout": {}
+  "layout": {},
+  "layoutManager": {}
 };
 
 const SCW_LAYOUT_PROPS = {
