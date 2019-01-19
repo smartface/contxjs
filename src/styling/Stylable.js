@@ -64,7 +64,7 @@ class Stylable extends Actor {
   constructor(component, name, classNames, defaultClassNames, userStyle) {
     super(component, name);
     this.waitedStyle = {};
-    this.defaultClassNames = _findClassNames(defaultClassNames);
+    this.defaultClassNames = defaultClassNames ? _findClassNames(defaultClassNames) : [];
     this.initialClassNames = _findClassNames(classNames);
     this.classNames = [...this.initialClassNames];
     this.styles = {};
