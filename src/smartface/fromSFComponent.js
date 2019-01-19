@@ -8,9 +8,9 @@ import findClassNames from '@smartface/styler/lib/utils/findClassNames';
 import raiseErrorMaybe from '../core/util/raiseErrorMaybe';
 import Application from "sf-core/application";
 
-function addChild(superAddChild, child, name, classNames = "", userProps = null) {
+function addChild(superAddChild, child, name, classNames = "", userProps = null, defaultClassNames= "") {
   superAddChild(child);
-  name && this.dispatch(addContextChild(name, child, classNames, userProps));
+  name && this.dispatch(addContextChild(name, child, classNames, userProps, defaultClassNames));
 }
 
 function removeChild(superRemoveChild, child) {
@@ -88,7 +88,7 @@ function patchComponent(component, rootName, name) {
   }
 }
 
-function createTreeItem(component, name, rootName, root) {
+function createTreeItem(component, name, rootName, root, defaultClassNames) {
   let componentVars;
   var classNames = component.__tree_item === true ? component.classNames : "";
 
@@ -112,6 +112,8 @@ function createTreeItem(component, name, rootName, root) {
   return {
     component,
     classNames,
+    defaultClassNames: componentVars.defaultClassNames ?
+      componentVars.defaultClassNames + (defaultClassNames ? (" " + defaultClassNames) : "") : defaultClassNames,
     userStyle: componentVars.userProps,
     name,
     __tree_item: true
@@ -119,10 +121,10 @@ function createTreeItem(component, name, rootName, root) {
   // }
 }
 
-function buildContextTree(component, name, root, rootName, acc) {
+function buildContextTree(component, name, root, rootName, defaultClassNames, acc) {
 
   if (acc[name] === undefined) {
-    acc[name] = createTreeItem(component, name, rootName, root);
+    acc[name] = createTreeItem(component, name, rootName, root, defaultClassNames);
   }
 
   component.children &&
@@ -130,10 +132,10 @@ function buildContextTree(component, name, root, rootName, acc) {
       const comp = component.children[child];
       try {
         if (comp.component !== undefined && comp.classNames !== undefined) {
-          buildContextTree(comp.component, createName(name, child), root, rootName, acc);
+          buildContextTree(comp.component, createName(name, child), root, rootName, "", acc);
         }
         else {
-          buildContextTree(comp, createName(name, child), root, rootName, acc);
+          buildContextTree(comp, createName(name, child), root, rootName, "", acc);
         }
       }
       catch (e) {
@@ -158,8 +160,8 @@ function createName(root, name) {
  * 
  * @return {function} - context helper
  */
-export function extractTreeFromSFComponent(root, rootName, initialClassNameMap, acc = {}) {
-  buildContextTree(root, rootName, root, rootName, acc);
+export function extractTreeFromSFComponent(root, rootName, defaultClassNames, acc = {}) {
+  buildContextTree(root, rootName, root, rootName, defaultClassNames, acc);
   return acc;
 }
 
@@ -181,17 +183,17 @@ export default function fromSFComponent(root, rootName, hooksList = null, collec
   );
 }
 
-export function createActorTreeFromSFComponent(component, name, rootName) {
+export function createActorTreeFromSFComponent(component, name, rootName, defaultClassNames) {
 
   if (component.addChild || component.layout) {
-    const ctree = extractTreeFromSFComponent(component, name, null);
+    const ctree = extractTreeFromSFComponent(component, name, defaultClassNames);
     const _ctree = {};
     Object.keys(ctree).forEach((name) => _ctree[createName(rootName, name)] = makeStylable(ctree[name]));
     return _ctree;
   }
   else {
     return {
-      [createName(rootName, name)]: makeStylable(createTreeItem(component, name, rootName, component))
+      [createName(rootName, name)]: makeStylable(createTreeItem(component, name, rootName, component, defaultClassNames))
     };
   }
 }

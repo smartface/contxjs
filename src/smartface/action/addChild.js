@@ -8,12 +8,13 @@
  * 
  * @returns {Object}
  */
-export default function addChild(name, component, classNames="", userStyle=null){
+export default function addChild(name, component, classNames="", userStyle=null, defaultClassNames){
     return {
         type: "addChild",
         name,
         component,
         classNames,
+        defaultClassNames,
         userStyle
     };
 };

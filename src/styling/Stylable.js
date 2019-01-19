@@ -51,17 +51,17 @@ function componentAssign(component, key, value) {
  * 
  * @returns {Object} - A Stylable Actor
  */
-export default function makeStylable({ component, classNames = "", userStyle = {}, name }) {
+export default function makeStylable({ component, classNames = "", defaultClassNames = "", userStyle = {}, name }) {
   userStyle = merge(userStyle);
   /**
    * Styable actor
    * @class
    */
-  return new Stylable(component, name, classNames, userStyle);
+  return new Stylable(component, name, classNames, defaultClassNames, userStyle);
 }
 
 class Stylable extends Actor {
-  constructor(component, name, classNames, userStyle, defaultClassNames) {
+  constructor(component, name, classNames, defaultClassNames, userStyle) {
     super(component, name);
     this.waitedStyle = {};
     this.defaultClassNames = _findClassNames(defaultClassNames);
@@ -113,7 +113,7 @@ class Stylable extends Actor {
     this.isDirty = true;
     return this;
   }
-  
+
   computeAndAssignStyle(style, force = false) {
     const hooks = this.hook || (() => null);
     var _component = this.getComponent();
@@ -198,15 +198,15 @@ class Stylable extends Actor {
   getClassName() {
     return this.classNames.join(" ");
   }
-  
-  setInitialStyles(style){
+
+  setInitialStyles(style) {
     this.styles = Object.assign({}, style);
   }
 
   getDefaultClassNames() {
     return this.defaultClassNames.join(" ");
   }
-  
+
   classNamesCount() {
     return this.classNames.length;
   }

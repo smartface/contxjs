@@ -61,8 +61,8 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
             let className = actor.getClassName();
             const beforeHook = hookMaybe("beforeAssignComponentStyles", null);
             beforeHook && (className = beforeHook(name, className));
-            if(action.type === INIT_CONTEXT_ACTION_TYPE){
-              actor.setInitialStyles(styling(actor.getDefaultClassNames())())
+          if (action.type === INIT_CONTEXT_ACTION_TYPE || action.type === "addChild") {
+              actor.setInitialStyles(styling(actor.getDefaultClassNames())());
             }
             
             try {
