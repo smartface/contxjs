@@ -11,7 +11,7 @@ import merge from "@smartface/styler/lib/utils/merge";
  */
 export function createStyleContext(actors, hookMaybe, updateContextTree) {
   var context;
-  
+
   /**
    * Context builder.
    * 
@@ -19,20 +19,20 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
    * @param {function} reducer - Reducer function to run actions
    */
   return function recomposeStylingContext(styling, reducer) {
-    
+
     // context reducer
     function contextUpdater(context, action, target, state) {
       var newState = Object.assign({}, state);
-        
+
       switch (action.type) {
         case 'updateContext':
           updateContextTree(context.actors);
-          
+
           break;
         case 'forceComponentUpdate':
-          const actor = context.find(target+"_"+action.name, null);
+          const actor = context.find(target + "_" + action.name, null);
           actor && actor.reset();
-          
+
           break;
           /*case 'addContextChild':
             Array.isArray(action.newComp)
@@ -45,7 +45,7 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
           context.remove(action.name);
           break;
       }
-      
+
       if (target && action.type !== INIT_CONTEXT_ACTION_TYPE) {
         newState = reducer(context, action, target, state);
         // state is not changed
@@ -54,47 +54,47 @@ export function createStyleContext(actors, hookMaybe, updateContextTree) {
           return state;
         }
       }
-      
+
       context.map(
         function invalidateStyles(actor, name) {
           if (actor.isDirty === true || action.type === INIT_CONTEXT_ACTION_TYPE) {
             let className = actor.getClassName();
             const beforeHook = hookMaybe("beforeAssignComponentStyles", null);
             beforeHook && (className = beforeHook(name, className));
-          if (action.type === INIT_CONTEXT_ACTION_TYPE || action.type === "addChild") {
-              actor.setInitialStyles(styling(actor.getDefaultClassNames())());
+            if (action.type === INIT_CONTEXT_ACTION_TYPE || action.type === "addChild") {
+              const defaultClassNames = actor.getDefaultClassNames();
+              actor.setInitialStyles(defaultClassNames ? styling(defaultClassNames)() : {});
             }
-            
+
             try {
-              if(className){
-                const styles = styling(className)();
-                actor.setStyles(styles);
+              if (className) {
+                actor.setStyles(styling(className)());
               }
-              
+
               actor.applyStyles();
-            } catch (e) {
+            }
+            catch (e) {
               e.message = `While actor's style [${name || className}] is set. \nActor name: [${actor.getName()}]\n${e.message}`;
               throw e;
             }
           }
         });
-      
+
       latestState = newState;
-      
+
       return newState;
     }
-      
-    var latestState = context 
-      ? context.getState() 
-      : {};
+
+    var latestState = context ?
+      context.getState() : {};
     //creates new context
     context = new Context(
-          context && context.reduce((acc, actor, name) => {acc[name] = actor; return acc;}, {}) || actors,
-          contextUpdater,
-          latestState,
-          hookMaybe
-        );
-        
+      context && context.reduce((acc, actor, name) => { acc[name] = actor; return acc; }, {}) || actors,
+      contextUpdater,
+      latestState,
+      hookMaybe
+    );
+
     return context;
   };
 }
