@@ -76,7 +76,11 @@ const COLOR_PROPS = [
   "cursorColor",
   "tintColor",
   "baseColor",
-  "highlightColor"
+  "highlightColor",
+  "selectedHintTextColor",
+  "errorColor",
+  "lineColor",
+  "rippleColor"
 ];
 
 const IMAGE_PROPS = [
@@ -183,9 +187,11 @@ export function createSFCoreProp(key, value) {
   }
   else if (key === "font") {
     res = createFontForDevice(value);
-  }else if( GIFIMAGE_PROPS.indexOf(key) !== -1){
+  }
+  else if (GIFIMAGE_PROPS.indexOf(key) !== -1) {
     res = createGifImageForDevice(value);
-  } else {
+  }
+  else {
     res = value === null ? NaN : value;
   }
   return res;
@@ -205,7 +211,7 @@ export default function buildProps(objectVal) {
   return props;
 }
 
-function createGifImageForDevice(gifImage){
+function createGifImageForDevice(gifImage) {
   return require('sf-core/ui/gifimage').createFromFile(`assets://${gifImage}`);
 }
 
