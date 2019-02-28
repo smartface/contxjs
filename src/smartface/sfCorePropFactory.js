@@ -16,6 +16,7 @@ const ENUMS = {
   alignContent: 'sf-core/ui/flexlayout',
   alignItems: 'sf-core/ui/flexlayout',
   direction: 'sf-core/ui/flexlayout',
+  ellipsizeMode: 'sf-core/ui/ellipsizemode',
   flexDirection: 'sf-core/ui/flexlayout',
   flexWrap: 'sf-core/ui/flexlayout',
   justifyContent: 'sf-core/ui/flexlayout',
