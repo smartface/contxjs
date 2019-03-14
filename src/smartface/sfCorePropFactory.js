@@ -82,7 +82,8 @@ const COLOR_PROPS = [
   'titleColor',
   'toggleOffColor',
   'toggleOnColor',
-  'underlineColor'
+  'underlineColor',
+  'strikethroughColor'
 ];
 
 const IMAGE_PROPS = [
