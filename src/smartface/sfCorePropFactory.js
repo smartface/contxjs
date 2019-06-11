@@ -268,7 +268,7 @@ const createColorForDevice = (function() {
                 throw new Error(
                     `${color} is invalid value. Please, check your styles`
                 );
-            res = _color.default.create(getNormalizedHexColor(color));
+            res = Color.create(getNormalizedHexColor(color));
         }
         return res || color;
     };
