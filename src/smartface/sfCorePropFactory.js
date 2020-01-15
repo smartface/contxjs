@@ -99,6 +99,18 @@ const IMAGE_PROPS = [
     "thumbImage"
 ];
 
+const FONT_PROPS = [
+    "font",
+    "titleFont",
+    "cancelButtonFont",
+    "doneButtonFont",
+    "labelsFont",
+    "okFont",
+    "cancelFont",
+    "subtitleFont",
+    "clusterFont"
+];
+
 const GIFIMAGE_PROPS = ["gifImage"];
 
 const IMAGE_FILLTYPE_COMMON_PROPS = [
@@ -181,7 +193,7 @@ export function createSFCoreProp(key, value) {
         res = createColorForDevice(value);
     } else if (IMAGE_PROPS.indexOf(key) !== -1) {
         res = createImageForDevice(value);
-    } else if (key === "font") {
+    } else if (FONT_PROPS.indexOf(key) !== -1) {
         res = createFontForDevice(value);
     } else if (GIFIMAGE_PROPS.indexOf(key) !== -1) {
         res = createGifImageForDevice(value);
