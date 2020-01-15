@@ -108,7 +108,7 @@ const FONT_PROPS = [
     "okFont",
     "cancelFont",
     "subtitleFont",
-    "clusterFont",
+    "clusterFont"
 ];
 
 const GIFIMAGE_PROPS = ["gifImage"];
