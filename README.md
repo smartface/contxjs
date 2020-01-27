@@ -197,6 +197,16 @@ example assignment of new properties, and the component has onError method then
 the error is passed to onError method of the component. If not and then the 
 context throws the error.
 
+### Change theme without app reload
+
+It is possible to change the current theme without the need to reload.
+
+```js
+const Application = require("sf-core/application");
+// Seamlessly switch between themes
+Application.theme()({ type: "changeTheme", theme: "yourThemeName" });
+```
+
 ### Warning
 
 ##### Attributes
