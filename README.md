@@ -207,6 +207,21 @@ const Application = require("sf-core/application");
 Application.theme()({ type: "changeTheme", theme: "yourThemeName" });
 ```
 
+### Connecting components to context
+
+Component instances created via code are not connected to the context. Therefore they don't have dispatch method for updating user styles & classes. In order to prevent that, components must be connected to the context manually. Please see the following example.
+
+```js
+const componentContextPatch = require("@smartface/contx/lib/smartface/componentContextPatch");
+
+let dialog = new Dialog();
+let flWait = new FlWait(); // A library component
+componentContextPatch(dialog, `dialog${guid()}`); // Connect component to context
+dialog.layout.addChild(flWait, `flWait${guid()}`, ".flWait"); // Child components are connected autmatically
+dialog.layout.applyLayout();
+dialog.show();
+```
+
 ### Warning
 
 ##### Attributes
