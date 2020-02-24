@@ -83,7 +83,9 @@ const COLOR_PROPS = [
     "toggleOffColor",
     "toggleOnColor",
     "underlineColor",
-    "strikethroughColor"
+    "strikethroughColor",
+    "trackColor",
+    "outerTrackColor"
 ];
 
 const IMAGE_PROPS = [
