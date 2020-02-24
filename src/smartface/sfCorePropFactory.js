@@ -65,6 +65,7 @@ const COLOR_PROPS = [
   "minTrackColor",
   "maxTrackColor",
   "trackColor",
+  "outerTrackColor",
   "thumbColor",
   "itemColor",
   "shadowColor",
