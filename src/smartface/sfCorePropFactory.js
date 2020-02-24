@@ -64,6 +64,7 @@ const COLOR_PROPS = [
   "hintTextColor",
   "minTrackColor",
   "maxTrackColor",
+  "trackColor",
   "thumbColor",
   "itemColor",
   "shadowColor",
