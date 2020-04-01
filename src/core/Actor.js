@@ -61,7 +61,6 @@ export default class Actor {
 
   getComponent() {
     return this._actorInternal_.component.get(this._actorInternal_.componentKey);
-    // return this._actorInternal_.component;
   }
 
   componentDidLeave() {

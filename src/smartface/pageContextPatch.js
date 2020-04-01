@@ -24,10 +24,6 @@ function onSafeAreaPaddingChange(onSafeAreaPaddingChange, paddings) {
   }
 }
 
-function onHide(superOnHide) {
-  superOnHide && superOnHide();
-}
-
 function updateHeaderBar() {
   if (this.parentController &&
     this.parentController.headerBar &&
@@ -41,18 +37,8 @@ function updateHeaderBar() {
   }
 }
 
-function onShow(superOnShow, data) {
-  superOnShow && superOnShow(data);
-  updateHeaderBar.call(this);
-  this.dispatch && this.dispatch({
-    type: "invalidate"
-  });
-  this.dispatch && this.dispatch({
-    type: "forceComponentUpdate",
-    name: "statusbar"
-  });
-
-  this.layout.applyLayout();
+function onHide(superOnHide) {
+  superOnHide && superOnHide();
 }
 
 function onOrientationChange(superOnOrientationChange) {
@@ -75,10 +61,19 @@ function onOrientationChange(superOnOrientationChange) {
 }
 
 function componentDidEnter(componentDidEnter, dispatcher) {
+  console.log("componentDidEnter : ", dispatcher);
+
   componentDidEnter
     &&
     componentDidEnter(dispatcher) ||
     (this.dispatch = dispatcher);
+}
+
+function onPageUnload(superOnUnload) {
+  superOnUnload && superOnUnload();
+  this.themeContext(null);
+  this.themeContext = null;
+  // pageContextPatchDispose();
 }
 
 // monkey patching wrapper for any page.
@@ -89,19 +84,31 @@ export default function pageContextPatch(page, name) {
 
   page.componentDidEnter = patchMethod(page, "componentDidEnter", componentDidEnter);
   page.onOrientationChange = patchMethod(page, "onOrientationChange", onOrientationChange);
+  page.__name__ = name;
   // hides unload logic
   // page.onUnload = patchMethod(page, "onUnload", onPageUnload);
 
   if (page.ios) {
     page.ios.onSafeAreaPaddingChange = onSafeAreaPaddingChange.bind(page, page.ios.onSafeAreaPaddingChange);
   }
+  
+  function onShow(superOnShow, data) {
+    if (!this.themeContext) {
+      this.themeContext = Application.theme(createPageContext(this, name, null, null), name);
+    }
+    superOnShow && superOnShow(data);
+    updateHeaderBar.call(this);
 
-  function onPageUnload(superOnUnload) {
-    superOnUnload && superOnUnload();
-    this.themeContext(null);
-    // pageContextPatchDispose();
+    this.dispatch && this.dispatch({
+      type: "forceComponentUpdate",
+      name: "statusbar"
+    });
+    this.dispatch && this.dispatch({
+      type: "applyStyles"
+    });
+
+    this.layout.applyLayout();
   }
-
   function onLoad(superOnLoad) {
     superOnLoad && superOnLoad();
     this.themeContext = Application.theme(createPageContext(page, name, null, null), name);

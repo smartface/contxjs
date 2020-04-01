@@ -157,6 +157,13 @@ function createPageContext(component, name, reducers = null) {
 	};
 }
 
+/**
+ * 
+ * @param {import('../core/Context').default} context 
+ * @param {*} action 
+ * @param {*} target 
+ * @param {*} state 
+ */
 function contextReducer(context, action, target, state) {
 	const newState = Object.assign({}, state);
 
@@ -197,11 +204,12 @@ function contextReducer(context, action, target, state) {
 				ctree[rootName].pushClassNames(action.classNames);
 
 			action.userStyle && ctree[rootName].setUserStyle(action.userStyle);
-			context.addTree(ctree);
-
+            context.addTree(ctree);
 			return newState;
 		case 'removeChild':
-			context.remove(target);
+            console.log("size1 : ", context.actors.collection.size)
+            context.remove(target);
+            console.log("size2 : ", context.actors.collection.size)
 			return newState;
 		case 'removeChildren':
 			context.removeChildren(target);
@@ -211,7 +219,6 @@ function contextReducer(context, action, target, state) {
 			if (!action.classNames)
 				throw new Error("Classnames must not be null or undefined");
 			context.find(target).pushClassNames(action.classNames);
-
 			return newState;
 		case 'removeClassName':
 			context.find(target).removeClassName(action.className);
