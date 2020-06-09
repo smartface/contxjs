@@ -6,15 +6,15 @@ declare interface IActorCollection {
     /**
      * Unused
      */
-    $$idMap: object;
-    $$nameMap: object;
+    $$idMap: { [key: string]: any };
+    $$nameMap: { [key: string]: any };
     $$lastID: string | number | null;
 }
 
-declare function coreReduer(context: object, action: string, target: object, state: object): object;
+declare function coreReduer(context: { [key: string]: any }, action: string, target: { [key: string]: any }, state: { [key: string]: any }): { [key: string]: any };
 
 export default class Context {
-  constructor(actors: IActorCollection, reducer: () => any, initialState: object, hookFactory: any);
+  constructor(actors: IActorCollection, reducer: () => any, initialState: { [key: string]: any }, hookFactory: any);
 
   getReducer(): () => any;
 
@@ -22,7 +22,7 @@ export default class Context {
   
   getLastActorID(): string | number;
 
-  reduce(fn: () => any, acc: object): object;
+  reduce(fn: () => any, acc: { [key: string]: any }): { [key: string]: any };
   map(fn: () => any): any[];
 
   find(instance: Actor, notValue: any): Actor;
@@ -30,7 +30,7 @@ export default class Context {
   /**
    * @params {} tree
    */
-  addTree(tree: object): void;
+  addTree(tree: { [key: string]: any }): void;
 
   add(actor: Actor, name: string): string;
 
@@ -38,11 +38,11 @@ export default class Context {
 
   remove(instance: Actor): void;
 
-  setState(state: object): void;
+  setState(state: { [key: string]: any }): void;
 
   propagateAll(): void;
 
-  getState(): object;
+  getState(): { [key: string]: any };
 
   dispatch(action: string, target: string): void;
 

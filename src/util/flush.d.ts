@@ -1,1 +1,1 @@
-export default function flush(str: string, obj: object): string;
+export default function flush(str: string, obj: { [key: string]: any }): string;

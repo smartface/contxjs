@@ -10,4 +10,4 @@
  */
 export function createSFCoreProp(key: string, value: any): any;
 
-export default function buildProps(objectVal: object): object;
+export default function buildProps(objectVal: { [key: string]: any }): { [key: string]: any };

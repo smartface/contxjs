@@ -9,11 +9,11 @@ import View = require("sf-core/ui/view");
  * 
  * @returns {Object}
  */
-export default function addChild(name: string, component: View, classNames: string, userStyle: object, defaultClassNames: string[] | string): {
+export default function addChild(name: string, component: View, classNames: string, userStyle: { [key: string]: any }, defaultClassNames: string[] | string): {
     type: string,
     name: string,
     component: string,
     classNames: string[] | string,
     defaultClassNames: string[] | string,
-    userStyle: object
+    userStyle: { [key: string]: any }
 };

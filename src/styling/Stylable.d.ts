@@ -1,13 +1,7 @@
 import Actor from "../core/Actor";
-import merge from "@smartface/styler/lib/utils/merge";
-import findClassNames from "@smartface/styler/lib/utils/findClassNames";
-import toStringUtil from '../util/toStringUtil';
 import View = require("sf-core/ui/view");
 
-const _findClassNames = (classNames) => findClassNames(classNames).reduce((acc, item) => !item && [] || [...acc, item.join('')], []);
-
-
-declare function componentAssign(component: View, key: string, value: object): void;
+declare function componentAssign(component: View, key: string, value: { [key: string]: any }): void;
 
 // TODO create new jsdoc type for the parameter
 /**
@@ -19,34 +13,34 @@ declare function componentAssign(component: View, key: string, value: object): v
  * 
  * @returns {Object} - A Stylable Actor
  */
-export default function makeStylable(options: { component: View, classNames: string[] | string, defaultClassNames: string[] | string, userStyle: object, name: string }): Stylable;
+export default function makeStylable(options: { component: View, classNames: string[] | string, defaultClassNames: string[] | string, userStyle: { [key: string]: any }, name: string }): Stylable;
 
 declare class Stylable extends Actor {
-  constructor(component: View, name: string, classNames: string[] | string, defaultClassNames: string[] | string, userStyle: object);
-  getUserStyle(): object;
+  constructor(component: View, name: string, classNames: string[] | string, defaultClassNames: string[] | string, userStyle: { [key: string]: any });
+  getUserStyle(): { [key: string]: any };
 
-  setSafeArea(area: object): Stylable;
+  setSafeArea(area: { [key: string]: any }): Stylable;
 
   makeDirty(): void;
 
   clearDirty(): void;
 
-  updateUserStyle(props: object): Stylable;
+  updateUserStyle(props: { [key: string]: any }): Stylable;
   reset(): Stylable;
 
-  setUserStyle(props: object): Stylable;
+  setUserStyle(props: { [key: string]: any }): Stylable;
 
-  computeAndAssignStyle(style: object, force: boolean = false): Stylable;
+  computeAndAssignStyle(style: { [key: string]: any }, force: boolean): Stylable;
 
-  applyStyles(force: boolean = false): Stylable;
+  applyStyles(force: boolean): Stylable;
 
-  setStyles(style: object, force: boolean = false): Stylable;
+  setStyles(style: { [key: string]: any }, force: boolean): Stylable;
 
-  getStyles(): object;
+  getStyles(): { [key: string]: any };
 
   getClassName(): string
 
-  setInitialStyles(style: object): void;
+  setInitialStyles(style: { [key: string]: any }): void;
 
   getDefaultClassNames(): string;
 
@@ -56,7 +50,7 @@ declare class Stylable extends Actor {
 
   removeClassNames(classNames: string[] | string): string;
 
-  resetClassNames(classNames: string[] = []): Stylable
+  resetClassNames(classNames: string[]): Stylable
 
   hasClassName(className: string): boolean;
 

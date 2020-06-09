@@ -11,9 +11,9 @@ export default abstract class Actor {
    * @constructor
    * @param {object} component - Wrapped Component
    */
-  constructor(component: object, name: string, id: number);
+  constructor(component: { [key: string]: any }, name: string, id: number);
 
-  updateComponent(comp: object): void;
+  updateComponent(comp: { [key: string]: any }): void;
 
   getName(): string;
 
@@ -27,7 +27,7 @@ export default abstract class Actor {
 
   onError(err: any): any; // onError - boolean
 
-  getComponent(): object;
+  getComponent(): { [key: string]: any };
 
   componentDidLeave(): void;
 
@@ -37,7 +37,7 @@ export default abstract class Actor {
 
   getDirty(): boolean;
 
-  isChildof(parent: object): boolean;
+  isChildof(parent: { [key: string]: any }): boolean;
 
   onRemove(): void;
 

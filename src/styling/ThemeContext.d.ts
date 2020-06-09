@@ -26,4 +26,4 @@ declare class Themeable extends Actor {
  * 
  * @returns {function} - Context dispatcher
  */
-export function createThemeContextBound(themes: {name: string, rawStyles: object, isDefault: boolean}[]): () => any;
+export function createThemeContextBound(themes: {name: string, rawStyles: { [key: string]: any }, isDefault: boolean}[]): () => any;
