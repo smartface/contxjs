@@ -14,16 +14,16 @@ declare interface IActorCollection {
 declare function coreReduer(context: object, action: string, target: object, state: object): object;
 
 export default class Context {
-  constructor(actors: IActorCollection, reducer: () => {}, initialState: object, hookFactory: any);
+  constructor(actors: IActorCollection, reducer: () => any, initialState: object, hookFactory: any);
 
-  getReducer(): () => {};
+  getReducer(): () => any;
 
   setActors(actors: IActorCollection): void;
   
   getLastActorID(): number
 
-  reduce(fn: () => {}, acc: object): object;
-  map(fn: () => {}): any[];
+  reduce(fn: () => any, acc: object): object;
+  map(fn: () => any): any[];
 
   find(instance: Actor, notValue: any): Actor;
   
@@ -48,7 +48,7 @@ export default class Context {
 
   dispose(): void;
 
-  subcribe(fn: () => {}): void;
+  subcribe(fn: () => any): void;
   
   static getID(): number;
 }

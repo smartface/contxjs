@@ -1,2 +1,2 @@
 
-export default function hooks(hooksList: () => {}): () => {}
+export default function hooks(hooksList: () => any): () => any;

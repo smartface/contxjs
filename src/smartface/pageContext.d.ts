@@ -7,6 +7,6 @@ import View = require("sf-core/ui/view");
  * @param {string} name - Root component ID
  * @param {function} reducers - Reducers function
  */
-export default function createPageContext(component: View, name: string, reducers: () => {} = null): void;
+export default function createPageContext(component: View, name: string, reducers: () => any): void;
 
 declare function contextReducer(context: any[], action: string, target: any, state: any): any;
