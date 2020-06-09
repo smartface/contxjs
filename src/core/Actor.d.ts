@@ -11,17 +11,17 @@ export default abstract class Actor {
    * @constructor
    * @param {object} component - Wrapped Component
    */
-  constructor(component: object, name: string, id: string);
+  constructor(component: object, name: string, id: number);
 
   updateComponent(comp: object): void;
 
   getName(): string;
 
-  setID(id: string): void;
+  setID(id: number): void;
 
   setName(name: string): void;
 
-  getID(): string
+  getID(): number
 
   getInstanceID(): string
 
