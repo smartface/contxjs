@@ -17,13 +17,13 @@ export default abstract class Actor {
 
   getName(): string;
 
-  setID(id: number): void;
+  setID(id: string | number): void;
 
   setName(name: string): void;
 
-  getID(): number
+  getID(): string | number;
 
-  getInstanceID(): string
+  getInstanceID(): string;
 
   onError(err: any): any; // onError - boolean
 

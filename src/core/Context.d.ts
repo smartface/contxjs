@@ -8,7 +8,7 @@ declare interface IActorCollection {
      */
     $$idMap: object;
     $$nameMap: object;
-    $$lastID: number | null;
+    $$lastID: string | number | null;
 }
 
 declare function coreReduer(context: object, action: string, target: object, state: object): object;
@@ -20,7 +20,7 @@ export default class Context {
 
   setActors(actors: IActorCollection): void;
   
-  getLastActorID(): number
+  getLastActorID(): string | number;
 
   reduce(fn: () => any, acc: object): object;
   map(fn: () => any): any[];
