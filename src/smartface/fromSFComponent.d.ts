@@ -4,7 +4,7 @@ declare function addChild(superAddChild: () => any, child: View, name: string, c
 
 declare function removeChild(superRemoveChild: () => any, child: View): void;
 
-declare function removeChildren(superRemoveAll: () => );
+declare function removeChildren(superRemoveAll: () => any);
 
 declare function createOriginals(component: View): void;
 
