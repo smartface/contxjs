@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "skipLibCheck": true,
+    "sourceMap": false,
+    "declaration": true,
+    "noEmit": false,
+    "target": "ES5",
+    "outDir": "lib",
+    "moduleResolution": "Node",
+    "module": "CommonJS",
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "baseUrl": "src",
+    "rootDir": "src",
+    "esModuleInterop": true,
+    "lib": [
+    "ES2015",
+    "ES2017"
+    ],
+    "typeRoots": ["../sf-core/device/system"]
+    },
+    "exclude": [
+    "node_modules",
+    "lib",
+    "test"
+    ],
+}

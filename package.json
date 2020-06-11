@@ -5,12 +5,11 @@
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --debug ./test/**/*.test.js",
     "test:watch": "mocha --watch --compilers js:babel-core/register --debug ./test/**/*.test.js",
-    "build": "BABEL_ENV=production babel ./src/ --out-dir -d ./lib/.",
     "build:dev": "BABEL_ENV=development babel ./src/ --out-dir -d ../scripts/node_modules/@smartface/contx",
     "dev:sync": "mkdir -p ../scripts/node_modules/@smartface/contx && cp -r -t ../scripts/node_modules/@smartface/contx lib package.json ",
     "dev:remove": "rm -R -f ../scripts/node_modules/@smartface/contx & rm -R -f ./lib",
-    "dev:link": "npm run dev:remove && BABEL_ENV=development npm run build && npm run dev:sync",
-    "prepublish": "rm -R -f ./lib && npm run build",
+    "dev:link": "npm run dev:remove && BABEL_ENV=development && tsc && npm run dev:sync",
+    "prepublish": "rm -R -f ./lib && tsc",
     "docs": "jsdoc2md -c .jsdoc.json --no-cache --files src/core/Actor.js --namepaths",
     "docs:clean": "rimraf _book",
     "docs:publish": "gh-pages --dist _book"
@@ -52,7 +51,8 @@
     "jsdoc-to-markdown": "^3.0.2",
     "minimist": "^1.2.0",
     "mocha": "^3.3.0",
-    "semver": "^5.3.0"
+    "semver": "^5.3.0",
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "filtrex": "^0.5.4"
