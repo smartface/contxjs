@@ -6,6 +6,7 @@ const HexColorValidationRegexp = /^#[0-9A-Fa-f]{6}$/gi;
 const ENUMS = {
     imageFillType: "sf-core/ui/imagefilltype",
     textAlignment: "sf-core/ui/textalignment",
+    keyboardType: "sf-core/ui/keyboardtype",
     orientation: "sf-core/ui/page",
     type: "sf-core/ui/mapview",
     gradientOrientation: "sf-core/ui/color",
@@ -40,6 +41,7 @@ const ENUMS_META_FIELD = {
     alignItems: "AlignItems",
     direction: "Direction",
     flexDirection: "FlexDirection",
+    keyboardType: "KeyboardType",
     flexWrap: "FlexWrap",
     justifyContent: "JustifyContent",
     positionType: "PositionType",

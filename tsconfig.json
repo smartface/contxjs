@@ -4,21 +4,17 @@
         "checkJs": false,
         "skipLibCheck": true,
         "sourceMap": false,
-        "declaration": true,
         "noEmit": false,
         "target": "ES5",
         "outDir": "lib",
         "moduleResolution": "Node",
-        "module": "CommonJS",
-        "resolveJsonModule": true,
-        "isolatedModules": false,
         "baseUrl": "src",
         "rootDir": "src",
+        "strict": true,
         "esModuleInterop": true,
-        "lib": [
-            "ES2015",
-            "ES2017"
-        ]
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "outFile": "index.d.ts"
     },
     "exclude": [
         "node_modules",
