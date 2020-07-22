@@ -57,74 +57,52 @@ export default class Context {
   reduce(fn, acc = {}) {
     var res = [];
     
-    for (let item of this.actors.collection) {
-      acc = fn(acc, item[1], item[0]);
-    }
+    this.actors.collection.forEach((actor, name) => {
+      acc = fn(acc, actor, name);
+    })
     
     return acc;
-   /* return this.actors.$$map.reduce((acc, instance, index) => {
-      return fn(acc, this.actors.collection[instance], instance, index);
-    }, acc);*/
   }
 
   map(fn) {
     var res = [];
     
-    for (let item of this.actors.collection) {
-      res.push(fn(item[1]));
-    }
+    this.actors.collection.forEach((actor, name) => {
+      res.push(fn(actor, name));
+    });
     
     return res;
-    // return this.actors.$$map.map((instance, index) => {
-    //   return fn(this.actors.collection[instance], instance, index);
-    // });
   }
 
   find(instance, notValue) {
     return this.actors.collection.get(instance) || notValue;
   }
   
-  /**
-   * @params {} tree
-   */
   addTree(tree) {
     Object.keys(tree).forEach(name => this.add(tree[name], name));
   }
 
   add(actor, name) {
-    // if(this.actors.collection[name]){
-    // raiseErrorMaybe(new Error(`Child's name [${name}] must be unique in the same Container.`), actor.onError);
-    // }
     !actor.getID() && actor.setID(Context.getID());
     const instance = actor.getInstanceID(); //TODO: map by component type
-    // const type = actor._actorInternal_.constructor.name;
-    // this.actors.$$typeMap[type] ? this.actors.$$typeMap[type].push(id) : this.actors.$$typeMap[name] = [id];
-
     this.actors.collection.set(instance, actor);
-    // this.actors.$$idMap[actor.getID()] = instance;
-    // this.actors.$$map.push(instance);
-    // this.actors.$$nameMap[name] ? this.actors.$$nameMap[name].push(actor.getID()) : this.actors.$$nameMap[name] = [actor.getID()];
     actor.hook = this._hookFactory;
     actor.componentDidEnter((action, target) => this.dispatch(action, target));
     this.actors.$$lastID = actor.getInstanceID();
-    
+
     return name;
   }
 
   removeChildren(instance) {
     const removeActor = this.actors.collection.get(instance);
-    //this.actors.collection.delete(instance);
     
     this.actors.collection.forEach((actor, nm) => {
       if (nm.indexOf(removeActor.getName() + "_") === 0) {
-        // const actor = this.actors.collection[nm];
         actor.componentDidLeave();
         actor.dispose();
         this.actors.collection.delete(nm);
       }
     });
-    
-    // this.actors.$$map = Object.keys(this.actors.collection);
   }
 
   remove(instance) {
@@ -135,13 +113,8 @@ export default class Context {
     this.removeChildren(instance);
     const actor = this.actors.collection.get(instance);
     
-    // console.log("remove actor: "+actor.getInstanceID());
-
     if (actor) {
       this.actors.collection.delete(instance);
-      // console.log("before remove actor : "+JSON.stringify(this.actors.$$map));
-      // this.actors.$$map = Object.keys(this.actors.collection);
-      // console.log("after remove actor : "+JSON.stringify(this.actors.$$map));
       actor.componentDidLeave();
       actor.dispose();
     }
@@ -154,10 +127,7 @@ export default class Context {
   }
 
   propagateAll() {
-    
-
     this.map(actor => {
-      // const actor = this.actors.collection[instance];
       actor.onContextChange && actor.onContextChange(this);
     });
   }

@@ -12,9 +12,7 @@
         "rootDir": "src",
         "strict": true,
         "esModuleInterop": true,
-        "declaration": true,
-        "emitDeclarationOnly": true,
-        "outFile": "index.d.ts"
+        "lib": ["ES2015"]
     },
     "exclude": [
         "node_modules",
