@@ -34,7 +34,7 @@
     "@babel/plugin-proposal-object-rest-spread": "7.0.0-beta.54",
     "@babel/preset-env": "7.0.0-beta.54",
     "@babel/preset-stage-0": "7.0.0-beta.54",
-    "@smartface/styler": "^1.3.14",
+    "@smartface/styler": "^2.0.0-beta.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "chai": "^3.5.0",
     "commitizen": "^2.9.6",
