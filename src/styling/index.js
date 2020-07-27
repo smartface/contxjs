@@ -1,18 +1,7 @@
-import addThemeableContext from "action/addThemeableContext";
-import changeTheme from "action/changeTheme";
-import pushClassNames from "action/pushClassNames";
-import removeClassNames from "action/removeClassNames";
-import updateContextTree from "action/updateContextTree";
-import ThemeContext from "./ThemeContext";
-import StyleContext from "./StyleContext";
-
-export default {
-  addThemeableContext,
-  changeTheme,
-  pushClassNames,
-  removeClassName: removeClassNames,
-  removeClassNames,
-  updateContextTree,
-  ThemeContext,
-  StyleContext
-};
+export { default as addThemeableContext } from "./action/addThemeableContext";
+export { default as changeTheme } from "./action/changeTheme";
+export { default as pushClassNames } from "./action/pushClassNames";
+export { default as removeClassNames } from "./action/removeClassNames";
+export { default as updateContextTree } from "./action/updateContextTree";
+export { default as ThemeContext } from "./ThemeContext";
+export { default as StyleContext } from "./StyleContext";
