@@ -1,6 +1,6 @@
 {
   "name": "@smartface/contx",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Context Manager",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --debug ./test/**/*.test.js",
@@ -10,7 +10,6 @@
     "dev:sync": "mkdir -p ../scripts/node_modules/@smartface/contx && cp -r -t ../scripts/node_modules/@smartface/contx lib package.json ",
     "dev:remove": "rm -R -f ../scripts/node_modules/@smartface/contx & rm -R -f ./lib",
     "dev:link": "npm run dev:remove && BABEL_ENV=development && tsc && npm run dev:sync",
-    "prepublish": "npm run build",
     "docs": "jsdoc2md -c .jsdoc.json --no-cache --files src/core/Actor.js --namepaths",
     "docs:clean": "rimraf _book",
     "docs:publish": "gh-pages --dist _book"
