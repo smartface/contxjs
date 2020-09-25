@@ -216,8 +216,8 @@ const componentContextPatch = require("@smartface/contx/lib/smartface/componentC
 
 let dialog = new Dialog();
 let flWait = new FlWait(); // A library component
-componentContextPatch(dialog, `dialog${guid()}`); // Connect component to context
-dialog.layout.addChild(flWait, `flWait${guid()}`, ".flWait"); // Child components are connected autmatically
+componentContextPatch(dialog, `dialog`); // Connect component to context
+dialog.layout.addChild(flWait, `flWait`, ".flWait"); // Child components are connected autmatically
 dialog.layout.applyLayout();
 dialog.show();
 ```
