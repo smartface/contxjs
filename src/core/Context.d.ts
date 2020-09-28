@@ -25,7 +25,7 @@ export default class Context {
   reduce(fn: () => any, acc: { [key: string]: any }): { [key: string]: any };
   map(fn: () => any): any[];
 
-  find(instance: Actor, notValue: any): Actor;
+  find(instanceId: Actor, notValue?: any): Actor;
   
   /**
    * @params {} tree
@@ -34,9 +34,9 @@ export default class Context {
 
   add(actor: Actor, name: string): string;
 
-  removeChildren(instance: Actor): void;
+  removeChildren(instanceId: Actor): void;
 
-  remove(instance: Actor): void;
+  remove(instanceId: Actor): void;
 
   setState(state: { [key: string]: any }): void;
 

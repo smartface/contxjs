@@ -74,8 +74,8 @@ export default class Context {
     return res;
   }
 
-  find(instance, notValue) {
-    return this.actors.collection.get(instance) || notValue;
+  find(instanceId, notValue) {
+    return this.actors.collection.get(instanceId) || notValue;
   }
   
   addTree(tree) {
@@ -84,8 +84,8 @@ export default class Context {
 
   add(actor, name) {
     !actor.getID() && actor.setID(Context.getID());
-    const instance = actor.getInstanceID(); //TODO: map by component type
-    this.actors.collection.set(instance, actor);
+    const instanceId = actor.getInstanceID(); //TODO: map by component type
+    this.actors.collection.set(instanceId, actor);
     actor.hook = this._hookFactory;
     actor.componentDidEnter((action, target) => this.dispatch(action, target));
     this.actors.$$lastID = actor.getInstanceID();
@@ -93,8 +93,8 @@ export default class Context {
     return name;
   }
 
-  removeChildren(instance) {
-    const removeActor = this.actors.collection.get(instance);
+  removeChildren(instanceId) {
+    const removeActor = this.actors.collection.get(instanceId);
     
     this.actors.collection.forEach((actor, nm) => {
       if (nm.indexOf(removeActor.getName() + "_") === 0) {
@@ -105,16 +105,16 @@ export default class Context {
     });
   }
 
-  remove(instance) {
-    if(!instance){
+  remove(instanceId) {
+    if(!instanceId){
       throw new Error("name cannot be empty");
     }
     
-    this.removeChildren(instance);
-    const actor = this.actors.collection.get(instance);
+    this.removeChildren(instanceId);
+    const actor = this.actors.collection.get(instanceId);
     
     if (actor) {
-      this.actors.collection.delete(instance);
+      this.actors.collection.delete(instanceId);
       actor.componentDidLeave();
       actor.dispose();
     }
