@@ -1,1 +1,0 @@
-export default function patchMethod(scope: any, method: string, bindingfFunc: () => any): () => any;

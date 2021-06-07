@@ -1,12 +1,12 @@
 {
   "name": "@smartface/contx",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Context Manager",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --debug ./test/**/*.test.js",
     "test:watch": "mocha --watch --compilers js:babel-core/register --debug ./test/**/*.test.js",
     "build:dev": "BABEL_ENV=development babel ./src/ --out-dir -d ../scripts/node_modules/@smartface/contx",
-    "build": "rm -R -f ./lib && tsc",
+    "build": "rm -R -f ./lib && tsc && cp -r ./src/**/*.d.ts ./lib",
     "dev:sync": "mkdir -p ../scripts/node_modules/@smartface/contx && cp -r -t ../scripts/node_modules/@smartface/contx lib package.json ",
     "dev:remove": "rm -R -f ../scripts/node_modules/@smartface/contx & rm -R -f ./lib",
     "dev:link": "npm run dev:remove && BABEL_ENV=development && tsc && npm run dev:sync",
