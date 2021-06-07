@@ -1,4 +1,4 @@
-import View = require("sf-core/ui/view");
+import View = require("@smartface/native/ui/view");
 
 declare function addChild(superAddChild: () => any, child: View, name: string, classNames: string, userProps: { [key: string]: any } | null, defaultClassNames: string): void;
 

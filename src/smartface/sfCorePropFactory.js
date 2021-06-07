@@ -1,35 +1,35 @@
-import Color from "sf-core/ui/color";
-import Font from "sf-core/ui/font";
-import Image from "sf-core/ui/image";
+import Color from "@smartface/native/ui/color";
+import Font from "@smartface/native/ui/font";
+import Image from "@smartface/native/ui/image";
 
 const HexColorValidationRegexp = /^#[0-9A-Fa-f]{6}$/gi;
 const ENUMS = {
-    imageFillType: "sf-core/ui/imagefilltype",
-    textAlignment: "sf-core/ui/textalignment",
-    keyboardType: "sf-core/ui/keyboardtype",
-    orientation: "sf-core/ui/page",
-    type: "sf-core/ui/mapview",
-    gradientOrientation: "sf-core/ui/color",
-    searchViewStyle: "sf-core/ui/searchview",
+    imageFillType: "@smartface/native/ui/imagefilltype",
+    textAlignment: "@smartface/native/ui/textalignment",
+    keyboardType: "@smartface/native/ui/keyboardtype",
+    orientation: "@smartface/native/ui/page",
+    type: "@smartface/native/ui/mapview",
+    gradientOrientation: "@smartface/native/ui/color",
+    searchViewStyle: "@smartface/native/ui/searchview",
     activityIndicatorViewStyle:
-        "sf-core/ui/activityindicator/ios/activityindicatorviewstyle",
-    alignSelf: "sf-core/ui/flexlayout",
-    alignContent: "sf-core/ui/flexlayout",
-    alignItems: "sf-core/ui/flexlayout",
-    direction: "sf-core/ui/flexlayout",
-    ellipsizeMode: "sf-core/ui/ellipsizemode",
-    flexDirection: "sf-core/ui/flexlayout",
-    flexWrap: "sf-core/ui/flexlayout",
-    justifyContent: "sf-core/ui/flexlayout",
-    positionType: "sf-core/ui/flexlayout",
-    overflow: "sf-core/ui/flexlayout",
-    style: "sf-core/ui/statusbarstyle",
-    shimmeringDirection: "sf-core/ui/shimmerflexlayout",
+        "@smartface/native/ui/activityindicator/ios/activityindicatorviewstyle",
+    alignSelf: "@smartface/native/ui/flexlayout",
+    alignContent: "@smartface/native/ui/flexlayout",
+    alignItems: "@smartface/native/ui/flexlayout",
+    direction: "@smartface/native/ui/flexlayout",
+    ellipsizeMode: "@smartface/native/ui/ellipsizemode",
+    flexDirection: "@smartface/native/ui/flexlayout",
+    flexWrap: "@smartface/native/ui/flexlayout",
+    justifyContent: "@smartface/native/ui/flexlayout",
+    positionType: "@smartface/native/ui/flexlayout",
+    overflow: "@smartface/native/ui/flexlayout",
+    style: "@smartface/native/ui/statusbarstyle",
+    shimmeringDirection: "@smartface/native/ui/shimmerflexlayout",
     ios: {
-        style: "sf-core/ui/statusbarstyle"
+        style: "@smartface/native/ui/statusbarstyle"
     },
-    align: "sf-core/ui/scrollview",
-    scrollDirection: "sf-core/ui/layoutmanager"
+    align: "@smartface/native/ui/scrollview",
+    scrollDirection: "@smartface/native/ui/layoutmanager"
 };
 const ENUMS_META_FIELD = {
     align: "Align",
@@ -163,7 +163,7 @@ function _requireEnum(key) {
     return res;
 }
 /**
- * Create a sf-core value
+ * Create a @smartface/native value
  *
  * @function
  *
@@ -220,7 +220,7 @@ export default function buildProps(objectVal) {
 }
 
 function createGifImageForDevice(gifImage) {
-    return require("sf-core/ui/gifimage").createFromFile(
+    return require("@smartface/native/ui/gifimage").createFromFile(
         `assets://${gifImage}`
     );
 }

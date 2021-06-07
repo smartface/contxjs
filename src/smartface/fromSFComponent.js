@@ -6,7 +6,7 @@ import removeContextChild from './action/removeChild';
 import removeContextChildren from './action/removeChildren';
 import findClassNames from '@smartface/styler/lib/utils/findClassNames';
 import raiseErrorMaybe from '../core/util/raiseErrorMaybe';
-import Application from "sf-core/application";
+import Application from "@smartface/native/application";
 
 function addChild(superAddChild, child, name, classNames = "", userProps = null, defaultClassNames= "") {
   superAddChild(child);
@@ -152,7 +152,7 @@ function createName(root, name) {
 /**
  * Extract components tree from a SF Component
  * 
- * @param {Object} component - A sf-core component
+ * @param {Object} component - A @smartface/native component
  * @param {string} name - component name
  * @param {function} initialClassNameMap - classNames mapping with specified component and children
  * @param {?function} hookList - callback function to capture context's hooks

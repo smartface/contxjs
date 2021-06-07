@@ -1,4 +1,4 @@
-import View = require("sf-core/ui/view");
+import View = require("@smartface/native/ui/view");
 
 type styling = { [key: string]: any };
 /**

@@ -1,7 +1,7 @@
-import PageBase = require('sf-core/ui/page');
-import Application = require('sf-core/application');
+import PageBase = require('@smartface/native/ui/page');
+import Application = require('@smartface/native/application');
 import StatusBar = Application.statusBar;
-import HeaderBar = require('sf-core/ui/headerbar');
+import HeaderBar = require('@smartface/native/ui/headerbar');
 
 export default class Page extends PageBase {
     children: {

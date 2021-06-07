@@ -3,7 +3,7 @@ import createPageContext from "./pageContext";
 import patchMethod from '../util/patchMethod';
 
 const buildStyles = require("@smartface/styler/lib/buildStyles");
-const Application = require("sf-core/application");
+const Application = require("@smartface/native/application");
 
 function onSafeAreaPaddingChange(onSafeAreaPaddingChange, paddings) {
   const style = {};
