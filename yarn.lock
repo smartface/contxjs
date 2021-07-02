@@ -872,10 +872,17 @@
     lodash "^4.17.5"
     to-fast-properties "^2.0.0"
 
-"@smartface/styler@^1.3.14":
-  version "1.3.16"
-  resolved "https://registry.yarnpkg.com/@smartface/styler/-/styler-1.3.16.tgz#7c8ddd1e044a28cf01c7bdb0cdf726467f9ce508"
-  integrity sha512-WlHAJnAiXgKmT/4qh8Rx3TO9Y4sejDo2Xe/M25s4ClECWNB+RY132KDq0LPi2ZnmmCOASRg6Qbp7QZ24WYQdTA==
+"@smartface/html-to-text@^1.0.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@smartface/html-to-text/-/html-to-text-1.2.0.tgz#463cf8c60e30af0db96c9e136bcabbc7a37d764d"
+  integrity sha512-yKoQY2nfWiVEfXKdqvtswxPTQjt+WeNZl8gqnUXxRzZcm/trzcyHx8KGzTQHdLysQCDtOQhyIZXPTaWlFaFzFg==
+  dependencies:
+    html-parse-stringify "1.0.2"
+
+"@smartface/styler@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@smartface/styler/-/styler-2.0.0.tgz#4b6a127bad90e3a6daf50076e2b38e90eb17043a"
+  integrity sha512-XLgoSUdXM8l0xHFIHV85ZEwzlYl07be2qi+Ca9p3lU1oE8STetxLFR3z7LD8eIq5Wp0Vzoh9xDsGdu0gTwo/dw==
 
 JSONStream@^1.0.4, JSONStream@~1.3.1:
   version "1.3.5"
@@ -3558,6 +3565,13 @@ hosted-git-info@~2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.5.0.tgz#6d60e34b3abbc8313062c3b798ef8d901a07af3c"
   integrity sha512-pNgbURSuab90KbTqvRPsseaTxOJCZBD0a7t+haSN33piP9cCM4l0CqdzAif2hUqm716UovKB2ROmiabGAKVXyg==
+
+html-parse-stringify@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/html-parse-stringify/-/html-parse-stringify-1.0.2.tgz#1208e98cd7430ad7efb12e1e7acee9214fd22283"
+  integrity sha1-EgjpjNdDCtfvsS4ees7pIU/SIoM=
+  dependencies:
+    void-elements "^1.0.0"
 
 http-cache-semantics@^3.8.0:
   version "3.8.1"
@@ -7510,6 +7524,11 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+void-elements@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-1.0.0.tgz#6e5db1e35d591f5ac690ce1a340f793a817b2c2a"
+  integrity sha1-bl2x411ZH1rGkM4aNA95OoF7LCo=
 
 walk-back@^2.0.1:
   version "2.0.1"
