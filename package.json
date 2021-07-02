@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "@smartface/styler": "^2.0.0",
+    "@smartface/html-to-text": "^1.0.0",
     "filtrex": "^0.5.4"
   },
   "config": {
