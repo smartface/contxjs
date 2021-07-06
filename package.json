@@ -1,6 +1,6 @@
 {
   "name": "@smartface/contx",
-  "version": "4.0.0-rc.4",
+  "version": "4.0.0-rc.6",
   "description": "Context Manager",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --debug ./test/**/*.test.js",
