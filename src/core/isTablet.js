@@ -1,4 +1,4 @@
-import * as orientation  from "sf-extension-utils/lib/orientation";
+import * as orientation  from "@smartface/native/lib/orientation";
 import System from '@smartface/native/device/system';
 function load(src){
     return require(src);

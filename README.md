@@ -202,7 +202,7 @@ context throws the error.
 It is possible to change the current theme without the need to reload.
 
 ```js
-const Application = require("sf-core/application");
+import Application from "@smartface/native/application");
 // Seamlessly switch between themes
 Application.theme()({ type: "changeTheme", theme: "yourThemeName" });
 ```
