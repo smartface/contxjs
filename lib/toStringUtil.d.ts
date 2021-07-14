@@ -1,1 +1,0 @@
-export default function(value: { [key: string]: any } | string): string;
