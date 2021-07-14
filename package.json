@@ -1,6 +1,6 @@
 {
   "name": "@smartface/contx",
-  "version": "4.0.0-rc.6",
+  "version": "4.0.0-rc.7",
   "description": "Context Manager",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --debug ./test/**/*.test.js",
@@ -53,10 +53,10 @@
     "semver": "^5.3.0"
   },
   "dependencies": {
-    "typescript": "^3.8.3",
-    "@smartface/styler": "^2.0.0",
     "@smartface/html-to-text": "^1.0.0",
-    "filtrex": "^0.5.4"
+    "@smartface/styler": "^2.0.0",
+    "filtrex": "^0.5.4",
+    "typescript": "^3.8.3"
   },
   "config": {
     "commitizen": {
