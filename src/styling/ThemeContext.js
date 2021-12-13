@@ -1,6 +1,4 @@
-import { INIT_CONTEXT_ACTION_TYPE } from "../core/constants";
 import Context from "../core/Context";
-import merge from "@smartface/styler/lib/utils/merge";
 import buildStyles from "@smartface/styler/lib/buildStyles";
 import styler from '@smartface/styler/lib/styler';
 import Actor from '../core/Actor';
@@ -127,14 +125,24 @@ export function createThemeContextBound(themes) {
           });
           
     const id = themeContext.getLastActorID();
-    
+    let currentTheme = themesCollection.find(theme => theme.isDefault());
+    let styles = currentTheme.asStyler();
+    /**
+     * @param {object | null | string} action
+     */
     return function themeContextDispatch(action) {
       if (action === null) {
         name && themeContext.dispatch({
           type: "removeThemeable"
         }, id);
-      } else {
+      } else if(typeof action === 'object' && typeof action.type === "string") {
         themeContext.dispatch(action);
+        if(action.type === "changeTheme") {
+          currentTheme = themesCollection.find(theme => theme.isDefault());
+          styles = currentTheme.asStyler();
+        }
+      } else if(typeof action === 'string' && currentTheme) {
+        return styles(action)();
       }
     };
   };

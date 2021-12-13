@@ -1,6 +1,6 @@
 {
   "name": "@smartface/contx",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Context Manager",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register --debug ./test/**/*.test.js",
@@ -45,7 +45,7 @@
     "eslint-plugin-react": "^6.10.3",
     "gitbook-cli": "^2.3.2",
     "jase": "^1.2.0",
-    "jsdoc": "^3.5.5",
+    "jsdoc": "^3.6.7",
     "jsdoc-babel": "^0.3.0",
     "jsdoc-to-markdown": "^3.0.2",
     "minimist": "^1.2.0",
