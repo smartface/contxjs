@@ -145,7 +145,7 @@ class Stylable extends Actor {
     const diff = beforeHook && beforeHook(rawDiff) || rawDiff;
     const hasDiff = diff !== null && Object.keys(diff).length > 0; //TODO: extract all specified area @cenk
     // ------------->
-    var isScrollView = _component.layout && (_component instanceof require("sf-core/ui/scrollview"));
+    var isScrollView = _component.layout && (_component instanceof require("@smartface/native/ui/scrollview"));
     _component.subscribeContext ? hasDiff && _component.subscribeContext({
       type: "new-styles",
       style: Object.assign({}, diff),

@@ -1,4 +1,4 @@
-import View = require("sf-core/ui/view");
+import View = require("@smartface/native/ui/view");
 /**
  * Add context child action
  * 
@@ -9,7 +9,7 @@ import View = require("sf-core/ui/view");
  * 
  * @returns {Object}
  */
-export default function addChild(name: string, component: View, classNames: string, userStyle: { [key: string]: any }, defaultClassNames: string[] | string): {
+export default function addChild(name: string, component: View, classNames?: string, userStyle?: { [key: string]: any }, defaultClassNames?: string[] | string): {
     type: string,
     name: string,
     component: string,

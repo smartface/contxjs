@@ -3559,6 +3559,13 @@ hosted-git-info@~2.5.0:
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.5.0.tgz#6d60e34b3abbc8313062c3b798ef8d901a07af3c"
   integrity sha512-pNgbURSuab90KbTqvRPsseaTxOJCZBD0a7t+haSN33piP9cCM4l0CqdzAif2hUqm716UovKB2ROmiabGAKVXyg==
 
+html-parse-stringify@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/html-parse-stringify/-/html-parse-stringify-1.0.2.tgz#1208e98cd7430ad7efb12e1e7acee9214fd22283"
+  integrity sha1-EgjpjNdDCtfvsS4ees7pIU/SIoM=
+  dependencies:
+    void-elements "^1.0.0"
+
 http-cache-semantics@^3.8.0:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-3.8.1.tgz#39b0e16add9b605bf0a9ef3d9daaf4843b4cacd2"
@@ -7510,6 +7517,11 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+void-elements@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-1.0.0.tgz#6e5db1e35d591f5ac690ce1a340f793a817b2c2a"
+  integrity sha1-bl2x411ZH1rGkM4aNA95OoF7LCo=
 
 walk-back@^2.0.1:
   version "2.0.1"

@@ -1,4 +1,4 @@
-const PageBase = require('sf-core/ui/page');
+const PageBase = require('@smartface/native/ui/page');
 const extend = require("js-base/core/extend");
 const Page = extend(PageBase);
 const pageContextPatch = require('./pageContextPatch');

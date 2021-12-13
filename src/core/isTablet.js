@@ -1,5 +1,5 @@
-import * as orientation  from "sf-extension-utils/lib/orientation";
-import System from 'sf-core/device/system';
+import * as orientation  from "@smartface/extension-utils/lib/orientation";
+import System from '@smartface/native/device/system';
 function load(src){
     return require(src);
 }
@@ -9,7 +9,7 @@ var isTablet = false;
 if (System.OS === "iOS" && orientation.shortEdge >= 720) {
     isTablet = true;
 } else if (System.OS === "Android") {
-    AndroidConfig = load('sf-core/util/Android/androidconfig');
+    AndroidConfig = load('@smartface/native/util/Android/androidconfig');
     const Activity = AndroidConfig.activity;
     const context = Activity;
 

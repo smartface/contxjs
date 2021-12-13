@@ -1,5 +1,5 @@
 import Actor from "../core/Actor";
-import View = require("sf-core/ui/view");
+import View = require("@smartface/native/ui/view");
 
 declare function componentAssign(component: View, key: string, value: { [key: string]: any }): void;
 

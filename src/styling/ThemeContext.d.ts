@@ -9,7 +9,7 @@ declare class Theme {
 
   build(): void;
 
-  asStyler(): () => any;
+  asStyler(): (classNames?: string) => any;
 }
 
 declare class Themeable extends Actor {

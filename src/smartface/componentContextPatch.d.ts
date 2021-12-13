@@ -1,3 +1,1 @@
-import View = require("sf-core/ui/view");
-
-export default function componentContextPatch(component: View, name: string): void;
+export default function componentContextPatch(component: any, name: string): void;

@@ -1,14 +1,9 @@
-import * as StyleContext from "../styling/StyleContext";
-import styler from "@smartface/styler/lib/styler";
 import commands from "@smartface/styler/lib/commandsManager";
 import merge from "@smartface/styler/lib/utils/merge";
 import buildProps from "./sfCorePropFactory";
-import Screen from 'sf-core/device/screen';
-import System from 'sf-core/device/system';
+import Screen from '@smartface/native/device/screen';
+import System from '@smartface/native/device/system';
 import isTablet from '../core/isTablet';
-import makeStylable from '../styling/Stylable';
-import hooks from '../core/hooks';
-import Contants from "../core/constants";
 import fromSFComponent, { createActorTreeFromSFComponent } from "./fromSFComponent";
 
 var orientationState = "ended";

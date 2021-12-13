@@ -1,6 +1,6 @@
 
 /**
- * Create a sf-core value
+ * Create a @smartface/native value
  *
  * @function
  *
