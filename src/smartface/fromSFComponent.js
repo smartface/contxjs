@@ -4,7 +4,6 @@ import makeStylable from '../styling/Stylable';
 import addContextChild from './action/addChild';
 import removeContextChild from './action/removeChild';
 import removeContextChildren from './action/removeChildren';
-import findClassNames from '@smartface/styler/lib/utils/findClassNames';
 import raiseErrorMaybe from '../core/util/raiseErrorMaybe';
 import Application from "@smartface/native/application";
 
