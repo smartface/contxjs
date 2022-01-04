@@ -1,6 +1,6 @@
 {
   "name": "@smartface/contx",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "description": "Context Manager",
   "scripts": {
     "test": "mocha -r ts-node/register --debug ./test/**/*.test.ts",
