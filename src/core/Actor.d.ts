@@ -13,6 +13,8 @@ export default abstract class Actor {
    */
   constructor(component: { [key: string]: any }, name: string, id: number);
 
+  setHooks(hooks: (hook: string) => (...data: any[]) => any): void;
+
   updateComponent(comp: { [key: string]: any }): void;
 
   getName(): string;

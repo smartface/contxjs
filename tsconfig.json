@@ -12,9 +12,9 @@
         "rootDir": "src",
         "strict": true,
         "esModuleInterop": true,
-        "lib": ["ES2015"]
+        "lib": ["ES2015", "ES2017"]
     },
-    "include": ["src", "src/**/*.d.ts"],
+    "include": ["src", "src/**/*.d.ts", "test/Styleable.test.ts"],
     "exclude": [
         "node_modules",
         "lib",

@@ -24,6 +24,11 @@ export default class Actor {
     this.hooks = null;
   }
 
+
+  setHooks(hooks){
+    this.hooks = hooks;
+  }
+
   updateComponent(comp) {
     this._actorInternal_.component.set(this._actorInternal_.componentKey, comp);
     this.setDirty(true);

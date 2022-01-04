@@ -86,7 +86,7 @@ export default class Context {
     !actor.getID() && actor.setID(Context.getID());
     const instanceId = actor.getInstanceID(); //TODO: map by component type
     this.actors.collection.set(instanceId, actor);
-    actor.hook = this._hookFactory;
+    actor.setHooks(this._hookFactory);
     actor.componentDidEnter((action, target) => this.dispatch(action, target));
     this.actors.$$lastID = actor.getInstanceID();
 

@@ -13,11 +13,13 @@ declare function componentAssign(component: View, key: string, value: { [key: st
  * 
  * @returns {Object} - A Stylable Actor
  */
-export default function makeStylable(options: { component: View, classNames: string[] | string, defaultClassNames: string[] | string, userStyle: { [key: string]: any }, name: string }): Stylable;
+export default function makeStylable(options: { component: View, classNames: string[] | string, defaultClassNames?: string[] | string, userStyle?: { [key: string]: any }, name: string }): Stylable;
 
 declare class Stylable extends Actor {
   constructor(component: View, name: string, classNames: string[] | string, defaultClassNames: string[] | string, userStyle: { [key: string]: any });
   getUserStyle(): { [key: string]: any };
+
+  readonly isDirty: boolean;
 
   setSafeArea(area: { [key: string]: any }): Stylable;
 
@@ -28,13 +30,15 @@ declare class Stylable extends Actor {
   updateUserStyle(props: { [key: string]: any }): Stylable;
   reset(): Stylable;
 
+  readonly component: any;
+
   setUserStyle(props: { [key: string]: any }): Stylable;
 
-  computeAndAssignStyle(style: { [key: string]: any }, force: boolean): Stylable;
+  computeAndAssignStyle(style: { [key: string]: any }, force?: boolean): Stylable;
 
-  applyStyles(force: boolean): Stylable;
+  applyStyles(force?: boolean): Stylable;
 
-  setStyles(style: { [key: string]: any }, force: boolean): Stylable;
+  setStyles(style: { [key: string]: any }, force?: boolean): Stylable;
 
   getStyles(): { [key: string]: any };
 
