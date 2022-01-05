@@ -41,7 +41,6 @@ const ENUMS_META_FIELD = {
     alignItems: "AlignItems",
     direction: "Direction",
     flexDirection: "FlexDirection",
-    keyboardType: "KeyboardType",
     flexWrap: "FlexWrap",
     justifyContent: "JustifyContent",
     positionType: "PositionType",
