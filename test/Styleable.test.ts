@@ -6,7 +6,7 @@ import merge from "@smartface/styler/lib/utils/merge";
 import { expect } from "chai";
 import makeStylable, { Stylable } from "../src/styling/Stylable";
 
-function reduceDiffStyleHook(
+function getStylesDiff(
   oldStyles: { [key: string]: any },
   newStyles: { [key: string]: any }
 ) {
@@ -40,7 +40,7 @@ function reduceDiffStyleHook(
           acc[key] = undefined;
           return acc;
         } else if (key === "layout") {
-          var diffReducer = reduceDiffStyleHook(
+          var diffReducer = getStylesDiff(
             oldStyles[key] || {},
             newStyles[key] || {}
           );
@@ -351,7 +351,7 @@ describe("Stylable Actor", function () {
                   flexGrow: 1,
                 },
               }).to.eql(newStyles);
-              const diffReducer = reduceDiffStyleHook(styles, newStyles);
+              const diffReducer = getStylesDiff(styles, newStyles);
 
               const diff = diffReducer();
 
