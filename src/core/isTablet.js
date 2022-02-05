@@ -1,4 +1,3 @@
-import * as orientation  from "@smartface/extension-utils/lib/orientation";
 import System from '@smartface/native/device/system';
 function load(src){
     return require(src);
@@ -6,9 +5,9 @@ function load(src){
 let AndroidConfig
 var isTablet = false;
 
-if (System.OS === "iOS" && orientation.shortEdge >= 720) {
+if (System.OS === System.OSType.IOS && Math.mix(Screen.width, Screen.heigth) >= 720) {
     isTablet = true;
-} else if (System.OS === "Android") {
+} else if (System.OS === System.OSType.Android) {
     AndroidConfig = load('@smartface/native/util/Android/androidconfig');
     const Activity = AndroidConfig.activity;
     const context = Activity;
