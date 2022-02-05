@@ -1,11 +1,12 @@
 import System from '@smartface/native/device/system';
+import Screen from '@smartface/native/device/screen';
 function load(src){
     return require(src);
 }
 let AndroidConfig
 var isTablet = false;
 
-if (System.OS === System.OSType.IOS && Math.mix(Screen.width, Screen.heigth) >= 720) {
+if (System.OS === System.OSType.IOS && Math.min(Screen.width, Screen.heigth) >= 720) {
     isTablet = true;
 } else if (System.OS === System.OSType.Android) {
     AndroidConfig = load('@smartface/native/util/Android/androidconfig');
