@@ -1,71 +1,70 @@
 import Actor from "../core/Actor";
-import View = require("@smartface/native/ui/view");
+import View from "@smartface/native/ui/view";
 
 declare function componentAssign(component: View, key: string, value: { [key: string]: any }): void;
 
 // TODO create new jsdoc type for the parameter
 /**
  * Styleable Actor HOC. Decorates specifeid component and return an actor component
- * 
+ *
  * @param {object} component - A component to decorate
  * @param {string} className - initial className for actor
  * @param {function} hooks - context's hooks dispatcher
- * 
+ *
  * @returns {Object} - A Stylable Actor
  */
-export default function makeStylable(options: { component: View, classNames: string[] | string, defaultClassNames?: string[] | string, userStyle?: { [key: string]: any }, name: string }): Stylable;
+export default function makeStylable(options: { component: View; classNames: string[] | string; defaultClassNames?: string[] | string; userStyle?: { [key: string]: any }; name: string }): Stylable;
 
 declare class Stylable extends Actor {
-  constructor(component: View, name: string, classNames: string[] | string, defaultClassNames: string[] | string, userStyle: { [key: string]: any });
-  getUserStyle(): { [key: string]: any };
+	constructor(component: View, name: string, classNames: string[] | string, defaultClassNames: string[] | string, userStyle: { [key: string]: any });
+	getUserStyle(): { [key: string]: any };
 
-  readonly isDirty: boolean;
+	readonly isDirty: boolean;
 
-  setSafeArea(area: { [key: string]: any }): Stylable;
+	setSafeArea(area: { [key: string]: any }): Stylable;
 
-  makeDirty(): void;
+	makeDirty(): void;
 
-  clearDirty(): void;
+	clearDirty(): void;
 
-  updateUserStyle(props: { [key: string]: any }): Stylable;
-  reset(): Stylable;
+	updateUserStyle(props: { [key: string]: any }): Stylable;
+	reset(): Stylable;
 
-  readonly component: any;
+	readonly component: any;
 
-  setUserStyle(props: { [key: string]: any }): Stylable;
+	setUserStyle(props: { [key: string]: any }): Stylable;
 
-  computeAndAssignStyle(style: { [key: string]: any }, force?: boolean): Stylable;
+	computeAndAssignStyle(style: { [key: string]: any }, force?: boolean): Stylable;
 
-  applyStyles(force?: boolean): Stylable;
+	applyStyles(force?: boolean): Stylable;
 
-  setStyles(style: { [key: string]: any }, force?: boolean): Stylable;
+	setStyles(style: { [key: string]: any }, force?: boolean): Stylable;
 
-  getStyles(): { [key: string]: any };
+	getStyles(): { [key: string]: any };
 
-  getClassName(): string
+	getClassName(): string;
 
-  setInitialStyles(style: { [key: string]: any }): void;
+	setInitialStyles(style: { [key: string]: any }): void;
 
-  getDefaultClassNames(): string;
+	getDefaultClassNames(): string;
 
-  classNamesCount(): number;
+	classNamesCount(): number;
 
-  removeClassName(className: string): string;
+	removeClassName(className: string): string;
 
-  removeClassNames(classNames: string[] | string): string;
+	removeClassNames(classNames: string[] | string): string;
 
-  resetClassNames(classNames: string[]): Stylable
+	resetClassNames(classNames: string[]): Stylable;
 
-  hasClassName(className: string): boolean;
+	hasClassName(className: string): boolean;
 
-  pushClassNames(classNames: string[] | string): string;
+	pushClassNames(classNames: string[] | string): string;
 
-  addClassName(className: string, index: number): string
+	addClassName(className: string, index: number): string;
 
-  dispose(): void;
+	dispose(): void;
 
-  getInitialClassName(): string[];
+	getInitialClassName(): string[];
 }
-
 
 declare function isFunction(functionToCheck: () => any): boolean;
