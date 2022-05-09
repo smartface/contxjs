@@ -99,7 +99,8 @@ class Stylable extends Actor {
 	}
 
 	reset() {
-		this.setStyles(this.getStyles(), true);
+		this.setStyles(this.getStyles());
+		this.applyStyles(true);
 		return this;
 	}
 
