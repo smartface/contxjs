@@ -30,7 +30,7 @@
   "homepage": "https://github.com/smartface/contxjs#readme",
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.54",
-    "@babel/core": "7.0.0-beta.54",
+    "@babel/core": "7.20.7",
     "@babel/plugin-proposal-object-rest-spread": "7.0.0-beta.54",
     "@babel/preset-env": "7.0.0-beta.54",
     "@babel/preset-stage-0": "7.0.0-beta.54",
