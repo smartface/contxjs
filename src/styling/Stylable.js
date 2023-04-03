@@ -148,7 +148,7 @@ class Stylable extends Actor {
 		const hasDiff = diff !== null && Object.keys(diff).length > 0; //TODO: extract all specified area @cenk
 
 		// ------------->
-        var ifNoNeedApplyLayout = _component.layout && (_component instanceof scrollview_1.default || this.getName().endsWith('_headerBar'));
+        var ifNoNeedApplyLayout = _component.layout && (_component instanceof ScrollView || this.getName().endsWith('_headerBar'));
 		_component.subscribeContext
 			? hasDiff &&
 			  _component.subscribeContext({
